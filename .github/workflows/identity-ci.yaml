@@ -27,7 +27,7 @@ jobs:
       mysql:
         image: mysql:5.7
         ports:
-          - ${{ env.MYSQL_PORT }}:${{ env.MYSQL_PORT }}
+          - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
           MYSQL_DATABASE: ${{ env.DATABASE_NAME }}
