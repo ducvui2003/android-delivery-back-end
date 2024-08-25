@@ -12,11 +12,28 @@ env:
   GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
   SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY}}
   SERVICE_ACCOUNT_KEY_BACK_UP: ${{ secrets.SERVICE_ACCOUNT_KEY_BACK_UP }}
-  JAVA_VERSION: '17'
+  JAVA_VERSION: '21'
+  MYSQL_HOST: localhost
+  MYSQL_PORT: 3306
+  MYSQL_USER: testuser
+  MYSQL_PASSWORD: testpassword
+  DATABASE_NAME: delivery
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.SERVICE_NAME }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       # Step 1: Checkout the code
@@ -64,11 +81,27 @@ jobs:
         working-directory: ${{ env.SERVICE_NAME }}
         run: ./gradlew dependencies
 
+      # Step 6: Create Database if it does not exist
+      - name: Create Database
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          until mysqladmin ping -h127.0.0.1 --silent; do
+            sleep 1
+          done
+          echo "Creating database if it does not exist..."
+          mysql -uroot -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};"
+        env:
+          DATABASE_NAME: ${{ env.DATABASE_NAME }}
+
       - name: Build and analyze
         working-directory: ${{ env.SERVICE_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          MYSQL_HOST: ${{ env.MYSQL_HOST }}
+          MYSQL_PORT: ${{ env.MYSQL_PORT }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
         run: ./gradlew build sonar --info
 #      # Step 6: Build the project using Gradle
 #      - name: Build with Gradle
