@@ -84,6 +84,7 @@ jobs:
       # Step 6: Create Database if it does not exist
       - name: Create Database
         run: |
+          sudo systemctl start mysql
           echo "Waiting for MySQL to be ready..."
           until mysqladmin ping -h127.0.0.1 --silent; do
             sleep 1
