@@ -1,0 +1,53 @@
+server:
+  port: 8888
+
+app:
+  api-prefix: /delivery
+  uri:
+    identity-service: http://localhost:8081
+    notification-service: http://localhost:8084
+  public-endpoint: >
+    /,
+    /api/identity/v1/auth/login,
+    /api/identity/v1/auth/refresh-token,
+    /api/identity/v1/auth/register,
+    /actuator/**
+  filter-order:
+    security: -2
+    authentication: -1
+spring:
+  application:
+    name: spring-api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:8082"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders:
+              - "*"
+            exposedHeaders:
+              - "Authorization"
+            allowCredentials: true
+            maxAge: 3600
+      routes:
+        # Identity Service
+        - id: identify_service
+          uri: ${app.uri.identity-service}
+          predicates:
+            - Path=${app.api-prefix}/identity/public/**
+          filters:
+            - StripPrefix=2
+        # Notification Service
+        - id: notification_service
+          uri: ${app.uri.notification-service}
+          predicates:
+            - Path=${app.api-prefix}/notification/public/**
+          filters:
+            - StripPrefix=2
