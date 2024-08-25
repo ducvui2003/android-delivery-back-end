@@ -1,0 +1,88 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    active: dev
+  application:
+    name: spring-identity-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/delivery
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    allowed:
+      origins:
+        - ${app.localhost}:8082
+        - ${app.localhost}:8088
+        - ${app.localhost}:8090
+        - ${app.localhost}:8090
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      headers:
+        - Authorization
+        - Content-Type
+        - Accept
+        - Origin
+        - X-Requested-With
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 897537541683-7ikcdbpl9c00tfcgbtu10dfu8si2gav4.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ducvui2003@gmail.com
+    password: unbqvgwxqsflxyfo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
+  access-token-validity-in-seconds: 86400
+  refresh-token-validity-in-seconds: 8640000
+app:
+  whitelist:
+    - /api/v1/hello
+    - /api/v1/auth/login
+    - /api/v1/auth/refresh-token
+    - /api/v1/auth/check-before-register
+    - /api/v1/auth/register
+    - /api/v1/auth/login-google-mobile
+    - /api/v1/auth/login-google-web
+    - /api/v1/auth/response-login-google-web
+    - /api/v1/auth/facebook
+    - /api/v1/auth/verify
+    - /api/v1/auth/verify-resent
+    - /api/v1/auth/password/forgot
+    - /api/v1/auth/password/reset
+    - /api/v1/auth/password/change-password
+  cookie:
+    key:
+      refreshToken: refresh_token
+    defaultValue:
+      refreshToken: empty
+  localhost: http://localhost
+  otp:
+    length: 6
+    expiration: 600000
+    max-try: 5
+    resend:
+      expiration: 1440000
+      max-try: 3
