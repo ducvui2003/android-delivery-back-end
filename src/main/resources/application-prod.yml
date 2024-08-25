@@ -1,0 +1,4 @@
+jwt:
+  base64-secret: aCq9WZG6IUo0nxQnF4VVEtQbyPcoobHy6yDFYctyKfs=
+  access-token-validity-in-seconds: 86400
+  refresh-token-validity-in-seconds: 8640000
