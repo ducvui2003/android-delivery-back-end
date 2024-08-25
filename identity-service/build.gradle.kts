@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.6"
     id("com.diffplug.spotless") version "6.22.0"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "com.spring"
@@ -84,4 +85,11 @@ spotless {
 }
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+sonar {
+    properties {
+        property("sonar.projectKey", "ducvui2003_android-delivery-back-end")
+        property("sonar.organization", "ducvui2003")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }

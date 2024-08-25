@@ -36,3 +36,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### ENV ###
+src/main/resources/client_secret.json
+src/main/resources/google-services.json
+src/main/resources/serviceAccountKey.json
+src/main/resources/serviceAccountKey_back_up.json
