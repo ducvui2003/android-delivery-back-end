@@ -28,6 +28,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'corretto'
 
       # Step 3: Create Configuration Files
       - name: Create Configuration Files
@@ -64,6 +65,7 @@ jobs:
         run: ./gradlew dependencies
 
       - name: Build and analyze
+        working-directory: ${{ env.SERVICE_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
