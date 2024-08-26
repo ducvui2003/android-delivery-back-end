@@ -94,6 +94,7 @@ jobs:
           MYSQL_PORT: ${{ env.MYSQL_PORT }}
           MYSQL_USER: ${{ env.MYSQL_USER }}
           MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          SPRING_PROFILES_ACTIVE: default
         run: ./gradlew build sonar --info
 #      # Step 6: Build the project using Gradle
 #      - name: Build with Gradle
