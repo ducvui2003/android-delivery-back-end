@@ -84,11 +84,6 @@ jobs:
         working-directory: ${{ env.SERVICE_NAME }}
         run: ./gradlew dependencies
 
-      # Step 6: Turn on MySQL
-      - name: Create Database
-        run: |
-          sudo systemctl start mysql
-
       - name: Build and analyze
         working-directory: ${{ env.SERVICE_NAME }}
         env:
