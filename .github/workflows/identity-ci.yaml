@@ -53,7 +53,7 @@ jobs:
       - name: Create Configuration Files
         working-directory: ${{ env.SERVICE_NAME }}
         run: |
-          echo "${{ secrets.CLIENT-SECRET }}" > src/main/resources/client-secret.json
+          echo "${{ secrets.CLIENT_SECRET }}" > src/main/resources/client_secret.json
           echo "${{ secrets.GOOGLE_SERVICES }}" > src/main/resources/google-services.json
           echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" > src/main/resources/serviceAccountKey.json
           echo "${{ secrets.SERVICE_ACCOUNT_KEY_BACK_UP }}" > src/main/resources/serviceAccountKey_back_up.json
