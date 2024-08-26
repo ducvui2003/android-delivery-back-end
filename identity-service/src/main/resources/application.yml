@@ -6,7 +6,7 @@ spring:
   application:
     name: spring-identity-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${DATABASE_NAME:delivery}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE_NAME:delivery}
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
