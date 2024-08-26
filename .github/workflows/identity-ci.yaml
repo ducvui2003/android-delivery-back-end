@@ -81,18 +81,10 @@ jobs:
         working-directory: ${{ env.SERVICE_NAME }}
         run: ./gradlew dependencies
 
-      # Step 6: Create Database if it does not exist
+      # Step 6: Turn on MySQL
       - name: Create Database
         run: |
           sudo systemctl start mysql
-          echo "Waiting for MySQL to be ready..."
-          until mysqladmin ping -h127.0.0.1 --silent; do
-            sleep 1
-          done
-          echo "Creating database if it does not exist..."
-          mysql -u root -p ${{ env.MYSQL_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};"
-        env:
-          DATABASE_NAME: ${{ env.DATABASE_NAME }}
 
       - name: Build and analyze
         working-directory: ${{ env.SERVICE_NAME }}
