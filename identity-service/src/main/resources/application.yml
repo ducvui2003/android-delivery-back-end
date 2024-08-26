@@ -1,8 +1,6 @@
 server:
   port: 8081
 spring:
-  profiles:
-    active: dev
   application:
     name: spring-identity-service
   datasource:
