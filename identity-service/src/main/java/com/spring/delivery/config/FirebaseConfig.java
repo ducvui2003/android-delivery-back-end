@@ -2,7 +2,6 @@ package com.spring.delivery.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import javax.annotation.PostConstruct;
 
@@ -21,8 +20,7 @@ public class FirebaseConfig {
 		try {
 			FileInputStream serviceAccount =
 				new FileInputStream(ResourceUtils.getFile("classpath:serviceAccountKey.json"));
-			String jsonContent = new String(serviceAccount.readAllBytes(), StandardCharsets.UTF_8);
-			System.out.println(jsonContent);
+
 			System.out.println(serviceAccount.available());
 			FirebaseOptions options = new FirebaseOptions.Builder()
 				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
