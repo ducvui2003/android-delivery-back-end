@@ -30,9 +30,9 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseProductDetail> getProductDetail(@PathVariable("id") Long id) {
-        Optional<ResponseProductDetail> optionalResponseProductDetail = productService.findById(id);
-        if (optionalResponseProductDetail.isEmpty())
+        ResponseProductDetail productDetail = productService.findById(id);
+        if (productDetail == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(optionalResponseProductDetail.get());
+        return ResponseEntity.ok(productDetail);
     }
 }

@@ -4,9 +4,9 @@ import com.spring.productservice.domain.ApiPaging;
 import com.spring.productservice.domain.response.ResponseProduct;
 import com.spring.productservice.domain.response.ResponseProductDetail;
 import com.spring.productservice.mapper.ProductMapper;
-import com.spring.productservice.model.Option;
 import com.spring.productservice.model.Product;
 import com.spring.productservice.repository.ProductRepository;
+import com.spring.productservice.service.http.HttpRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,9 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper = ProductMapper.INSTANCE;
-
+    HttpRatingService httpRatingService;
+    // TODO: Get Image from service image
+    // TODO Get rating from service rating
     @Override
     public ApiPaging<ResponseProduct> findAll(Pageable pageable) {
         Page<Product> page = productRepository.findAll(pageable);
@@ -29,10 +31,7 @@ public class ProductServiceImpl implements ProductService {
         }
         List<ResponseProduct> responseProducts = page.getContent().stream()
                 .map(productMapper::toResponseProduct)
-                .map(responseProduct -> {
-                            return responseProduct;
-                        }
-                )
+
                 .toList();
 
 
@@ -45,7 +44,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ResponseProductDetail> findById(Long id) {
-        return Optional.empty();
+    public ResponseProductDetail findById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty()) return null;
+        ResponseProductDetail responseProductDetail = productMapper.toResponseProductDetail(product.get());
+        // TODO: Get Image from service image
+        
+
+        // TODO Get rating from service rating
+
+        return responseProductDetail;
     }
 }

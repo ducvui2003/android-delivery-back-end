@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ProductService {
     ApiPaging<ResponseProduct> findAll(Pageable pageable);
 
-    Optional<ResponseProductDetail> findById(Long id);
+    ResponseProductDetail findById(Long id);
 }

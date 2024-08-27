@@ -1,6 +1,7 @@
 package com.spring.productservice.mapper;
 
 import com.spring.productservice.domain.response.ResponseProduct;
+import com.spring.productservice.domain.response.ResponseProductDetail;
 import com.spring.productservice.model.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,4 +14,8 @@ public interface ProductMapper {
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "description", source = "shortDescription")
     ResponseProduct toResponseProduct(Product product);
+
+    @Mapping(target = "category", source = "category.name")
+    @Mapping(target = "description", source = "description")
+    ResponseProductDetail toResponseProductDetail(Product product);
 }
