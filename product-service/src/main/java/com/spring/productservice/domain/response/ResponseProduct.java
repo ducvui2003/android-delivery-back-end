@@ -16,7 +16,6 @@ public class ResponseProduct {
     BigDecimal basePrice;
     BigDecimal salePrice;
     double rating;
-    int stock;
     String category;
     String thumbnail;
 }

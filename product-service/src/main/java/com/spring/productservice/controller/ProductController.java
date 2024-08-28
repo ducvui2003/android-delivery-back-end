@@ -4,6 +4,9 @@ import com.spring.productservice.domain.ApiPaging;
 import com.spring.productservice.domain.response.ResponseProduct;
 import com.spring.productservice.domain.response.ResponseProductDetail;
 import com.spring.productservice.service.ProductService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/product")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ProductController {
     ProductService productService;
 
     @GetMapping("/")
     public ResponseEntity<ApiPaging<ResponseProduct>> getProductList(@PageableDefault(page = 0, value = 10) Pageable pageable) {
-        if (pageable == null)
-            return ResponseEntity.ok(null);
-
         return ResponseEntity.ok(productService.findAll(pageable));
     }
 
