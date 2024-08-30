@@ -20,7 +20,6 @@ spring:
   security:
     allowed:
       origins:
-        - ${app.host}:8081
         - ${app.host}:8082
         - ${app.host}:8088
         - ${app.host}:8090
@@ -46,6 +45,7 @@ spring:
             scope:
               - email
               - profile
+
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
   access-token-validity-in-seconds: 86400
