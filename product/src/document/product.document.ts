@@ -5,18 +5,20 @@
  * Created at: 29/8/24 - 2:59 pm
  * User: ducvui2003
  **/
-import {GroupOptionModel, OptionModel} from "./productOption.model";
-import CategoryModel from "./category.model";
+import {Document} from "mongoose";
+import {RequireInfo} from "../util/require.info";
+import CategoryDocument from "./category.document";
+import {OptionModel} from "../model/productOption.model";
+import {GroupOptionDocument, OptionDocument} from "./productOption.document";
 
-interface ProductModel {
-    _id: string;
+interface ProductDocument extends RequireInfo, Document {
     name: string;
     amount: number;
     price: number;
     discountInfo: DiscountInfo;
     description: string;
-    category: CategoryModel;
-    options: (OptionModel | GroupOptionModel)[];
+    category: CategoryDocument;
+    options: (OptionDocument | GroupOptionDocument[]);
     nutritional: NutritionalModel;
 }
 
@@ -37,4 +39,4 @@ type DiscountInfo = {
     expired: Date
 }
 
-export {ProductModel, NutritionalModel, UNIT};
+export {ProductDocument, NutritionalModel, UNIT};

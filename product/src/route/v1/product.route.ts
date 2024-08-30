@@ -7,14 +7,14 @@
  **/
 
 import express from "express";
-import validationMiddleware from "../../middleware/validation.middleware";
+import ValidationMiddleware from "../../middleware/validation.middleware";
 import {productCreateSchema, productGetSchema} from "../../util/schema/productCreateSchema";
 import productController from "../../controller/product.controller";
 
-const router = express.Router();
-router
-    .get("/:id", validationMiddleware(productGetSchema, "PARAMS"), productController.getProduct)
+const ProductRouter = express.Router();
+ProductRouter
+    .get("/:id", ValidationMiddleware(productGetSchema, "params"), productController.getProduct)
     .route('/')
-    .post(validationMiddleware(productCreateSchema, "BODY"), productController.createProduct);
+    .post(ValidationMiddleware(productCreateSchema, "body"), productController.createProduct);
 
-export const ProductRouter = router
+export default ProductRouter

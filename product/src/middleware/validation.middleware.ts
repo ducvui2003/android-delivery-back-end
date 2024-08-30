@@ -10,17 +10,14 @@ import {NextFunction, Request, Response} from 'express';
 import {ZodError, ZodSchema} from "zod";
 import {StatusCodes} from "http-status-codes";
 
-enum TYPE_REQUEST {
-    BODY = 'body',
-    PARAMS = 'params',
-}
+type TYPE_REQUEST = 'body' | 'params' | 'query'
 
-const validationMiddleware = (schema: ZodSchema<ZodSchema>, type: keyof typeof TYPE_REQUEST = 'BODY') => {
+const ValidationMiddleware = (schema: ZodSchema, type: TYPE_REQUEST = 'body') => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             // Validate request body against the provided schema
-            console.log(req[TYPE_REQUEST[type]]);
-            schema.parse(req[TYPE_REQUEST[type]]);
+            console.log(req[type]);
+            schema.parse(req[type]);
             next(); // Proceed to the next middleware or route handler
         } catch (error) {
             if (error instanceof ZodError) {
@@ -34,4 +31,4 @@ const validationMiddleware = (schema: ZodSchema<ZodSchema>, type: keyof typeof T
     }
 }
 
-export default validationMiddleware;
+export default ValidationMiddleware;

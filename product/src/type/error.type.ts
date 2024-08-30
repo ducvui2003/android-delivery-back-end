@@ -6,8 +6,8 @@
  * User: ducvui2003
  **/
 
-export interface ResponseLocals<T> {
-    statusCode: number;
-    message: string;
-    data: T;
+export interface ErrorResponse<T> {
+    statusCode: number,
+    error: string,
+    stackTrace?: T
 }

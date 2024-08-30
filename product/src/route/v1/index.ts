@@ -6,9 +6,14 @@
  * User: ducvui2003
  **/
 
-import express, {Request, Response} from "express";
-import {ProductRouter} from "./product.route";
+import express from "express";
+import CategoryRoute from "./category.route";
+import ProductRouter from "./product.route";
+import ProductOptionRoute from "./productOption.route";
 
-const router = express.Router();
-router.use("/v1/product", ProductRouter)
-export const APIs_V1_PRODUCT = router;
+const APIs_V1 = express.Router();
+APIs_V1.use("/v1/product", ProductRouter)
+APIs_V1.use("/v1/category", CategoryRoute)
+APIs_V1.use("/v1/product-option", ProductOptionRoute)
+
+export default APIs_V1

@@ -6,8 +6,9 @@
  * User: ducvui2003
  **/
 import {NextFunction, Request, Response} from "express";
+import {ResponseLocals} from "../type/response.type";
 
-const formatResponseMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const FormatResponseMiddleware = (_: Request, res: Response<ResponseLocals<object>, ResponseLocals<object>>, next: NextFunction) => {
     // Controller cần trả về res.locals = {statusCode: number, message: string, data: any}
     // Middleware này sẽ format lại response trước khi trả về cho client
     // Nếu không có res.locals thì bỏ qua middleware này
@@ -20,4 +21,4 @@ const formatResponseMiddleware = (req: Request, res: Response, next: NextFunctio
     else
         next();
 }
-export default formatResponseMiddleware
+export default FormatResponseMiddleware

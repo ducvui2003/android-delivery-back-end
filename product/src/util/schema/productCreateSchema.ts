@@ -1,6 +1,3 @@
-import {z, ZodSchema} from "zod";
-import {objectIdValidator} from "../constrant";
-
 /**
  * Author: Le Anh Duc
  * Email: ducvui2003@gmail.com
@@ -8,6 +5,10 @@ import {objectIdValidator} from "../constrant";
  * Created at: 29/8/24 - 12:42 pm
  * User: ducvui2003
  **/
+
+import {z, ZodSchema} from "zod";
+import {objectIdValidator} from "../constrant";
+
 export const productCreateSchema: ZodSchema = z.object({
     name: z.string({message: "Name is required"}),
     basePrice: z.number({message: "Base price is required"}),

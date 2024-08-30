@@ -5,12 +5,12 @@
  * Created at: 29/8/24 - 12:42 pm
  * User: ducvui2003
  **/
-
 import {z, ZodSchema} from "zod";
 
-export const productSchema: ZodSchema = z.object({
+
+const CreateCategorySchema: ZodSchema = z.object({
     name: z.string({message: "Name is required"}),
-    basePrice: z.number({message: "Base price is required"}),
-    salePrice: z.number(),
-    description: z.string()
 })
+
+
+export default {CreateCategorySchema}

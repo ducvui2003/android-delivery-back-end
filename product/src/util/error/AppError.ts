@@ -11,6 +11,8 @@ class AppError extends Error {
     static INVALID_INPUT = new AppError(1001, "Invalid input provided");
     static NOT_FOUND = new AppError(1002, "Resource not found");
     static UNAUTHORIZED = new AppError(1003, "Unauthorized access");
+    static DUPLICATE = new AppError(1004, "Resource already exists");
+    static VALIDATION = new AppError(1005, "Validation error");
 
     constructor(statusCode: number, message: string) {
         super(message);
