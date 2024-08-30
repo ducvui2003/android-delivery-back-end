@@ -35,8 +35,8 @@ public class PasswordController {
 
     @ApiMessage("Change Password")
     @PostMapping("/change-password")
-    public ResponseEntity<ApiResponse<Void>> changePassword(@RequestHeader(value = "email") String email, @Valid @RequestBody RequestChangePassword requestChangePassword) {
-        passwordService.changePassword(email, requestChangePassword.oldPassword(), requestChangePassword.newPassword());
+    public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody RequestChangePassword requestChangePassword) {
+        passwordService.changePassword(requestChangePassword.email(), requestChangePassword.oldPassword(), requestChangePassword.newPassword());
         return ResponseEntity.ok().build();
     }
 }

@@ -20,6 +20,7 @@ spring:
   security:
     allowed:
       origins:
+        - ${app.host}:8081
         - ${app.host}:8082
         - ${app.host}:8088
         - ${app.host}:8090
@@ -45,7 +46,6 @@ spring:
             scope:
               - email
               - profile
-
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
   access-token-validity-in-seconds: 86400
@@ -53,20 +53,19 @@ jwt:
 
 app:
   whitelist:
-    - /api/v1/hello
     - /api/v1/auth/login
-    - /api/v1/auth/refresh-token
     - /api/v1/auth/check-before-register
     - /api/v1/auth/register
+    - /api/v1/auth/account
+    - /api/v1/auth/refresh-token
     - /api/v1/auth/login-google-mobile
     - /api/v1/auth/login-google-web
-    - /api/v1/auth/response-login-google-web
-    - /api/v1/auth/facebook
-    - /api/v1/auth/verify
-    - /api/v1/auth/verify-resent
     - /api/v1/auth/password/forgot
     - /api/v1/auth/password/reset
-    - /api/v1/auth/password/change-password
+    - /swagger-ui.html
+    - /v3/api-docs
+    - /v3/api-docs/**
+    - /swagger-ui/**
   cookie:
     key:
       refreshToken: refresh_token

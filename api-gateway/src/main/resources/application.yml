@@ -1,27 +1,25 @@
 server:
   port: 8888
-
+  servlet:
+    context-path: ${app.api-prefix}
 app:
-  host: http://localhost
   api-prefix: /delivery
+  host: http://localhost
   uri:
     identity-service: http://localhost:8081
     notification-service: http://localhost:8084
   whitelist:
-    - /api/v1/hello
-    - /api/v1/auth/login
-    - /api/v1/auth/refresh-token
-    - /api/v1/auth/check-before-register
-    - /api/v1/auth/register
-    - /api/v1/auth/login-google-mobile
-    - /api/v1/auth/login-google-web
-    - /api/v1/auth/response-login-google-web
-    - /api/v1/auth/facebook
-    - /api/v1/auth/verify
-    - /api/v1/auth/verify-resent
-    - /api/v1/auth/password/forgot
-    - /api/v1/auth/password/reset
-    - /api/v1/auth/password/change-password
+    - ${app.api-prefix}/identity/public/api/v1/auth/login
+    - ${app.api-prefix}/identity/public/api/v1/auth/check-before-register
+    - ${app.api-prefix}/identity/public/api/v1/auth/register
+    - ${app.api-prefix}/identity/public/api/v1/auth/account
+    - ${app.api-prefix}/identity/public/api/v1/auth/refresh-token
+    - ${app.api-prefix}/identity/public/api/v1/auth/login-google-mobile
+    - ${app.api-prefix}/identity/public/api/v1/auth/login-google-web
+    - ${app.api-prefix}/identity/public/api/v1/auth/password/forgot
+    - ${app.api-prefix}/identity/public/api/v1/auth/password/reset
+    - /swagger/**/swagger-ui.html
+    - /api-docs/**
   filter-order:
     security: -2
     authentication: -1
@@ -61,11 +59,26 @@ spring:
           predicates:
             - Path=${app.api-prefix}/identity/public/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=3
         # Notification Service
         - id: notification_service
           uri: ${app.uri.notification-service}
           predicates:
             - Path=${app.api-prefix}/notification/public/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=3
+
+        # Swagger documentation
+        ## Identity service
+        - id: identity-swagger-ui
+          uri: ${app.uri.identity-service}
+          predicates:
+            - Path=/swagger/identity/swagger-ui.html
+          filters:
+            - RewritePath=/swagger/identity/swagger-ui.html, /swagger-ui.html
+        - id: identity-api-docs
+          uri: ${app.uri.identity-service}
+          predicates:
+            - Path=/api-docs/identity
+          filters:
+            - RewritePath=/api-docs/identity, /v3/api-docs
