@@ -2,6 +2,7 @@ package com.spring.apigateway.config.filter;
 
 import java.util.List;
 
+import com.spring.apigateway.config.properties.ApplicationProps;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -25,54 +26,39 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationFilter implements GlobalFilter, Ordered {
-	IdentityService identityService;
-	FormatMono formatMono;
+    IdentityService identityService;
+    FormatMono formatMono;
+    ApplicationProps applicationProps;
 
-	@Value("${app.public-endpoint}")
-	@NonFinal
-	String[] whiteList;
+    @NonFinal
+    @Value("${app.filter-order.authentication}")
+    int order;
 
-	@NonFinal
-	@Value("${app.filter-order.authentication}")
-	int order;
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        if (isWhitelisted(exchange.getRequest().getPath().value())) return chain.filter(exchange);
+        // Get token from authorization header
+        List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
+        if (CollectionUtils.isEmpty(authHeader)) return formatMono.unAuthenticated(exchange);
+        String accessToken = authHeader.get(0).replace("Bearer ", "");
+        // Call identity service to validate token
+        return identityService
+                .introspect(accessToken)
+                .flatMap(response -> {
+                    if (response.getStatusCode() == HttpStatus.UNAUTHORIZED.value()
+                            || response.getStatusCode() == HttpStatus.FORBIDDEN.value())
+                        return formatMono.unAuthenticated(exchange);
+                    return chain.filter(exchange);
+                })
+                .onErrorResume(e -> formatMono.unAuthenticated(exchange));
+    }
 
-	@Override
-	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-		if (isWhitelisted(exchange.getRequest().getPath().value())) return chain.filter(exchange);
-		// Get token from authorization header
-		List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
-		if (CollectionUtils.isEmpty(authHeader)) return formatMono.unAuthenticated(exchange);
-		String accessToken = authHeader.get(0).replace("Bearer ", "");
-		// Call identity service to validate token
-		return identityService
-				.introspect(accessToken)
-				.flatMap(response -> {
-					if (response.getStatusCode() == HttpStatus.UNAUTHORIZED.value()
-							|| response.getStatusCode() == HttpStatus.FORBIDDEN.value())
-						return formatMono.unAuthenticated(exchange);
-					return chain.filter(exchange);
-				})
-				.onErrorResume(e -> formatMono.unAuthenticated(exchange));
-	}
+    @Override
+    public int getOrder() {
+        return order;
+    }
 
-	@Override
-	public int getOrder() {
-		return order;
-	}
-
-	private boolean isWhitelisted(String path) {
-		for (String whitelistPath : whiteList) {
-			if (whitelistPath.contains("**")) {
-				// Handle wildcard match
-				String basePath = whitelistPath.replace("/**", "");
-				if (path.startsWith(basePath)) {
-					return true;
-				}
-			} else if (path.equals(whitelistPath)) {
-				// Exact match
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean isWhitelisted(String path) {
+        return applicationProps.getWhitelist().stream().anyMatch(path::contains);
+    }
 }
