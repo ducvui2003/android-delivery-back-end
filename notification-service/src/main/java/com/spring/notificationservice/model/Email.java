@@ -1,8 +1,6 @@
 package com.spring.notificationservice.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spring.notificationservice.util.constrant.TEMPLATE;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Email {
-    Sender sender;
     @JsonProperty("to")
     Receiver[] receiver;
     Receiver[] bcc;

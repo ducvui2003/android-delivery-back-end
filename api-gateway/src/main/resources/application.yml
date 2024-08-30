@@ -2,16 +2,26 @@ server:
   port: 8888
 
 app:
+  host: http://localhost
   api-prefix: /delivery
   uri:
     identity-service: http://localhost:8081
     notification-service: http://localhost:8084
-  public-endpoint: >
-    /,
-    /api/identity/v1/auth/login,
-    /api/identity/v1/auth/refresh-token,
-    /api/identity/v1/auth/register,
-    /actuator/**
+  whitelist:
+    - /api/v1/hello
+    - /api/v1/auth/login
+    - /api/v1/auth/refresh-token
+    - /api/v1/auth/check-before-register
+    - /api/v1/auth/register
+    - /api/v1/auth/login-google-mobile
+    - /api/v1/auth/login-google-web
+    - /api/v1/auth/response-login-google-web
+    - /api/v1/auth/facebook
+    - /api/v1/auth/verify
+    - /api/v1/auth/verify-resent
+    - /api/v1/auth/password/forgot
+    - /api/v1/auth/password/reset
+    - /api/v1/auth/password/change-password
   filter-order:
     security: -2
     authentication: -1
@@ -24,14 +34,22 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:8082"
+              - ${app.host}:8082
+              - ${app.host}:8088
+              - ${app.host}:8090
+              - ${app.host}:8090
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
+              - OPTIONS
             allowedHeaders:
-              - "*"
+              - Authorization
+              - Content-Type
+              - Accept
+              - Origin
+              - X-Requested-With
             exposedHeaders:
               - "Authorization"
             allowCredentials: true

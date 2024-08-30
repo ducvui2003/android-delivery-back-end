@@ -1,14 +1,14 @@
 package com.spring.notificationservice.controller;
 
-import com.spring.notificationservice.domain.request.RequestTransactionEmailTemplate;
+import com.spring.event.notification.request.TransactionEmailTemplate;
 import com.spring.notificationservice.mapper.EmailMapper;
 import com.spring.notificationservice.model.Email;
 import com.spring.notificationservice.service.http.HttpEmailService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,20 +23,9 @@ public class EmailController {
     HttpEmailService httpEmailService;
     EmailMapper emailMapper = EmailMapper.INSTANCE;
 
-    @PostMapping
-    public void sendEmail() {
-        // send email
-    }
-
     @PostMapping("/template")
-    public void sendEmailTemplate(@RequestBody RequestTransactionEmailTemplate requestTransactionEmailTemplate) {
+    public void sendEmailTemplate(@Valid @RequestBody TransactionEmailTemplate requestTransactionEmailTemplate) {
         Email email = emailMapper.toEmail(requestTransactionEmailTemplate);
         httpEmailService.sendEmail(email);
-    }
-
-    @KafkaListener(topics = "notification-service.verify")
-    public void listen(RequestTransactionEmailTemplate message) {
-        log.info("Received message: {}", message);
-        sendEmailTemplate(message);
     }
 }

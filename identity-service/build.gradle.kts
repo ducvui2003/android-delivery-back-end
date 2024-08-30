@@ -64,6 +64,9 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.3.0")
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.56")
+
+    implementation("org.springframework.kafka:spring-kafka")
+
 }
 dependencyManagement {
     imports {
