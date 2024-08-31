@@ -5,25 +5,37 @@
  * Create at: 9:46 AM - 30/08/2024
  * User: lam-nguyen
  **/
-import {Schema} from "mongoose";
+import {Query, Schema} from "mongoose";
 import {RequireInfoSchema} from "../util/require.info";
-import {BaseOptionModel, GroupOptionModel, OptionModel} from "../model/productOption.model";
+import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 
-const BaseOptionSchema: Schema = new Schema<BaseOptionModel>({
-    name: { type: String, required: true },
-    type: { type: String, required: true, enum: ['Option', 'GroupOption'] },
-});
+const ProductOptionSchema: Schema = new Schema<GroupOptionModel | OptionModel>({
+    name: {type: String, required: true, unique: true},
+    price: {type: Number, required: false},
+    options: {
+        type: [{
+            name: {type: String, required: true},
+            price: {type: Number, required: true},
+        }], required: false
+    }
+}, {
+    versionKey: false,
+})
 
-const OptionSchema: Schema = new Schema<OptionModel>({
-    price: {type: Number, required: true},
-}, {versionKey: false});
+ProductOptionSchema.add(RequireInfoSchema.obj)
 
+ProductOptionSchema.pre("save", function (next) {
+    if (this.$isEmpty("price") && this.$isEmpty("options"))
+        console.log("Price or options are required")
+    cleanDataEmpty(this)
+    next()
+})
 
-const GroupOptionSchema: Schema = new Schema<GroupOptionModel>({
-    options: [OptionSchema.obj]
-}, {versionKey: false});
+const cleanDataEmpty = (data: any) => {
+    if (data.$isEmpty("price"))
+        data.updateOne({$unset: {"price": 1}}).exec()
+    if (data.$isEmpty("options"))
+        data.updateOne({$unset: {"options": 1}}).exec()
+}
 
-OptionSchema.add(RequireInfoSchema.obj)
-GroupOptionSchema.add(RequireInfoSchema.obj)
-
-export default {BaseOptionSchema, OptionSchema, GroupOptionSchema};
+export default {ProductOptionSchema};

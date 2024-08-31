@@ -6,26 +6,23 @@
  * User: lam-nguyen
  **/
 import mongoose from "mongoose";
-import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 import ProductOptionSchema from "../schema/productOption.schema";
+import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 
-const BaseOptionCollection = mongoose.model<OptionModel>("Option", ProductOptionSchema.BaseOptionSchema);
-const OptionCollection = BaseOptionCollection.discriminator("Option", ProductOptionSchema.OptionSchema);
-const GroupOptionCollection = BaseOptionCollection.discriminator("GroupOption", ProductOptionSchema.GroupOptionSchema);
+const ProductOptionCollection = mongoose.model<OptionModel | GroupOptionModel>("option", ProductOptionSchema.ProductOptionSchema);
 
-const save = async (option: OptionModel | GroupOptionModel) => {
-    let newData;
-    if ("options" in option)
-        newData = new OptionCollection(option);
-    else newData = new GroupOptionCollection(option);
-    // return await OptionCollection.create(option);
-    return newData.save();
+const save = async (option: OptionModel | GroupOptionModel): Promise<any> => {
+    let newData = new ProductOptionCollection(option);
+    return await newData.save();
 }
 
-const findById = (id: string) => {
-    return BaseOptionCollection.findById(id);
+const findById = async (id: string) => {
+    return ProductOptionCollection.findById(id).exec();
 }
 
-const ProductRepository = {save, findById}
+const findAll = () => {
+    return ProductOptionCollection.find({}).exec();
+}
 
-export default ProductRepository;
+
+export default {save, findById, findAll};
