@@ -7,7 +7,7 @@
  **/
 import mongoose from "mongoose";
 import ProductSchema from "../schema/product.schema";
-import {ProductDocument} from "../document/product.document";
+import {DiscountInfoDocument, ProductDocument} from "../document/product.document";
 
 const ProductCollection = mongoose.model<ProductDocument>("Product", ProductSchema);
 
@@ -25,4 +25,16 @@ const findAll = (): Promise<ProductDocument[]> => {
     return ProductCollection.find({}).exec();
 }
 
-export default {save, findById, findAll};
+const removeDiscount = async (id: string): Promise<ProductDocument | null> => {
+    return await ProductCollection.findByIdAndUpdate(id, {$unset: {discountInfo: 1}}).exec()
+}
+const setDiscount = async (id: string, discountInfo: DiscountInfoDocument): Promise<ProductDocument | null> => {
+    return await ProductCollection.findByIdAndUpdate(id, {$set: {discountInfo: discountInfo}}).exec()
+}
+
+const updateTime = (id: string) => {
+    ProductCollection.updateOne({_id: id, updateAt: Date.now()}).exec().then();
+}
+
+
+export default {save, findById, findAll, removeDiscount, setDiscount, updateTime};

@@ -8,12 +8,16 @@
 import {NextFunction, Request, Response} from "express";
 import ProductService from "../service/product.service";
 import {ResponseLocals} from "../type/response.type";
-import {ProductDocument} from "../document/product.document";
+import {DiscountInfoDocument, ProductDocument} from "../document/product.document";
 import {ProductModel} from "../model/product.model";
 
 const getById = async (req: Request, res: Response<any, ResponseLocals<ProductModel>>, next: NextFunction) => {
-    res.locals.data = await ProductService.getById(req.params.id)
-    next()
+    try {
+        res.locals.data = await ProductService.getById(req.params.id)
+        next()
+    } catch (e) {
+        next(e)
+    }
 }
 
 const getAll = async (_: Request, res: Response<any, ResponseLocals<ProductModel[]>>, next: NextFunction) => {
@@ -26,5 +30,25 @@ const create = async (req: Request<any, any, ProductDocument>, res: Response<any
     next();
 }
 
+const removeDiscount = async (req: Request<{
+    id: string
+}>, res: Response<any, ResponseLocals<ProductModel>>, next: NextFunction) => {
+    try {
+        res.locals.data = await ProductService.removeDiscount(req.params.id)
+        next();
+    } catch (e) {
+        next(e)
+    }
+}
 
-export default {getById, getAll, create}
+const setDiscount = async (req: Request<{ id: string }, any, DiscountInfoDocument>, res: Response<any, ResponseLocals<ProductModel>>, next: NextFunction) => {
+    try {
+        res.locals.data = await ProductService.setDiscount(req.params.id, req.body)
+        next();
+    } catch (e) {
+        next(e)
+    }
+}
+
+
+export default {getById, getAll, create, removeDiscount, setDiscount}

@@ -15,6 +15,8 @@ const ProductRouter = express.Router();
 ProductRouter
     .get("/:id", ProductController.getById)
     .get("/", ProductController.getAll)
-    .post("/", ValidationMiddleware(ProductValidationSchema.CreateProduct, "body"), ProductController.create);
+    .post("/", ValidationMiddleware(ProductValidationSchema.CreateProduct, "body"), ProductController.create)
+    .delete("/remove-discount/:id", ProductController.removeDiscount)
+    .put("/set-discount/:id", ValidationMiddleware(ProductValidationSchema.DiscountCreateValidation, "body"), ProductController.setDiscount);
 
 export default ProductRouter

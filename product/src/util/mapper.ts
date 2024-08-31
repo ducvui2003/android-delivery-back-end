@@ -9,6 +9,7 @@
 
 const convert = <T>(data: any, functionConvert: (data: any) => T): T => {
     if (data instanceof Array) throw new Error("Data is array")
+    if (data instanceof Promise) throw new Error("Data is promise")
     return functionConvert(data.toObject())
 }
 

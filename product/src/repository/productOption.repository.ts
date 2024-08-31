@@ -11,7 +11,7 @@ import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 
 const ProductOptionCollection = mongoose.model<OptionModel | GroupOptionModel>("Option", ProductOptionSchema.ProductOptionSchema);
 
-const save = async (option: OptionModel | GroupOptionModel): Promise<any> => {
+const save = async (option: OptionModel | GroupOptionModel): Promise<OptionModel | GroupOptionModel> => {
     let newData = new ProductOptionCollection(option);
     return await newData.save();
 }

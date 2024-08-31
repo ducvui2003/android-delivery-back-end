@@ -19,8 +19,8 @@ const START_SERVER = () => {
     app.use(LogMiddleware);
     app.use('/api', APIs_V1);
     app.use(FormatResponseMiddleware);
-    app.use(ClearEmptyValueMiddleware);
     app.use(ErrorHandlerMiddleware);
+    app.use(ClearEmptyValueMiddleware);
 
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

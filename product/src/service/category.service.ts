@@ -14,6 +14,7 @@ import Mapper from "../util/mapper";
 
 const getById = async (id: string): Promise<CategoryModel> => {
     const data = await CategoryRepository.findById(id)
+    if (!data) throw AppError.NOT_FOUND
     return Mapper.convert<CategoryModel>(data, convertToModel)
 }
 

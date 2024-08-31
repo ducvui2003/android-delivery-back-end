@@ -9,10 +9,10 @@
 import {z, ZodSchema} from "zod";
 import {UNIT} from "../../model/product.model";
 
-const DiscountCreateValidation: ZodSchema =  z.nullable(z.object({
+const DiscountCreateValidation: ZodSchema =  z.object({
     discount: z.number({message: "Discount is required"}),
     expired: z.string({message: "Expired date is required"}).date()
-}))
+})
 
 const ProductOptionCreateValidation: ZodSchema = z.string({message: "Product option Id is required"}).array()
 
@@ -30,9 +30,9 @@ const CreateProduct: ZodSchema = z.object({
     quantity: z.number({message: "Amount is required"}),
     description: z.string({message: "Description is required"}),
     category: z.string({message: "Category ID is required"}),
-    discountInfo: DiscountCreateValidation,
+    discountInfo: z.nullable(DiscountCreateValidation),
     options: ProductOptionCreateValidation,
     nutritional: NutritionalCreateValidation
 })
 
-export default {CreateProduct}
+export default {CreateProduct, DiscountCreateValidation}

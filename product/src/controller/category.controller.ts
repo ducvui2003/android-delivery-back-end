@@ -13,8 +13,12 @@ import {ResponseLocals} from "../type/response.type";
 const getById = async (req: Request<{
     id: string
 }>, res: Response<any, ResponseLocals<CategoryModel | null>>, next: NextFunction) => {
+    try {
     res.locals.data = await CategoryService.getById(req.params.id)
     next()
+    } catch (e) {
+        next(e)
+    }
 }
 
 const getAll = async (_: Request, res: Response<any, ResponseLocals<CategoryModel[] | null>>, next: NextFunction) => {
