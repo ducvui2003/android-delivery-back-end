@@ -15,6 +15,6 @@ const CATEGORY_ROUTE = express.Router();
 CATEGORY_ROUTE
     .get("/:id", CategoryController.getById)
     .get("/", CategoryController.getAll)
-    .post("/", validationMiddleware(CategoryValidationSchema.CreateCategorySchema, "body"), CategoryController.create);
+    .post("/", validationMiddleware(CategoryValidationSchema.CreateCategory, "body"), CategoryController.create);
 
 export default CATEGORY_ROUTE;

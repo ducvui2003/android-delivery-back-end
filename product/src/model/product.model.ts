@@ -9,15 +9,15 @@ import {GroupOptionModel, OptionModel} from "./productOption.model";
 import CategoryModel from "./category.model";
 
 interface ProductModel {
-    _id: string;
+    id: string;
     name: string;
-    amount: number;
+    quantity: number;
     price: number;
-    discountInfo: DiscountInfo;
+    discountInfo?: DiscountInfoModel;
     description: string;
-    category: CategoryModel;
-    options: (OptionModel | GroupOptionModel)[];
-    nutritional: NutritionalModel;
+    category?: CategoryModel;
+    options?: (OptionModel | GroupOptionModel)[];
+    nutritional?: NutritionalModel[];
 }
 
 interface NutritionalModel {
@@ -32,9 +32,9 @@ enum UNIT {
     PIECE = 'piece'
 }
 
-type DiscountInfo = {
+type DiscountInfoModel = {
     discount: number;
     expired: Date
 }
 
-export {ProductModel, NutritionalModel, UNIT};
+export {ProductModel, NutritionalModel, UNIT, DiscountInfoModel};

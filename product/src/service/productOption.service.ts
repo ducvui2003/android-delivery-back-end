@@ -26,18 +26,16 @@ const create = async (option: OptionModel | GroupOptionModel): Promise<OptionMod
 }
 
 const convertToModel = (data: any): OptionModel | GroupOptionModel => {
-    const om: OptionModel = data as OptionModel;
-    if (om.price) return {
-        _id: om._id,
-        name: om.name,
-        price: om.price
+    if (data.price) return {
+        id: data._id,
+        name: data.name,
+        price: data.price
     } as OptionModel
 
-    const gm: GroupOptionModel = data as GroupOptionModel;
     return {
-        _id: gm._id,
-        name: gm.name,
-        options: gm.options.map(convertToModel)
+        id: data._id,
+        name: data.name,
+        options: data.options.map(convertToModel)
     } as GroupOptionModel
 }
 

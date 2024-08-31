@@ -8,13 +8,13 @@
 
 import express from "express";
 import ValidationMiddleware from "../../middleware/validation.middleware";
-import {productCreateSchema, productGetSchema} from "../../util/schema/productCreateSchema";
-import productController from "../../controller/product.controller";
+import ProductController from "../../controller/product.controller";
+import ProductValidationSchema from "../../util/schema/product.validation.schema";
 
 const ProductRouter = express.Router();
 ProductRouter
-    .get("/:id", ValidationMiddleware(productGetSchema, "params"), productController.getProduct)
-    .route('/')
-    .post(ValidationMiddleware(productCreateSchema, "body"), productController.createProduct);
+    .get("/:id", ProductController.getById)
+    .get("/", ProductController.getAll)
+    .post("/", ValidationMiddleware(ProductValidationSchema.CreateProduct, "body"), ProductController.create);
 
 export default ProductRouter

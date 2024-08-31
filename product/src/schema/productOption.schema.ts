@@ -5,7 +5,7 @@
  * Create at: 9:46 AM - 30/08/2024
  * User: lam-nguyen
  **/
-import {Query, Schema} from "mongoose";
+import {Schema} from "mongoose";
 import {RequireInfoSchema} from "../util/require.info";
 import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 

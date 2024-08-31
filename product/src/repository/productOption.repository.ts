@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 import ProductOptionSchema from "../schema/productOption.schema";
 import {GroupOptionModel, OptionModel} from "../model/productOption.model";
 
-const ProductOptionCollection = mongoose.model<OptionModel | GroupOptionModel>("option", ProductOptionSchema.ProductOptionSchema);
+const ProductOptionCollection = mongoose.model<OptionModel | GroupOptionModel>("Option", ProductOptionSchema.ProductOptionSchema);
 
 const save = async (option: OptionModel | GroupOptionModel): Promise<any> => {
     let newData = new ProductOptionCollection(option);

@@ -5,6 +5,7 @@ import ErrorHandlerMiddleware from "./middleware/errorHandler.middleware";
 import CONNECT_DB from "./config/database.mongoose";
 import APIs_V1 from "./route/v1";
 import LogMiddleware from "./middleware/log.middleware";
+import ClearEmptyValueMiddleware from "./middleware/clearEmptyValue.middleware";
 
 const START_SERVER = () => {
     const app = express();
@@ -18,6 +19,7 @@ const START_SERVER = () => {
     app.use(LogMiddleware);
     app.use('/api', APIs_V1);
     app.use(FormatResponseMiddleware);
+    app.use(ClearEmptyValueMiddleware);
     app.use(ErrorHandlerMiddleware);
 
     app.listen(PORT, () => {

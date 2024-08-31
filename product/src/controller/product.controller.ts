@@ -6,21 +6,25 @@
  * User: ducvui2003
  **/
 import {NextFunction, Request, Response} from "express";
-import productService from "../service/product.service";
+import ProductService from "../service/product.service";
+import {ResponseLocals} from "../type/response.type";
+import {ProductDocument} from "../document/product.document";
+import {ProductModel} from "../model/product.model";
 
-const getProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const product = await productService.getProduct(req.params.id)
+const getById = async (req: Request, res: Response<any, ResponseLocals<ProductModel>>, next: NextFunction) => {
+    res.locals.data = await ProductService.getById(req.params.id)
     next()
 }
 
-const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-    // const response: ApiResponse = {
-    //     status: 200,
-    //     message: "Create product successfully!"
-    // }
-    // res.json(response)
+const getAll = async (_: Request, res: Response<any, ResponseLocals<ProductModel[]>>, next: NextFunction) => {
+    res.locals.data = await ProductService.getByAll()
+    next()
 }
 
-const productController = {getProduct, createProduct}
+const create = async (req: Request<any, any, ProductDocument>, res: Response<any, ResponseLocals<ProductModel>>, next: NextFunction) => {
+    res.locals.data = await ProductService.create(req.body)
+    next();
+}
 
-export default productController
+
+export default {getById, getAll, create}

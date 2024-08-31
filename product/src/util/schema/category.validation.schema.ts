@@ -8,9 +8,9 @@
 import {z, ZodSchema} from "zod";
 
 
-const CreateCategorySchema: ZodSchema = z.object({
+const CreateCategory: ZodSchema = z.object({
     name: z.string({message: "Name is required"}),
 })
 
 
-export default {CreateCategorySchema}
+export default {CreateCategory}

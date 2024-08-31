@@ -38,7 +38,7 @@ const create = async (category: CategoryModel): Promise<CategoryModel> => {
 
 const convertToModel = (data: any): CategoryModel => {
     return {
-        _id: data._id,
+        id: data._id,
         name: data.name
     }
 }

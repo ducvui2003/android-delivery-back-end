@@ -8,35 +8,29 @@
 import {Document} from "mongoose";
 import {RequireInfo} from "../util/require.info";
 import CategoryDocument from "./category.document";
-import {OptionModel} from "../model/productOption.model";
 import {GroupOptionDocument, OptionDocument} from "./productOption.document";
+import {UNIT} from "../model/product.model";
 
 interface ProductDocument extends RequireInfo, Document {
     name: string;
     amount: number;
     price: number;
-    discountInfo: DiscountInfo;
+    discountInfo: DiscountInfoDocument;
     description: string;
     category: CategoryDocument;
     options: (OptionDocument | GroupOptionDocument[]);
-    nutritional: NutritionalModel;
+    nutritional: NutritionalDocument;
 }
 
-interface NutritionalModel {
+interface NutritionalDocument {
     name: string;
     value: number;
     unit: UNIT;
 }
 
-enum UNIT {
-    GRAM = 'g',
-    MILLILITER = 'ml',
-    PIECE = 'piece'
-}
-
-type DiscountInfo = {
+type DiscountInfoDocument = {
     discount: number;
     expired: Date
 }
 
-export {ProductDocument, NutritionalModel, UNIT};
+export {ProductDocument, NutritionalDocument, DiscountInfoDocument};

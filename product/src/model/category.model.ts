@@ -7,7 +7,7 @@
  **/
 
 interface CategoryModel {
-    _id: string;
+    id: string;
     name: string;
 }
 

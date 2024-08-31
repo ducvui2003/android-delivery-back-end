@@ -7,13 +7,13 @@
  **/
 
 interface OptionModel {
-    _id: string;
+    id: string;
     name: string;
     price: number;
 }
 
 interface GroupOptionModel {
-    _id: string;
+    id: string;
     name: string;
     options: OptionModel[];
 }
