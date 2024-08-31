@@ -21,8 +21,8 @@ public class BaseModel {
 
     @Convert(converter = RatingConverter.class)
     Rating rating;
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    boolean deleted;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    boolean deleted = Boolean.FALSE;
 
     @Column(nullable = false, updatable = false)
     Instant createdAt;

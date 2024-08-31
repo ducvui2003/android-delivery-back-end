@@ -1,6 +1,5 @@
 package com.spring.ratingservice.repository.impl;
 
-import com.spring.ratingservice.domain.ProductRatingDTO;
 import com.spring.ratingservice.repository.CustomReviewProductRepository;
 import com.spring.ratingservice.util.constraint.Rating;
 import jakarta.persistence.EntityManager;
@@ -15,12 +14,13 @@ public class CustomReviewProductRepositoryImpl implements CustomReviewProductRep
     private EntityManager entityManager;
 
     @Override
-    public Optional<ProductRatingDTO> findRatingByProductId(String productId) {
+    public Optional<EnumMap<Rating, Long>> findRatingByProductId(String productId) {
+        EnumMap<Rating, Long> ratingMap = new EnumMap<>(Rating.class);
         String jpql = """
-                    SELECT review.productId AS productId, COUNT(review.productId) AS totalReview, AVG(review.rating) AS averageRating
+                   SELECT review.productId, rating,  COUNT(review.rating)
                     FROM ReviewProduct review
                     WHERE review.productId = :productId
-                    GROUP BY review.productId
+                    GROUP BY review.rating
                 """;
 
         List<Object[]> results = entityManager.createQuery(jpql).setParameter("productId", productId).getResultList();
@@ -28,11 +28,13 @@ public class CustomReviewProductRepositoryImpl implements CustomReviewProductRep
         if (results.isEmpty())
             return Optional.empty();
 
-        Object[] result = results.getFirst();
-        Long totalReview = (Long) result[1];
-        Double averageRating = (Double) result[2];
+        for (Object[] result : results) {
+            Rating rating = (Rating) result[1];
+            long count = (Long) result[2];
+            ratingMap.put(rating, count);
+        }
 
-        return Optional.of(ProductRatingDTO.builder().productId(productId).totalReview(totalReview).averageRating(averageRating).build());
+        return Optional.of(ratingMap);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class CustomReviewProductRepositoryImpl implements CustomReviewProductRep
         for (Object[] result : results) {
             String productId = (String) result[0];
             Rating rating = (Rating) result[1];
-            Long count = (Long) result[2];
+            long count = (Long) result[2];
             EnumMap<Rating, Long> ratingMap;
             if (productRatingMap.containsKey(productId)) {
                 ratingMap = productRatingMap.get(productId);

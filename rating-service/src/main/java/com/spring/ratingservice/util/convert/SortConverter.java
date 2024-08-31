@@ -4,18 +4,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
-
 
 public class SortConverter {
+
+    private SortConverter() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static Pageable convert(String sortField, String sortDirection, int page, int size) {
         Sort sort = detachSort(sortField, sortDirection);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return null;
+        return PageRequest.of(page - 1, size, sort);
     }
 
     private static Sort detachSort(String sortField, String sortDirection) {
-//        List<Sort.Order> orders = sosos
-        return null;
+        return Sort.by(Sort.Direction.fromString(sortDirection), sortField);
     }
 }
