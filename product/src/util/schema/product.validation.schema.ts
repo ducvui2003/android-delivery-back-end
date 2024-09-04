@@ -35,4 +35,13 @@ const CreateProduct: ZodSchema = z.object({
     nutritional: NutritionalCreateValidation
 })
 
-export default {CreateProduct, DiscountCreateValidation}
+const UpdateImage: ZodSchema = z.object({
+    url: z.string({message: "Image URL is required"})
+})
+
+const Page: ZodSchema = z.object({
+    page: z.string({message: "Image URL is required"})
+})
+
+
+export default {CreateProduct, DiscountCreateValidation, UpdateImage}

@@ -20,8 +20,8 @@ const getById = async (id: string) => {
     return Mapper.convert<ProductModel>(data, convertToModel)
 }
 
-const getByAll = async () => {
-    const data = await ProductRepository.findAll()
+const getAll = async (page: number) => {
+    const data = await ProductRepository.findAll(page > 0 ? page : 1)
     return Mapper.convertArray<ProductModel>(data, convertToModel)
 }
 
@@ -45,6 +45,7 @@ const setDiscount = async (id: string, discountInfo: DiscountInfoDocument) => {
 const convertToModel = (data: any): ProductModel => {
     const dataFormat: ProductModel = {
         id: data._id,
+        image: data.image,
         name: data.name,
         price: data.price,
         quantity: data.amount,
@@ -68,4 +69,25 @@ const convertToModel = (data: any): ProductModel => {
     return dataFormat
 }
 
-export default {getById, create, getByAll, removeDiscount, convertToModel, setDiscount}
+const updateUrlImage = async (id: string, url: string) => {
+    const data = await ProductRepository.updateUrlImage(id, url)
+    if (!data) throw AppError.NOT_FOUND
+    return data
+}
+
+const getByCategory = async (id: string, page: number) => {
+    const data = await ProductRepository.findByCategory(id, page > 0 ? page : 1)
+    return Mapper.convertArray<ProductModel>(data, convertToModel)
+}
+
+
+export default {
+    getById,
+    create,
+    getAll,
+    removeDiscount,
+    convertToModel,
+    setDiscount,
+    updateUrlImage,
+    getByCategory
+}

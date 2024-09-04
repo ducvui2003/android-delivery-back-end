@@ -15,8 +15,10 @@ const ProductRouter = express.Router();
 ProductRouter
     .get("/:id", ProductController.getById)
     .get("/", ProductController.getAll)
+    .get("/category/:id", ProductController.getByCategory)
     .post("/", ValidationMiddleware(ProductValidationSchema.CreateProduct, "body"), ProductController.create)
-    .delete("/remove-discount/:id", ProductController.removeDiscount)
-    .put("/set-discount/:id", ValidationMiddleware(ProductValidationSchema.DiscountCreateValidation, "body"), ProductController.setDiscount);
+    .delete("/discount/:id", ProductController.removeDiscount)
+    .put("/discount/:id", ValidationMiddleware(ProductValidationSchema.DiscountCreateValidation, "body"), ProductController.setDiscount)
+    .put("/image/:id", ValidationMiddleware(ProductValidationSchema.UpdateImage, "body"), ProductController.updateUrlImage);
 
 export default ProductRouter

@@ -20,8 +20,11 @@ const getById = async (req: Request, res: Response<any, ResponseLocals<ProductMo
     }
 }
 
-const getAll = async (_: Request, res: Response<any, ResponseLocals<ProductModel[]>>, next: NextFunction) => {
-    res.locals.data = await ProductService.getByAll()
+const getAll = async (req: Request<{}, {}, {}, {
+    page: string
+}, {}>, res: Response<any, ResponseLocals<ProductModel[]>>, next: NextFunction) => {
+    const page = req.query.page ? Number.parseInt(req.query.page) : 1
+    res.locals.data = await ProductService.getAll(page)
     next()
 }
 
@@ -50,5 +53,24 @@ const setDiscount = async (req: Request<{ id: string }, any, DiscountInfoDocumen
     }
 }
 
+const updateUrlImage = async (req: Request<{ id: string }, {}, {
+    url: string
+}>, _: Response<any, ResponseLocals<boolean>>, next: NextFunction) => {
+    try {
+        await ProductService.updateUrlImage(req.params.id, req.body.url)
+        next();
+    } catch (e) {
+        next(e)
+    }
+}
 
-export default {getById, getAll, create, removeDiscount, setDiscount}
+const getByCategory = async (req: Request<{ id: string }, {}, {}, {
+    page: string
+}, {}>, res: Response<any, ResponseLocals<ProductModel[]>>, next: NextFunction) => {
+    const page = req.query.page ? Number.parseInt(req.query.page) : 1
+    res.locals.data = await ProductService.getByCategory(req.params.id, page)
+    next()
+}
+
+
+export default {getById, getAll, create, removeDiscount, setDiscount, updateUrlImage, getByCategory}

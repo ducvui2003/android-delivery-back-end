@@ -12,13 +12,16 @@ const FormatResponseMiddleware = (_: Request, res: Response<ResponseLocals<objec
     // Controller cần trả về res.locals = {statusCode: number, message: string, data: any}
     // Middleware này sẽ format lại response trước khi trả về cho client
     // Nếu không có res.locals thì bỏ qua middleware này
-    if (res.locals)
+    if (res.locals.data)
         res.json({
             statusCode: res.locals.statusCode || res.statusCode,
             message: res.locals.message || "Success",
             data: res.locals.data
         });
     else
-        next();
+        res.json({
+            statusCode: res.locals.statusCode || res.statusCode,
+            message: res.locals.message || "Success",
+        });
 }
 export default FormatResponseMiddleware

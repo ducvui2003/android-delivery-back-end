@@ -10,7 +10,7 @@ import {ResponseLocals} from "../type/response.type";
 
 
 const ClearEmptyValueMiddleware = (_: Request, res: Response<ResponseLocals<object>, ResponseLocals<object>>, next: NextFunction) => {
-    if (res.locals)
+    if (res.locals.data && typeof res.locals.data === "object")
         res.locals.data = Object.fromEntries(Object.entries(res.locals.data).filter(([_, v]) => v && v.length !== 0));
     else
         next();

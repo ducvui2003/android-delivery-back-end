@@ -13,6 +13,7 @@ class AppError extends Error {
     static UNAUTHORIZED = new AppError(1003, "Unauthorized access");
     static DUPLICATE = new AppError(1004, "Resource already exists");
     static VALIDATION = new AppError(1005, "Validation error");
+    static CAST_ERROR = new AppError(1006, "Invalid id provided");
 
     constructor(statusCode: number, message: string) {
         super(message);

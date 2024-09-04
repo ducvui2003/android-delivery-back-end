@@ -23,6 +23,7 @@ const DiscountInfoSchema: Schema = new Schema<DiscountInfoModel>({
 
 const ProductSchema: Schema = new Schema<ProductModel>({
     name: {type: String, required: true},
+    image: {type: String},
     quantity: {type: Number, required: true},
     price: {type: Number, required: true},
     description: {type: String, required: true},

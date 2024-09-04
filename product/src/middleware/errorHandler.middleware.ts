@@ -5,10 +5,11 @@
  * Created at: 28/8/24 - 5:58 pm
  * User: ducvui2003
  **/
-import {Response, Request, NextFunction} from "express";
+import {NextFunction, Request, Response} from "express";
 import AppError from "../util/error/AppError";
 import {isDevelopment} from "../config/environment";
 import {ErrorResponse} from "../type/error.type";
+import mongoose from "mongoose";
 
 const ErrorHandlerMiddleware = (err: Error, _: Request, res: Response<ErrorResponse<any>>, __: NextFunction) => {
     if (err instanceof AppError)
@@ -17,6 +18,13 @@ const ErrorHandlerMiddleware = (err: Error, _: Request, res: Response<ErrorRespo
             error: err.message,
             stackTrace: isDevelopment() ? err.stack : undefined
         });
+    else if (err instanceof mongoose.Error) {
+        res.status(400).json({
+            statusCode: 400,
+            error: err.message,
+            stackTrace: isDevelopment() ? err.stack : undefined
+        });
+    }
     else
         res.status(500).send({
             statusCode: 500,
