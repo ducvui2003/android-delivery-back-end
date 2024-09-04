@@ -1,29 +1,25 @@
-package com.spring.notificationservice.domain.request;
+package com.spring.event.notification.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.spring.notificationservice.model.Receiver;
-import com.spring.notificationservice.model.Sender;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
-@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RequestTransactionEmail {
-    @NotNull
-    Sender sender;
+public class TransactionEmail {
     @NotNull
     @JsonProperty("to")
     Receiver[] receiver;
     Receiver[] bcc;
     Receiver[] cc;
-    @NonNull
+    @NotNull
     String textContent;
-    @NonNull
+    @NotNull
     String subject;
-    @NonNull
+    @NotNull
     Receiver replyTo;
 }

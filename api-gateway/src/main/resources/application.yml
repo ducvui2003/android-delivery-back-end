@@ -1,17 +1,25 @@
 server:
   port: 8888
-
+  servlet:
+    context-path: ${app.api-prefix}
 app:
   api-prefix: /delivery
+  host: http://localhost
   uri:
     identity-service: http://localhost:8081
     notification-service: http://localhost:8084
-  public-endpoint: >
-    /,
-    /api/identity/v1/auth/login,
-    /api/identity/v1/auth/refresh-token,
-    /api/identity/v1/auth/register,
-    /actuator/**
+  whitelist:
+    - ${app.api-prefix}/identity/public/api/v1/auth/login
+    - ${app.api-prefix}/identity/public/api/v1/auth/check-before-register
+    - ${app.api-prefix}/identity/public/api/v1/auth/register
+    - ${app.api-prefix}/identity/public/api/v1/auth/account
+    - ${app.api-prefix}/identity/public/api/v1/auth/refresh-token
+    - ${app.api-prefix}/identity/public/api/v1/auth/login-google-mobile
+    - ${app.api-prefix}/identity/public/api/v1/auth/login-google-web
+    - ${app.api-prefix}/identity/public/api/v1/auth/password/forgot
+    - ${app.api-prefix}/identity/public/api/v1/auth/password/reset
+    - /swagger/**/swagger-ui.html
+    - /api-docs/**
   filter-order:
     security: -2
     authentication: -1
@@ -24,14 +32,22 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:8082"
+              - ${app.host}:8082
+              - ${app.host}:8088
+              - ${app.host}:8090
+              - ${app.host}:8090
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
+              - OPTIONS
             allowedHeaders:
-              - "*"
+              - Authorization
+              - Content-Type
+              - Accept
+              - Origin
+              - X-Requested-With
             exposedHeaders:
               - "Authorization"
             allowCredentials: true
@@ -43,11 +59,26 @@ spring:
           predicates:
             - Path=${app.api-prefix}/identity/public/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=3
         # Notification Service
         - id: notification_service
           uri: ${app.uri.notification-service}
           predicates:
             - Path=${app.api-prefix}/notification/public/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=3
+
+        # Swagger documentation
+        ## Identity service
+        - id: identity-swagger-ui
+          uri: ${app.uri.identity-service}
+          predicates:
+            - Path=/swagger/identity/swagger-ui.html
+          filters:
+            - RewritePath=/swagger/identity/swagger-ui.html, /swagger-ui.html
+        - id: identity-api-docs
+          uri: ${app.uri.identity-service}
+          predicates:
+            - Path=/api-docs/identity
+          filters:
+            - RewritePath=/api-docs/identity, /v3/api-docs
