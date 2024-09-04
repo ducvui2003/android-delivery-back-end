@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sentWelcome(String to) {
-        sent(to, new HashMap<>(), Template.WEL_COME);
+        sent(to, null, Template.WEL_COME);
     }
 
     @Override
@@ -37,15 +37,15 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("code", otp.split(""));
         templateModel.put("email", email);
-        sent(email, templateModel, Template.VERIFY_EMAIL);
+        this.sent(email, templateModel, Template.VERIFY_EMAIL);
     }
 
     @Async
-    public void sent(String to, Map<String, Object> templateModel, Template templateName) {
+    public void sent(String to, Map<String, Object> params, Template templateName) {
         TransactionEmailTemplate transactionEmailTemplate = TransactionEmailTemplate.builder()
                 .receiver(new Receiver[]{Receiver.builder().email(to).build()})
                 .template(templateName.name())
-                .param(templateModel)
+                .params(params)
                 .build();
         httpEmailService.sendEmail(transactionEmailTemplate);
     }

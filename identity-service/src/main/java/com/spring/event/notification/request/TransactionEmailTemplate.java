@@ -20,5 +20,5 @@ public class TransactionEmailTemplate {
     @NotNull
     String template;
     @NotNull
-    Map<String, Object> param;
+    Map<String, Object> params;
 }

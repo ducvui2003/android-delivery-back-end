@@ -22,5 +22,5 @@ public class TransactionEmailTemplate {
     @EnumValid(enumClass = TEMPLATE.class)
     String template;
     @NotNull
-    Map<String, Object> param;
+    Map<String, Object> params;
 }
