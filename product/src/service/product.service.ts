@@ -50,9 +50,9 @@ const convertToModel = (data: any): ProductModel => {
         price: data.price,
         quantity: data.amount,
         description: data.description,
-        category: CategoryService.convertToModel(data.category),
-        options: data.options.map(ProductOptionService.convertToModel),
-        nutritional: data.nutritional.map((item: any) => {
+        category: data.category && CategoryService.convertToModel(data.category),
+        options: data.options && data.options.map(ProductOptionService.convertToModel),
+        nutritional: data.nutritional && data.nutritional.map((item: any) => {
             return {
                 name: item.name,
                 value: item.value,
@@ -61,10 +61,10 @@ const convertToModel = (data: any): ProductModel => {
         })
     }
 
-    if (data.discountInfo) dataFormat.discountInfo = {
+    if (data.discountInfo && data.discountInfo.expired >= new Date()) dataFormat.discountInfo = {
         discount: data.discountInfo.discount,
         expired: data.discountInfo.expired
-    }
+    } as DiscountInfoDocument
 
     return dataFormat
 }

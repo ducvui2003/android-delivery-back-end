@@ -11,7 +11,8 @@ import {UNIT} from "../../model/product.model";
 
 const DiscountCreateValidation: ZodSchema =  z.object({
     discount: z.number({message: "Discount is required"}),
-    expired: z.string({message: "Expired date is required"}).date()
+    expired: z.string({message: "Expired datetime is required"})
+        .datetime({message: "Invalid datetime format. Please add letter 'T' between date and time, add letter 'Z' at the end. Like this: 2024-08-29T12:42:00Z"})
 })
 
 const ProductOptionCreateValidation: ZodSchema = z.string({message: "Product option Id is required"}).array()
@@ -38,10 +39,5 @@ const CreateProduct: ZodSchema = z.object({
 const UpdateImage: ZodSchema = z.object({
     url: z.string({message: "Image URL is required"})
 })
-
-const Page: ZodSchema = z.object({
-    page: z.string({message: "Image URL is required"})
-})
-
 
 export default {CreateProduct, DiscountCreateValidation, UpdateImage}

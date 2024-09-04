@@ -35,7 +35,7 @@ enum UNIT {
 
 type DiscountInfoModel = {
     discount: number;
-    expired: Date
+    expired?: Date
 }
 
 export {ProductModel, NutritionalModel, UNIT, DiscountInfoModel};

@@ -48,7 +48,8 @@ const ProductSchema: Schema = new Schema<ProductModel>({
 ProductSchema.add(RequireInfoSchema.obj)
 
 ProductSchema.pre("find", function (next) {
-    mapping(this);
+    this.populate("category", {strictPopulate: false})
+    this.select('id image name quantity price discountInfo')
     next();
 })
 
