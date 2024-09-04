@@ -2,13 +2,17 @@ server:
   port: 8081
 spring:
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: spring-identity-service
   datasource:
-    url: jdbc:mysql://localhost:3306/delivery
-    username: root
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:delivery}
+    username: ${MYSQL_USER:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,10 +20,10 @@ spring:
   security:
     allowed:
       origins:
-        - ${app.localhost}:8082
-        - ${app.localhost}:8088
-        - ${app.localhost}:8090
-        - ${app.localhost}:8090
+        - ${app.host}:8082
+        - ${app.host}:8088
+        - ${app.host}:8090
+        - ${app.host}:8090
       methods:
         - GET
         - POST
@@ -57,6 +61,7 @@ jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
   access-token-validity-in-seconds: 86400
   refresh-token-validity-in-seconds: 8640000
+
 app:
   whitelist:
     - /api/v1/hello
@@ -78,7 +83,7 @@ app:
       refreshToken: refresh_token
     defaultValue:
       refreshToken: empty
-  localhost: http://localhost
+  host: ${HOST}
   otp:
     length: 6
     expiration: 600000
