@@ -1,15 +1,18 @@
 package com.spring.ratingservice.domain;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Data
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiPaging<T> {
-    private List<T> data;
-    private int current;
-    private int size;
-    private int totalPage;
+    List<T> content;
+    int current;
+    int size;
+    int totalPage;
 }

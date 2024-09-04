@@ -1,21 +1,12 @@
 server:
   port: 8084
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: notification-service
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: notification-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: '*'
+
 service:
   email:
-    api-key: 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
-    base-url: https://api.brevo.com/v3
+    api-key:
+    base-url:

@@ -18,31 +18,35 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestControllerAdvice
 public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
 
-	@Override
-	public boolean supports(
-			@Nullable MethodParameter returnType, @Nullable Class<? extends HttpMessageConverter<?>> converterType) {
-		return true;
-	}
+    @Override
+    public boolean supports(
+            @Nullable MethodParameter returnType, @Nullable Class<? extends HttpMessageConverter<?>> converterType) {
+        return true;
+    }
 
-	@Override
-	public Object beforeBodyWrite(
-			Object body,
-			@Nullable MethodParameter returnType,
-			@Nullable MediaType selectedContentType,
-			@Nullable Class<? extends HttpMessageConverter<?>> selectedConverterType,
-			@Nullable ServerHttpRequest request,
-			@Nullable ServerHttpResponse response) {
-		HttpServletResponse httpServletResponse = ((ServletServerHttpResponse) response).getServletResponse();
-		int statusCode = httpServletResponse.getStatus();
-		// Nếu là lỗi > 400 => return để cho Global Exception quản lý
-		if (statusCode >= 400) return body;
+    @Override
+    public Object beforeBodyWrite(
+            Object body,
+            @Nullable MethodParameter returnType,
+            @Nullable MediaType selectedContentType,
+            @Nullable Class<? extends HttpMessageConverter<?>> selectedConverterType,
+            @Nullable ServerHttpRequest request,
+            @Nullable ServerHttpResponse response) {
 
-		ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
-		String DEFAULT_MESSAGE = "Not message";
-		return ApiResponse.builder()
-				.statusCode(statusCode)
-				.message(message != null ? message.value() : DEFAULT_MESSAGE)
-				.data(body)
-				.build();
-	}
+        String path = request.getURI().getPath();
+        if (path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs")) return body;
+
+        HttpServletResponse httpServletResponse = ((ServletServerHttpResponse) response).getServletResponse();
+        int statusCode = httpServletResponse.getStatus();
+        // Nếu là lỗi > 400 => return để cho Global Exception quản lý
+        if (statusCode >= 400) return body;
+
+        ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+        String DEFAULT_MESSAGE = "Not message";
+        return ApiResponse.builder()
+                .statusCode(statusCode)
+                .message(message != null ? message.value() : DEFAULT_MESSAGE)
+                .data(body)
+                .build();
+    }
 }

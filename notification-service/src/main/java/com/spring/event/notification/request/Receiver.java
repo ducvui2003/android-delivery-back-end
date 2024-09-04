@@ -1,4 +1,4 @@
-package com.spring.notificationservice.model;
+package com.spring.event.notification.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Sender {
-    Long id;
+public class Receiver {
     String email;
     String name;
 }
