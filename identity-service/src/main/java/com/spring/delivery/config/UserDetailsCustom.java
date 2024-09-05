@@ -1,22 +1,20 @@
 package com.spring.delivery.config;
 
-import static com.spring.delivery.util.enums.RoleEnum.ROLE_USER;
-
-import java.util.Collections;
-
+import com.spring.delivery.model.User;
+import com.spring.delivery.service.authentication.AuthenticationService;
+import com.spring.delivery.util.exception.AppErrorCode;
+import com.spring.delivery.util.exception.AppException;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.spring.delivery.model.User;
-import com.spring.delivery.service.authentication.AuthenticationService;
-import com.spring.delivery.util.exception.AppErrorCode;
-import com.spring.delivery.util.exception.AppException;
+import java.util.Collections;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import static com.spring.delivery.util.enums.RoleEnum.ROLE_USER;
 
 @Component("userDetailsService")
 @AllArgsConstructor
@@ -28,7 +26,6 @@ public class UserDetailsCustom implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) {
 		User user = authenticationService.getUserByPhoneNumber(username);
 		if (user == null) throw new AppException(AppErrorCode.USER_NOT_FOUND);
-		if (!user.isVerified()) throw new AppException(AppErrorCode.NOT_VERIFIED);
 		return new org.springframework.security.core.userdetails.User(
 				user.getPhoneNumber(),
 				user.getPassword(),
