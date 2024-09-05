@@ -12,6 +12,7 @@ import {DiscountInfoDocument, ProductDocument} from "../document/product.documen
 import CategoryService from "./category.service";
 import ProductOptionService from "./productOption.service";
 import AppError from "../util/error/AppError";
+import ApiPagingType from "../type/apiPaging.type";
 
 
 const getById = async (id: string) => {
@@ -22,7 +23,10 @@ const getById = async (id: string) => {
 
 const getAll = async (page: number) => {
     const data = await ProductRepository.findAll(page > 0 ? page : 1)
-    return Mapper.convertArray<ProductModel>(data, convertToModel)
+    return {
+        ...data,
+        content: Mapper.convertArray<ProductModel>(data.content, convertToModel)
+    } as ApiPagingType<ProductModel>
 }
 
 const create = async (product: ProductDocument) => {
@@ -77,7 +81,10 @@ const updateUrlImage = async (id: string, url: string) => {
 
 const getByCategory = async (id: string, page: number) => {
     const data = await ProductRepository.findByCategory(id, page > 0 ? page : 1)
-    return Mapper.convertArray<ProductModel>(data, convertToModel)
+    return {
+        ...data,
+        content: Mapper.convertArray<ProductModel>(data.content, convertToModel)
+    } as ApiPagingType<ProductModel>
 }
 
 

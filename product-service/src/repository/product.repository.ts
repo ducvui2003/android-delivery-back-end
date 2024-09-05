@@ -8,6 +8,7 @@
 import mongoose from "mongoose";
 import ProductSchema from "../schema/product.schema";
 import {DiscountInfoDocument, ProductDocument} from "../document/product.document";
+import ApiPagingType from "../type/apiPaging.type";
 
 const limit = Number.parseInt(process.env.LIMIT_GET ?? "0");
 
@@ -23,8 +24,17 @@ const findById = async (id: string): Promise<ProductDocument | null> => {
         .exec();
 }
 
-const findAll = (page: number): Promise<ProductDocument[]> => {
-    return ProductCollection.find({}).skip((page - 1) * limit).limit(limit).exec();
+const findAll = async (page: number): Promise<ApiPagingType<ProductDocument>> => {
+    const promiseContent = ProductCollection.find({}).skip((page - 1) * limit).limit(limit).exec();
+    const promiseTotalDocument = ProductCollection.find({}).countDocuments().exec();
+    return Promise.all([promiseContent, promiseTotalDocument]).then(([content, totalDocument]) => {
+        return {
+            content: content,
+            current: page,
+            size: content.length,
+            totalPage: Math.ceil(totalDocument / limit)
+        } as ApiPagingType<ProductDocument>
+    });
 }
 
 const removeDiscount = async (id: string): Promise<ProductDocument | null> => {
@@ -44,11 +54,20 @@ const updateUrlImage = async (id: string, url: string): Promise<boolean> => {
     return data.acknowledged;
 }
 
-const findByCategory = async (id: string, page: number): Promise<ProductDocument[]> => {
-    return await ProductCollection.find({category: id})
+const findByCategory = async (id: string, page: number): Promise<ApiPagingType<ProductDocument>> => {
+    const promiseContent = ProductCollection.find({category: id})
         .skip((page - 1) * limit)
         .limit(limit)
         .exec();
+    const promiseTotalDocument = ProductCollection.find({category: id}).countDocuments().exec();
+    return Promise.all([promiseContent, promiseTotalDocument]).then(([content, totalDocument]) => {
+        return {
+            content: content,
+            current: page,
+            size: content.length,
+            totalPage: Math.ceil(totalDocument / limit)
+        } as ApiPagingType<ProductDocument>
+    });
 }
 
 
