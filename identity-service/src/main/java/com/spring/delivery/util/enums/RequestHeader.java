@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum RequestHeader {
-    PHONE_NUMBER("phoneNumber"),
+	EMAIL("phoneNumber");
 
-    EMAIL("email");
-
-    private String name;
+	private String name;
 }

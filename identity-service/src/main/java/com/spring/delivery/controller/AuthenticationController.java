@@ -17,6 +17,7 @@ import com.spring.delivery.mapper.UserMapper;
 import com.spring.delivery.model.User;
 import com.spring.delivery.service.authentication.AuthenticationService;
 import com.spring.delivery.service.authentication.GoogleAuthService;
+import com.spring.delivery.service.authentication.VerifyService;
 import com.spring.delivery.service.token.TokenService;
 import com.spring.delivery.util.MyPhoneNumberUtil;
 import com.spring.delivery.util.SecurityUtil;
@@ -40,6 +41,7 @@ public class AuthenticationController {
 	UserMapper userMapper = UserMapper.INSTANCE;
 	CookieProperties cookieProperties;
 	AuthenticationService authenticationService;
+	VerifyService verifyService;
 	AuthenticationManagerBuilder authenticationManagerBuilder;
 	SecurityUtil securityUtil;
 	TokenService tokenService;
@@ -154,6 +156,20 @@ public class AuthenticationController {
 	public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleWebByAccessToken request) {
 		UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAccessToken(request.accessToken());
 		return login(profileUserGoogle.email());
+	}
+
+	@ApiMessage("Verify user")
+	@PostMapping("/verify")
+	public ResponseEntity<Void> verifyUser(@RequestHeader("email") String email, @RequestBody RequestVerify request) {
+		verifyService.verifyOtp(email, request.otp());
+		return ResponseEntity.ok().build();
+	}
+
+	@ApiMessage("Resend OTP Verify")
+	@PostMapping("/verify-resent")
+	public ResponseEntity<Void> resendOtp(@RequestHeader("email") String email) {
+		verifyService.sendOtp(email);
+		return ResponseEntity.ok().build();
 	}
 
 	private ResponseEntity<ResponseAuthentication> login(String phoneNumber) {

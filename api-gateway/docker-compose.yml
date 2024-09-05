@@ -1,9 +1,0 @@
-version: '3.7'
-
-services:
-  redis:
-    image: docker.io/redis:7.4.0-alpine
-    container_name: redis-container
-    restart: always
-    ports:
-      - 6379:6379
