@@ -5,7 +5,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.spring.delivery.repository.UserRepository;
 import com.spring.delivery.service.redis.RedisService;
-import com.spring.delivery.util.RedisUtil;
+import com.spring.delivery.util.RedisKeyUtil;
 import com.spring.delivery.util.enums.RedisNameSpace;
 import com.spring.delivery.util.enums.RequestHeader;
 import com.spring.delivery.util.exception.AppErrorCode;
@@ -29,8 +29,8 @@ public class LimitVerifyInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler) {
-		String email = request.getHeader(RequestHeader.PHONE_NUMBER.getName());
-		String otpKey = RedisUtil.generateKey(RedisNameSpace.OTP_VERIFY_EMAIL, email);
+		String email = request.getHeader(RequestHeader.EMAIL.getName());
+		String otpKey = RedisKeyUtil.generateKey(RedisNameSpace.OTP_VERIFY_EMAIL, email);
 
 		// TH: Chưa đăng ký mà xác thực OTP
 		if (!redisService.hasKey(otpKey) || !userRepository.existsByEmail(email))

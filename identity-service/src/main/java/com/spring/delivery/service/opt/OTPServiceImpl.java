@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.spring.delivery.service.redis.RedisService;
-import com.spring.delivery.util.RedisUtil;
+import com.spring.delivery.util.RedisKeyUtil;
 import com.spring.delivery.util.enums.RedisNameSpace;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
@@ -56,8 +56,8 @@ public class OTPServiceImpl implements OTPService {
 
 
 	public void verifyOTP(RedisNameSpace nameSpace, String email, String otp) {
-		String otpKey = RedisUtil.generateKey(nameSpace, email);
-		String verifyCounterKey = RedisUtil.generateKey(nameSpace, RedisNameSpace.VERIFY_COUNTER.getName(), email);
+		String otpKey = RedisKeyUtil.generateKey(nameSpace, email);
+		String verifyCounterKey = RedisKeyUtil.generateKey(nameSpace, RedisNameSpace.VERIFY_COUNTER.getName(), email);
 
 		Optional<String> otpOptional = redisService.get(otpKey);
 		Optional<String> verifyCounterOptional = redisService.get(verifyCounterKey);
@@ -74,7 +74,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new AppException(AppErrorCode.OTP_NOT_MATCH);
 		}
 
-		String resendCounterKey = RedisUtil.generateKey(nameSpace, RedisNameSpace.RESEND_COUNTER.getName(), email);
+		String resendCounterKey = RedisKeyUtil.generateKey(nameSpace, RedisNameSpace.RESEND_COUNTER.getName(), email);
 		// Xóa OTP và số lần nhập OTP trong redis
 		redisService.delete(otpKey);
 		redisService.delete(verifyCounterKey);
@@ -84,9 +84,9 @@ public class OTPServiceImpl implements OTPService {
 	@Override
 	public String createOPT(RedisNameSpace nameSpace, String email) {
 		String code = charOTPGenerator.generateOTP(length);
-		String optKey = RedisUtil.generateKey(nameSpace, email);
-		String verifyCounterKey = RedisUtil.generateKey(nameSpace, RedisNameSpace.VERIFY_COUNTER.getName(), email);
-		String resendOptCounterKey = RedisUtil.generateKey(nameSpace, RedisNameSpace.RESEND_COUNTER.getName(), email);
+		String optKey = RedisKeyUtil.generateKey(nameSpace, email);
+		String verifyCounterKey = RedisKeyUtil.generateKey(nameSpace, RedisNameSpace.VERIFY_COUNTER.getName(), email);
+		String resendOptCounterKey = RedisKeyUtil.generateKey(nameSpace, RedisNameSpace.RESEND_COUNTER.getName(), email);
 		Optional<String> resendCouterOptional = redisService.get(resendOptCounterKey);
 		if (redisService.hasKey(optKey) && resendCouterOptional.isPresent()) {
 			int counter = Integer.parseInt(resendCouterOptional.get());

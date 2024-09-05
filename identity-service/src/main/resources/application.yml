@@ -2,17 +2,13 @@ server:
   port: 8081
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: dev
   application:
     name: spring-identity-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:delivery}
-    username: ${MYSQL_USER:root}
+    url: jdbc:mysql://localhost:3306/delivery
+    username: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,10 +16,10 @@ spring:
   security:
     allowed:
       origins:
-        - ${app.host}:8082
-        - ${app.host}:8088
-        - ${app.host}:8090
-        - ${app.host}:8090
+        - ${app.localhost}:8082
+        - ${app.localhost}:8088
+        - ${app.localhost}:8090
+        - ${app.localhost}:8090
       methods:
         - GET
         - POST
@@ -45,33 +41,44 @@ spring:
             scope:
               - email
               - profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ducvui2003@gmail.com
+    password: unbqvgwxqsflxyfo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
   access-token-validity-in-seconds: 86400
   refresh-token-validity-in-seconds: 8640000
-
 app:
   whitelist:
+    - /api/v1/hello
     - /api/v1/auth/login
+    - /api/v1/auth/refresh-token
     - /api/v1/auth/check-before-register
     - /api/v1/auth/register
-    - /api/v1/auth/account
-    - /api/v1/auth/refresh-token
     - /api/v1/auth/login-google-mobile
     - /api/v1/auth/login-google-web
+    - /api/v1/auth/response-login-google-web
+    - /api/v1/auth/facebook
+    - /api/v1/auth/verify
+    - /api/v1/auth/verify-resent
     - /api/v1/auth/password/forgot
     - /api/v1/auth/password/reset
-    - /swagger-ui.html
-    - /v3/api-docs
-    - /v3/api-docs/**
-    - /swagger-ui/**
+    - /api/v1/auth/password/change-password
   cookie:
     key:
       refreshToken: refresh_token
     defaultValue:
       refreshToken: empty
-  host: ${HOST}
+  localhost: http://localhost
   otp:
     length: 6
     expiration: 600000
