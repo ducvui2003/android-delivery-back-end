@@ -1,37 +1,42 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+pids
+logs
+results
+tmp
 
-### IntelliJ IDEA ###
+# Build
+public/css/main.css
+
+# Coverage reports
+coverage
+
+# API keys and secrets
+.env.dev
+.env
+
+# Dependency directory
+node_modules
+bower_components
+
+# Editors
 .idea
-*.iws
 *.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# OS metadata
+.DS_Store
+Thumbs.db
 
-### VS Code ###
-.vscode/
+# Ignore built ts files
+dist/**/*
+
+# ignore yarn.lock
+yarn.lock
