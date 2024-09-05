@@ -16,19 +16,18 @@ import lombok.experimental.FieldDefaults;
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebClientConfig {
-	@Value("${app.uri.identity-service}")
-	String identityServiceUri;
+    @Value("${app.uri.identity-service}")
+    String identityServiceUri;
 
-	@Bean
-	public WebClient webClientIdentityService() {
-		return WebClient.builder().baseUrl(identityServiceUri).build();
-	}
+    @Bean
+    public WebClient webClientIdentityService() {
+        return WebClient.builder().baseUrl(identityServiceUri).build();
+    }
 
-	@Bean
-	IdentityClient identityClient(@Qualifier("webClientIdentityService") WebClient webClientIdentityService) {
-		HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(
-						WebClientAdapter.create(webClientIdentityService))
-				.build();
-		return httpServiceProxyFactory.createClient(IdentityClient.class);
-	}
+    @Bean
+    IdentityClient identityClient(@Qualifier("webClientIdentityService") WebClient webClientIdentityService) {
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(
+                WebClientAdapter.create(webClientIdentityService)).build();
+        return httpServiceProxyFactory.createClient(IdentityClient.class);
+    }
 }

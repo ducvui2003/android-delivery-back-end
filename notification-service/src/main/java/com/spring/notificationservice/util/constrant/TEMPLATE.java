@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 public enum TEMPLATE {
-    VERIFY_EMAIL(1),
-    RESET_PASSWORD(2),
-    ;
+    RESET_PASSWORD(1),
+    WELCOME(6);
 
     private final Integer id;
 }

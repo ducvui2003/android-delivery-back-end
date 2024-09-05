@@ -1,7 +1,7 @@
 package com.spring.notificationservice.mapper;
 
-import com.spring.notificationservice.domain.request.RequestTransactionEmail;
-import com.spring.notificationservice.domain.request.RequestTransactionEmailTemplate;
+import com.spring.event.notification.request.TransactionEmail;
+import com.spring.event.notification.request.TransactionEmailTemplate;
 import com.spring.notificationservice.model.Email;
 import com.spring.notificationservice.util.constrant.TEMPLATE;
 import org.mapstruct.Mapper;
@@ -14,12 +14,15 @@ public interface EmailMapper {
     EmailMapper INSTANCE = Mappers.getMapper(EmailMapper.class);
 
     @Mapping(target = "templateId", source = "template", qualifiedByName = "mapTemplateToTemplateId")
-    public Email toEmail(RequestTransactionEmailTemplate transactionEmailTemplate);
+    @Mapping(target = "textContent", ignore = true)
+    public Email toEmail(TransactionEmailTemplate transactionEmailTemplate);
 
-    public Email toEmail(RequestTransactionEmail transactionEmail);
+    @Mapping(target = "templateId", ignore = true)
+    @Mapping(target = "params", ignore = true)
+    public Email toEmail(TransactionEmail transactionEmail);
 
     @Named("mapTemplateToTemplateId")
-    default Integer mapTemplateToTemplateId(TEMPLATE template) {
-        return template != null ? template.getId() : null;
+    default Integer mapTemplateToTemplateId(String template) {
+        return template != null ? TEMPLATE.valueOf(template).getId() : null;
     }
 }

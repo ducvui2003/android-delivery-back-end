@@ -1,0 +1,20 @@
+server:
+  port: 8086
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: product-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:delivery_rating}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123}
+    driver-class-name: com.mysql.jdbc.Driver
+
+app:
+  service:
+
