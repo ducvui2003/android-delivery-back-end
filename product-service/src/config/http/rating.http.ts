@@ -6,15 +6,16 @@
  * User: ducvui2003
  **/
 import axios, {AxiosInstance, AxiosResponse, HttpStatusCode, InternalAxiosRequestConfig} from "axios";
+import envConfig from "../environment";
 
-const API_RATING: AxiosInstance = axios.create({
-    baseURL: process.env.PROTOCOL + '://' + process.env.HOST + ':' + process.env.API_PORT + '/api/v1/rating',
+const HTTP_RATING_INSTANCE: AxiosInstance = axios.create({
+    baseURL: `${envConfig.URL_RATING_SERVICE}/api/v1`,
     headers: {
         "Access-Control-Allow-Origin": "*",
     },
 })
 
-API_RATING.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+HTTP_RATING_INSTANCE.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     try {
         return config;
     } catch (error) {
@@ -24,7 +25,7 @@ API_RATING.interceptors.request.use(async (config: InternalAxiosRequestConfig) =
     }
 });
 
-API_RATING.interceptors.response.use(
+HTTP_RATING_INSTANCE.interceptors.response.use(
     (response: AxiosResponse) => {
         switch (response.data.statusCode) {
             case HttpStatusCode.Ok:
@@ -37,7 +38,7 @@ API_RATING.interceptors.response.use(
                 break;
         }
 
-        if(response.data.statusCode > 400) throw new Error(response.data.message);
+        if (response.data.statusCode > 400) throw new Error(response.data.message);
     },
     error => {
         //Network
@@ -59,4 +60,4 @@ export interface ApiResponse<T> {
     data: T;
 }
 
-export default API_RATING;
+export default HTTP_RATING_INSTANCE;

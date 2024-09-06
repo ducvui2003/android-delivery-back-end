@@ -21,6 +21,7 @@ const envConfig = {
     MONGODB_URI: process.env.MONGODB_URI as string,
     DATABASE: process.env.DATABASE,
     NODE_ENV: process.env.NODE_ENV,
+    URL_RATING_SERVICE: process.env.URL_RATING_SERVICE,
 }
 
 export function isDevelopment(): boolean {

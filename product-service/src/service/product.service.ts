@@ -13,12 +13,19 @@ import CategoryService from "./category.service";
 import ProductOptionService from "./productOption.service";
 import AppError from "../util/error/AppError";
 import ApiPagingType from "../type/apiPaging.type";
+import RatingService from "./http/rating.service";
 
 
 const getById = async (id: string) => {
     const data = await ProductRepository.findById(id)
     if (!data) throw AppError.NOT_FOUND
-    return Mapper.convert<ProductModel>(data, convertToModel)
+
+    const rating = await RatingService.getRatingOverall(id);
+
+    const response = Mapper.convert<ProductModel>(data, convertToModel)
+    response.rating = rating;
+
+    return response
 }
 
 const getAll = async (page: number) => {
