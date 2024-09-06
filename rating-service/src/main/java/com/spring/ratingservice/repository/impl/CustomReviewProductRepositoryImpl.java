@@ -17,10 +17,10 @@ public class CustomReviewProductRepositoryImpl implements CustomReviewProductRep
     public Optional<EnumMap<Rating, Long>> findRatingByProductId(String productId) {
         EnumMap<Rating, Long> ratingMap = new EnumMap<>(Rating.class);
         String jpql = """
-                   SELECT review.productId, rating,  COUNT(review.rating)
+                   SELECT review.productId, rating, COUNT(review.rating)
                     FROM ReviewProduct review
                     WHERE review.productId = :productId
-                    GROUP BY review.rating
+                    GROUP BY review.rating, review.productId
                 """;
 
         List<Object[]> results = entityManager.createQuery(jpql).setParameter("productId", productId).getResultList();
@@ -41,10 +41,10 @@ public class CustomReviewProductRepositoryImpl implements CustomReviewProductRep
     public Map<String, EnumMap<Rating, Long>> findRatingByProductIds(Set<String> productIds) {
         Map<String, EnumMap<Rating, Long>> productRatingMap = new HashMap<>();
         String jpql = """
-                    SELECT review.productId, rating,  COUNT(review.rating)
+                    SELECT review.productId, rating, COUNT(review.rating)
                     FROM ReviewProduct review
                     WHERE review.productId IN :productIds
-                    GROUP BY review.rating
+                    GROUP BY review.rating, review.productId
                 """;
 
         List<Object[]> results = entityManager.createQuery(jpql).setParameter("productIds", productIds).getResultList();

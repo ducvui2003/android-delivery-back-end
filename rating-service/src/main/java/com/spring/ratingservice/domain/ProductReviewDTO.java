@@ -1,9 +1,9 @@
 package com.spring.ratingservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
 import java.util.Map;
 
 @Builder
@@ -11,7 +11,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductRatingDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProductReviewDTO {
     String productId;
     long totalReview;
     double averageRating;

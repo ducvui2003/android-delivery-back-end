@@ -14,7 +14,6 @@ spring:
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:123}
     driver-class-name: com.mysql.jdbc.Driver
-
 app:
   service:
 

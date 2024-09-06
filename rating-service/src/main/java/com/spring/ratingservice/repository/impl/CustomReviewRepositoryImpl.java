@@ -1,6 +1,6 @@
 package com.spring.ratingservice.repository.impl;
 
-import com.spring.ratingservice.domain.ProductRatingDTO;
+import com.spring.ratingservice.domain.ProductReviewDTO;
 import com.spring.ratingservice.repository.CustomReviewRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,7 +17,7 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
     private EntityManager entityManager;
 
     @Override
-    public Optional<ProductRatingDTO> findRatingByProductId(Long productId) {
+    public Optional<ProductReviewDTO> findRatingByProductId(String productId) {
         String jpql = """
                     SELECT review.productId AS productId, COUNT(review.productId) AS totalReview, AVG(review.rating) AS averageRating
                     FROM Review review
@@ -31,16 +31,16 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
             return Optional.empty();
 
         Object[] result = results.getFirst();
-        Long productIdResult = (Long) result[0];
+        String productIdResult = (String) result[0];
         Long totalReview = (Long) result[1];
         Double averageRating = (Double) result[2];
 
-        return Optional.of(new ProductRatingDTO(productIdResult, totalReview, averageRating));
+        return Optional.of(ProductReviewDTO.builder().productId(productIdResult).totalReview(totalReview).averageRating(averageRating).build());
     }
 
     @Override
-    public List<ProductRatingDTO> findRatingByProductIds(Set<Long> productIds) {
-        List<ProductRatingDTO> productRatingDTOS = new ArrayList<>();
+    public List<ProductReviewDTO> findRatingByProductIds(Set<String> productIds) {
+        List<ProductReviewDTO> productReviewDTOS = new ArrayList<>();
         String jpql = """
                     SELECT review.productId AS productId, COUNT(review.productId) AS totalReview, AVG(review.rating) AS averageRating
                     FROM Review review
@@ -51,15 +51,15 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
         List<Object[]> results = entityManager.createQuery(jpql).setParameter("productIds", productIds).getResultList();
 
         if (results.isEmpty())
-            return productRatingDTOS;
+            return productReviewDTOS;
 
         for (Object[] result : results) {
-            Long productIdResult = (Long) result[0];
+            String productIdResult = (String) result[0];
             Long totalReview = (Long) result[1];
             Double averageRating = (Double) result[2];
-            productRatingDTOS.add(new ProductRatingDTO(productIdResult, totalReview, averageRating));
+            productReviewDTOS.add(ProductReviewDTO.builder().productId(productIdResult).totalReview(totalReview).averageRating(averageRating).build());
         }
 
-        return productRatingDTOS;
+        return productReviewDTOS;
     }
 }
