@@ -59,7 +59,7 @@ const convertToModel = (data: any): ProductModel => {
         image: data.image,
         name: data.name,
         price: data.price,
-        quantity: data.amount,
+        quantity: data.quantity,
         description: data.description,
         category: data.category && CategoryService.convertToModel(data.category),
         options: data.options && data.options.map(ProductOptionService.convertToModel),
