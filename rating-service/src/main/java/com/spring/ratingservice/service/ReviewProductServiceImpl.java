@@ -32,9 +32,11 @@ public class ReviewProductServiceImpl implements ReviewProductService {
     @Override
     public ProductReviewDTO getRatingOverall(String id) {
         Map<Rating, Long> rating = reviewProductRepository.findRatingByProductId(id).orElse(null);
-        long totalReview = rating == null ? 0 : rating.values().stream().mapToLong(Long::longValue).sum();
-        double averageRating = rating == null ? 0 : rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
-        Map<Integer, Long> ratingDistribution = rating == null ? null : rating.entrySet().stream()
+        if (rating == null)
+            return ProductReviewDTO.builder().productId(id).totalReview(0).averageRating(0).ratingDistribution(null).build();
+        long totalReview = rating.values().stream().mapToLong(Long::longValue).sum();
+        double averageRating = rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
+        Map<Integer, Long> ratingDistribution = rating.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().getValue(), Map.Entry::getValue));
         return ProductReviewDTO.builder()
                 .productId(id)
@@ -48,11 +50,13 @@ public class ReviewProductServiceImpl implements ReviewProductService {
     public List<ProductReviewDTO> getRatingOverall(List<String> ids) {
         List<ProductReviewDTO> result = new ArrayList<>();
         Map<String, EnumMap<Rating, Long>> ratingMap = reviewProductRepository.findRatingByProductIds(new HashSet<>(ids));
+        if (ratingMap.isEmpty())
+            return Collections.emptyList();
         for (String id : ids) {
             Map<Rating, Long> rating = ratingMap.get(id);
             long totalReview = 0;
             double averageRating = 0;
-            if (rating != null){
+            if (rating != null) {
                 totalReview = rating.values().stream().mapToLong(Long::longValue).sum();
                 averageRating = rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
             }
@@ -85,7 +89,7 @@ public class ReviewProductServiceImpl implements ReviewProductService {
                 .map(reviewMapper::toProductRatingDetailDTO)
                 .toList();
         return ApiPaging.<ProductReviewDetailDTO>builder()
-                .current(pageable.getPageNumber())
+                .current(pageable.getPageNumber() + 1)
                 .totalPage(reviewProducts.getTotalPages())
                 .size(pageable.getPageSize())
                 .content(data)

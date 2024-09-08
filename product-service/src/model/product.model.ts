@@ -19,7 +19,7 @@ interface ProductModel {
     category?: CategoryModel;
     options?: (OptionModel | GroupOptionModel)[];
     nutritional?: NutritionalModel[];
-    rating?: RatingModel;
+    rating?: Omit<RatingModel, "productId">;
 }
 
 interface NutritionalModel {
@@ -29,6 +29,7 @@ interface NutritionalModel {
 }
 
 interface RatingModel {
+    productId: string;
     totalReview: number;
     averageRating: number;
     ratingDistribution: object;

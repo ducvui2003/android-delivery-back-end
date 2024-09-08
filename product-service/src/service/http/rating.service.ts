@@ -7,10 +7,25 @@
  **/
 import HTTP_RATING_INSTANCE from "../../config/http/rating.http";
 import {RatingModel} from "../../model/product.model";
+import {AxiosResponse, HttpStatusCode} from "axios";
 
 const getRatingOverall = async (productId: string): Promise<RatingModel> => {
     try {
-        const response = await HTTP_RATING_INSTANCE.get(`/review/product/${productId}`);
+        const response = await HTTP_RATING_INSTANCE.get<any, AxiosResponse<RatingModel>>(`/review/product/${productId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const getRatingOveralls = async (productIds: string[]): Promise<RatingModel[] | undefined> => {
+    try {
+        const response = await HTTP_RATING_INSTANCE.get("/review/product", {
+            params: {
+                "product_id[]": productIds
+            }
+        });
+        if (response.status == HttpStatusCode.NoContent) return undefined;
         return response.data;
     } catch (error) {
         throw error;
@@ -18,5 +33,6 @@ const getRatingOverall = async (productId: string): Promise<RatingModel> => {
 }
 
 export default {
+    getRatingOveralls,
     getRatingOverall
 }

@@ -20,13 +20,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/review/product")
+@RequestMapping("/api/v1/review")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReviewProductController {
     ReviewProductService reviewProductService;
 
-    @GetMapping("/{product_id}")
+    @GetMapping("/product/{product_id}")
     @ApiMessage("Review overall for a product")
     public ResponseEntity<ProductReviewDTO> getRating(@PathVariable("product_id") String productId) {
         ProductReviewDTO productReviewDTO = reviewProductService.getRatingOverall(productId);
@@ -34,15 +34,17 @@ public class ReviewProductController {
         return ResponseEntity.ok().body(productReviewDTO);
     }
 
-    @GetMapping
+    @GetMapping("/product")
     @ApiMessage("Review overall (not analyze) for list product")
-    public ResponseEntity<List<ProductReviewDTO>> getRatings(@RequestParam("product_id") List<String> productIds) {
+    public ResponseEntity<List<ProductReviewDTO>> getRatings(@RequestParam("product_id[]") List<String> productIds) {
         List<ProductReviewDTO> productReviewDTOS = reviewProductService.getRatingOverall(productIds);
         log.info("Ratings for product ids: {} are {}", productIds, productReviewDTOS);
+        if (productReviewDTOS.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         return ResponseEntity.ok().body(productReviewDTOS);
     }
 
-    @GetMapping("/pageable/{product_id}")
+    @GetMapping("/product/pageable/{product_id}")
     @ApiMessage("Pageable review for product")
     public ResponseEntity<ApiPaging<ProductReviewDetailDTO>> getReviewDetail(
             @PathVariable("product_id") String productId,
