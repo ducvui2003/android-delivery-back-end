@@ -17,8 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,38 +32,13 @@ public class ReviewProductServiceImpl implements ReviewProductService {
 
     @Override
     public ProductReviewDTO getRatingOverall(String id) {
-        Map<Rating, Long> rating = reviewProductRepository.findRatingByProductId(id).orElse(null);
-        if (rating == null)
-            return ProductReviewDTO.builder().productId(id).totalReview(0).averageRating(0).ratingDistribution(null).build();
-        long totalReview = rating.values().stream().mapToLong(Long::longValue).sum();
-        double averageRating = rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
-        Map<Integer, Long> ratingDistribution = rating.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().getValue(), Map.Entry::getValue));
-        return ProductReviewDTO.builder()
-                .productId(id)
-                .totalReview(totalReview)
-                .averageRating(averageRating)
-                .ratingDistribution(ratingDistribution)
-                .build();
+        return reviewProductRepository.findProductReviewDTOByProductId(id)
+                .orElse(ProductReviewDTO.builder().productId(id).totalReview(0).averageRating(0).ratingDistribution(null).build());
     }
 
     @Override
     public List<ProductReviewDTO> getRatingOverall(List<String> ids) {
-        List<ProductReviewDTO> result = new ArrayList<>();
-        Map<String, EnumMap<Rating, Long>> ratingMap = reviewProductRepository.findRatingByProductIds(new HashSet<>(ids));
-        if (ratingMap.isEmpty())
-            return Collections.emptyList();
-        for (String id : ids) {
-            Map<Rating, Long> rating = ratingMap.get(id);
-            long totalReview = 0;
-            double averageRating = 0;
-            if (rating != null) {
-                totalReview = rating.values().stream().mapToLong(Long::longValue).sum();
-                averageRating = rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
-            }
-            result.add(ProductReviewDTO.builder().productId(id).totalReview(totalReview).averageRating(averageRating).build());
-        }
-        return result;
+        return reviewProductRepository.findProductReviewDTOByProductIds(new HashSet<>(ids));
     }
 
     @Override

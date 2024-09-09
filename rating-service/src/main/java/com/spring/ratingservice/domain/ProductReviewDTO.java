@@ -1,14 +1,20 @@
 package com.spring.ratingservice.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 @Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -16,5 +22,18 @@ public class ProductReviewDTO {
     String productId;
     long totalReview;
     double averageRating;
-    Map<Integer, Long> ratingDistribution;
+    Map<String, Integer> ratingDistribution;
+
+    public ProductReviewDTO(String productId, long totalReview, double averageRating) {
+        this.productId = productId;
+        this.totalReview = totalReview;
+        this.averageRating = averageRating;
+    }
+
+    public ProductReviewDTO(String productId, long totalReview, double averageRating, String ratingDistribution) throws JsonProcessingException {
+        this.productId = productId;
+        this.totalReview = totalReview;
+        this.averageRating = averageRating;
+        this.ratingDistribution = new ObjectMapper().readValue(ratingDistribution, Map.class);
+    }
 }
