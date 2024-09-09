@@ -19,12 +19,20 @@ interface ProductModel {
     category?: CategoryModel;
     options?: (OptionModel | GroupOptionModel)[];
     nutritional?: NutritionalModel[];
+    rating?: Omit<RatingModel, "productId">;
 }
 
 interface NutritionalModel {
     name: string;
     value: number;
     unit: UNIT;
+}
+
+interface RatingModel {
+    productId: string;
+    totalReview: number;
+    averageRating: number;
+    ratingDistribution: object;
 }
 
 enum UNIT {
@@ -38,4 +46,4 @@ type DiscountInfoModel = {
     expired?: Date
 }
 
-export {ProductModel, NutritionalModel, UNIT, DiscountInfoModel};
+export {ProductModel, NutritionalModel, UNIT, DiscountInfoModel, RatingModel};

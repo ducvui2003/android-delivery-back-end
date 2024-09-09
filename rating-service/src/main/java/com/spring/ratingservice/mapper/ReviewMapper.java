@@ -1,6 +1,6 @@
 package com.spring.ratingservice.mapper;
 
-import com.spring.ratingservice.domain.ProductRatingDetailDTO;
+import com.spring.ratingservice.domain.ProductReviewDetailDTO;
 import com.spring.ratingservice.model.ReviewProduct;
 import com.spring.ratingservice.util.constraint.Rating;
 import org.mapstruct.Mapper;
@@ -13,7 +13,7 @@ public interface ReviewMapper {
     public static final ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
     @Mapping(target = "rating", source = "rating", qualifiedByName = "mapRatingToRatingValue")
-    public ProductRatingDetailDTO toProductRatingDetailDTO(ReviewProduct reviewProduct);
+    public ProductReviewDetailDTO toProductRatingDetailDTO(ReviewProduct reviewProduct);
 
     @Named("mapRatingToRatingValue")
     default Integer mapRatingToRatingValue(Rating rating) {

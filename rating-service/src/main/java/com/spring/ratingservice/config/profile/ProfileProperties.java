@@ -14,7 +14,4 @@ public class ProfileProperties {
 		return "dev".equals(activeProfile);
 	}
 
-	public boolean isProdEnvironment() {
-		return "prod".equals(activeProfile);
-	}
 }

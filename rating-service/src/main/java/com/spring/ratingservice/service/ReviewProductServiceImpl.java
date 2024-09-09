@@ -1,8 +1,8 @@
 package com.spring.ratingservice.service;
 
 import com.spring.ratingservice.domain.ApiPaging;
-import com.spring.ratingservice.domain.ProductRatingDTO;
-import com.spring.ratingservice.domain.ProductRatingDetailDTO;
+import com.spring.ratingservice.domain.ProductReviewDTO;
+import com.spring.ratingservice.domain.ProductReviewDetailDTO;
 import com.spring.ratingservice.mapper.ReviewMapper;
 import com.spring.ratingservice.model.ReviewProduct;
 import com.spring.ratingservice.repository.ReviewProductProductRepository;
@@ -17,8 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,49 +31,23 @@ public class ReviewProductServiceImpl implements ReviewProductService {
     ReviewMapper reviewMapper = ReviewMapper.INSTANCE;
 
     @Override
-    public ProductRatingDTO getRatingOverall(String id) {
-        Map<Rating, Long> rating = reviewProductRepository.findRatingByProductId(id).orElse(null);
-        long totalReview = rating == null ? 0 : rating.values().stream().mapToLong(Long::longValue).sum();
-        double averageRating = rating == null ? 0 : rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
-        Map<Integer, Long> ratingDistribution = rating == null ? null : rating.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().getValue(), Map.Entry::getValue));
-        return ProductRatingDTO.builder()
-                .productId(id)
-                .totalReview(totalReview)
-                .averageRating(averageRating)
-                .ratingDistribution(ratingDistribution)
-                .build();
+    public ProductReviewDTO getRatingOverall(String id) {
+        return reviewProductRepository.findProductReviewDTOByProductId(id)
+                .orElse(ProductReviewDTO.builder().productId(id).totalReview(0).averageRating(0).ratingDistribution(null).build());
     }
 
     @Override
-    public List<ProductRatingDTO> getRatingOverall(List<String> ids) {
-        List<ProductRatingDTO> result = new ArrayList<>();
-        Map<String, EnumMap<Rating, Long>> ratingMap = reviewProductRepository.findRatingByProductIds(new HashSet<>(ids));
-        for (String id : ids) {
-            Map<Rating, Long> rating = ratingMap.get(id);
-            Map<Integer, Long> ratingDistribution;
-            long totalReview = 0;
-            double averageRating = 0;
-            if (rating == null)
-                ratingDistribution = Map.of();
-            else {
-                ratingDistribution = rating.entrySet().stream()
-                        .collect(Collectors.toMap(e -> e.getKey().getValue(), Map.Entry::getValue));
-                totalReview = rating.values().stream().mapToLong(Long::longValue).sum();
-                averageRating = rating.entrySet().stream().mapToDouble(e -> e.getKey().getValue() * e.getValue()).sum() / totalReview;
-            }
-            result.add(ProductRatingDTO.builder().productId(id).totalReview(totalReview).averageRating(averageRating).ratingDistribution(ratingDistribution).build());
-        }
-        return result;
+    public List<ProductReviewDTO> getRatingOverall(List<String> ids) {
+        return reviewProductRepository.findProductReviewDTOByProductIds(new HashSet<>(ids));
     }
 
     @Override
-    public ApiPaging<ProductRatingDetailDTO> getProductRatingDetail(String id, Pageable pageable) {
+    public ApiPaging<ProductReviewDetailDTO> getProductRatingDetail(String id, Pageable pageable) {
         Page<ReviewProduct> reviewProducts = reviewProductRepository.findByProductId(id, pageable);
-        List<ProductRatingDetailDTO> data = reviewProducts.isEmpty() ? Collections.emptyList() : reviewProducts.stream()
+        List<ProductReviewDetailDTO> data = reviewProducts.isEmpty() ? Collections.emptyList() : reviewProducts.stream()
                 .map(reviewMapper::toProductRatingDetailDTO)
                 .toList();
-        return ApiPaging.<ProductRatingDetailDTO>builder()
+        return ApiPaging.<ProductReviewDetailDTO>builder()
                 .current(pageable.getPageNumber())
                 .totalPage(reviewProducts.getTotalPages())
                 .size(pageable.getPageSize())
@@ -81,16 +56,16 @@ public class ReviewProductServiceImpl implements ReviewProductService {
     }
 
     @Override
-    public ApiPaging<ProductRatingDetailDTO> getProductRatingDetail(String id, Rating rating, Pageable pageable) {
+    public ApiPaging<ProductReviewDetailDTO> getProductRatingDetail(String id, Rating rating, Pageable pageable) {
         Specification<ReviewProduct> specs = ReviewProductSpecs.hasRating(rating).and(ReviewProductSpecs.hasProductId(id));
         Page<ReviewProduct> reviewProducts = reviewProductRepository.findAll(specs, pageable);
         if (reviewProducts.isEmpty())
             return null;
-        List<ProductRatingDetailDTO> data = reviewProducts.stream()
+        List<ProductReviewDetailDTO> data = reviewProducts.stream()
                 .map(reviewMapper::toProductRatingDetailDTO)
                 .toList();
-        return ApiPaging.<ProductRatingDetailDTO>builder()
-                .current(pageable.getPageNumber())
+        return ApiPaging.<ProductReviewDetailDTO>builder()
+                .current(pageable.getPageNumber() + 1)
                 .totalPage(reviewProducts.getTotalPages())
                 .size(pageable.getPageSize())
                 .content(data)

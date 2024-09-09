@@ -6,27 +6,47 @@
  * User: ducvui2003
  **/
 import ProductRepository from "../repository/product.repository";
-import {NutritionalModel, ProductModel} from "../model/product.model";
+import {NutritionalModel, ProductModel, RatingModel} from "../model/product.model";
 import Mapper from "../util/mapper";
 import {DiscountInfoDocument, ProductDocument} from "../document/product.document";
 import CategoryService from "./category.service";
 import ProductOptionService from "./productOption.service";
 import AppError from "../util/error/AppError";
 import ApiPagingType from "../type/apiPaging.type";
+import RatingService from "./http/rating.service";
 
 
 const getById = async (id: string) => {
     const data = await ProductRepository.findById(id)
     if (!data) throw AppError.NOT_FOUND
-    return Mapper.convert<ProductModel>(data, convertToModel)
+
+    const rating = await RatingService.getRatingOverall(id);
+
+    const response = Mapper.convert<ProductModel>(data, convertToModel)
+    const {productId, ...ratingCleaned} = rating;
+    response.rating = {...ratingCleaned};
+
+    return response
 }
 
 const getAll = async (page: number) => {
-    const data = await ProductRepository.findAll(page > 0 ? page : 1)
-    return {
+    const data = await ProductRepository.findAll(page > 0 ? page : 1);
+    const ratings: RatingModel[] | undefined = await RatingService.getRatingOveralls(data.content.map((item: any) => item._id));
+    const result = {
         ...data,
         content: Mapper.convertArray<ProductModel>(data.content, convertToModel)
     } as ApiPagingType<ProductModel>
+
+    if (ratings)
+        result.content.forEach((item: ProductModel) => {
+            const rating = ratings.find((rating: RatingModel) => item.id.toString() === rating.productId);
+            if (rating) {
+                const {productId, ...ratingCleaned} = rating;
+                item.rating = ratingCleaned;
+            }
+        });
+
+    return result;
 }
 
 const create = async (product: ProductDocument) => {

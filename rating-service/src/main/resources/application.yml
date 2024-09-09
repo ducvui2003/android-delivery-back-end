@@ -1,5 +1,7 @@
 server:
   port: 8086
+  tomcat:
+    relaxed-query-chars: '|,{,},[,],^'
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
@@ -14,7 +16,6 @@ spring:
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:123}
     driver-class-name: com.mysql.jdbc.Driver
-
 app:
   service:
 
