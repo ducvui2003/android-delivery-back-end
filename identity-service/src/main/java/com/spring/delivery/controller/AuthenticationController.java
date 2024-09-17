@@ -3,6 +3,7 @@ package com.spring.delivery.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -37,128 +38,129 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
-	UserMapper userMapper = UserMapper.INSTANCE;
-	CookieProperties cookieProperties;
-	AuthenticationService authenticationService;
-	AuthenticationManagerBuilder authenticationManagerBuilder;
-	SecurityUtil securityUtil;
-	TokenService tokenService;
-	GoogleAuthService googleAuthService;
+    UserMapper userMapper = UserMapper.INSTANCE;
+    CookieProperties cookieProperties;
+    AuthenticationService authenticationService;
+    AuthenticationManagerBuilder authenticationManagerBuilder;
+    SecurityUtil securityUtil;
+    TokenService tokenService;
+    GoogleAuthService googleAuthService;
 
-	@ApiMessage("Login")
-	@PostMapping("/login")
-	@CrossOrigin
-	public ResponseEntity<ResponseAuthentication> login(@Valid @RequestBody RequestLogin userLogin) {
-		if(!MyPhoneNumberUtil.isPhoneNumberValid(userLogin.region(),userLogin.phoneNumber()))
-			throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
+    @ApiMessage("Login")
+    @PostMapping("/login")
+    public ResponseEntity<ResponseAuthentication> login(@Valid @RequestBody RequestLogin userLogin) {
+        if (!MyPhoneNumberUtil.isPhoneNumberValid(userLogin.region(), userLogin.phoneNumber()))
+            throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
 
-		// Nạp input gồm username và password vào Security
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(),userLogin.phoneNumber()), userLogin.password());
-		// Sử dụng method loadUserDetail đã implement để lấy ra user trong db
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		// Get user đã đăng nhập thành công vào SecurityContextHolder
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Nạp input gồm username và password vào Security
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(), userLogin.phoneNumber()), userLogin.password());
+        // Sử dụng method loadUserDetail đã implement để lấy ra user trong db
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // Get user đã đăng nhập thành công vào SecurityContextHolder
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		return login(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(),userLogin.phoneNumber()));
-	}
+        return login(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(), userLogin.phoneNumber()));
+    }
 
-	@ApiMessage("check info before Register")
-	@PostMapping("/check-before-register")
-	public ResponseEntity<Void> checkBeforeRegister(@Valid @RequestBody RequestCheckBeforeRegister requestCheckBeforeRegister) {
-		if(!MyPhoneNumberUtil.isPhoneNumberValid(requestCheckBeforeRegister.region(),requestCheckBeforeRegister.phoneNumber()))
-			throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
-		authenticationService.checkBeforeRegister(MyPhoneNumberUtil.formatPhoneNumber(requestCheckBeforeRegister.region(),requestCheckBeforeRegister.phoneNumber()), requestCheckBeforeRegister.phoneNumber());
-		return ResponseEntity.ok().build();
-	}
+    @ApiMessage("check info before Register")
+    @PostMapping("/check-before-register")
+    public ResponseEntity<Void> checkBeforeRegister(@Valid @RequestBody RequestCheckBeforeRegister requestCheckBeforeRegister) {
+        if (!MyPhoneNumberUtil.isPhoneNumberValid(requestCheckBeforeRegister.region(), requestCheckBeforeRegister.phoneNumber()))
+            throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
+        authenticationService.checkBeforeRegister(MyPhoneNumberUtil.formatPhoneNumber(requestCheckBeforeRegister.region(), requestCheckBeforeRegister.phoneNumber()), requestCheckBeforeRegister.phoneNumber());
+        return ResponseEntity.ok().build();
+    }
 
-	@ApiMessage("Register")
-	@PostMapping("/register")
-	public ResponseEntity<User> register(@Valid @RequestBody RequestRegister userRegister) {
-		if(!MyPhoneNumberUtil.isPhoneNumberValid(userRegister.getRegion(),userRegister.getPhoneNumber()))
-			throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
-		userRegister.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(userRegister.getRegion(),userRegister.getPhoneNumber()));
-		User user = authenticationService.register(userRegister.getIdToken(), userMapper.toUser(userRegister));
-		return ResponseEntity.status(HttpStatus.CREATED).body(user);
-	}
+    @ApiMessage("Register")
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@Valid @RequestBody RequestRegister userRegister) {
+        if (!MyPhoneNumberUtil.isPhoneNumberValid(userRegister.getRegion(), userRegister.getPhoneNumber()))
+            throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
+        userRegister.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(userRegister.getRegion(), userRegister.getPhoneNumber()));
+        User user = authenticationService.register(userRegister.getIdToken(), userMapper.toUser(userRegister));
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
 
-	// Sử dụng để client lấy lại data người dùng khi F5 trang
-	// (người dùng đã login trước đó và cookie đã set refresh)
-	@ApiMessage("Get info account")
-	@GetMapping("/account")
-	public ResponseEntity<ResponseAuthentication.UserGetAccount> getAccount() {
-		String email = SecurityUtil.getCurrentUserLogin().orElse("");
-		User user = authenticationService.getUserByEmail(email);
-		if (user == null)
-			throw new AppException("Xử lý if else user trong hàm getAccount của AuthenticationController");
+    // Sử dụng để client lấy lại data người dùng khi F5 trang
+    // (người dùng đã login trước đó và cookie đã set refresh)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHIPPER')")
+    @ApiMessage("Get info account")
+    @GetMapping("/account")
+    public ResponseEntity<ResponseAuthentication.UserGetAccount> getAccount() {
+        String email = SecurityUtil.getCurrentUserLogin().orElse("");
+        User user = authenticationService.getUserByEmail(email);
+        if (user == null)
+            throw new AppException("Xử lý if else user trong hàm getAccount của AuthenticationController");
 
-		ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
-		return ResponseEntity.ok().body(new ResponseAuthentication.UserGetAccount(userDTO));
-	}
+        ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+        return ResponseEntity.ok().body(new ResponseAuthentication.UserGetAccount(userDTO));
+    }
 
-	// Sử dụng để lấy lại access token khi hết hạn
-	@ApiMessage("Refresh token")
-	@PostMapping("/refresh-token")
-	public ResponseEntity<ResponseAuthentication> refreshAccessToken(
-			@CookieValue(name = "refresh_token") String refreshToken) {
-		securityUtil.validateRefreshToken(refreshToken);
-		//  Check user by refresh authCode
-		String email =
-				SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-		User user = authenticationService.getUserByEmail(email);
+    // Sử dụng để lấy lại access token khi hết hạn
+    @ApiMessage("Refresh token")
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ResponseAuthentication> refreshAccessToken(
+            @CookieValue(name = "refresh_token") String refreshToken) {
+        securityUtil.validateRefreshToken(refreshToken);
+        //  Check user by refresh authCode
+        String email =
+                SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
+        User user = authenticationService.getUserByEmail(email);
 
-		ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+        ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
 
-		String accessToken = securityUtil.createAccessToken(userDTO);
+        String accessToken = securityUtil.createAccessToken(userDTO);
 
-		tokenService.saveToken(user.getEmail(), accessToken);
+        tokenService.saveToken(user.getEmail(), accessToken);
 
-		ResponseAuthentication responseBody = ResponseAuthentication.builder()
-				.user(userDTO)
-				.accessToken(accessToken)
-				.build();
+        ResponseAuthentication responseBody = ResponseAuthentication.builder()
+                .user(userDTO)
+                .accessToken(accessToken)
+                .build();
 
-		return ResponseEntity.ok().body(responseBody);
-	}
+        return ResponseEntity.ok().body(responseBody);
+    }
 
-	@ApiMessage("Logout")
-	@PostMapping("/logout")
-	public ResponseEntity<Void> logout(
-			@CookieValue(
-							name = "${app.cookie.key.refreshToken}",
-							defaultValue = "${app.cookie.defaultValue.refreshToken}")
-					String refreshToken,
-			HttpServletRequest request)
-			throws AppException {
-		if (refreshToken.equals(cookieProperties.getRefreshTokenDefault()))
-			throw new AppException(AppErrorCode.REFRESH_TOKEN_NOT_FOUND);
-		String email =
-				SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-		String accessToken = SecurityUtil.getAccessTokenFromRequest(request)
-				.orElseThrow(() -> new AppException(AppErrorCode.ACCESS_TOKEN_NOT_FOUND));
-		this.authenticationService.logout(email, accessToken, refreshToken);
-		SecurityContextHolder.getContext().setAuthentication(null);
-		ResponseCookie cookie = securityUtil.clearRefreshToken();
-		return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(null);
-	}
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHIPPER')")
+    @ApiMessage("Logout")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @CookieValue(
+                    name = "${app.cookie.key.refreshToken}",
+                    defaultValue = "${app.cookie.defaultValue.refreshToken}")
+            String refreshToken,
+            HttpServletRequest request)
+            throws AppException {
+        if (refreshToken.equals(cookieProperties.getRefreshTokenDefault()))
+            throw new AppException(AppErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        String email =
+                SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
+        String accessToken = SecurityUtil.getAccessTokenFromRequest(request)
+                .orElseThrow(() -> new AppException(AppErrorCode.ACCESS_TOKEN_NOT_FOUND));
+        this.authenticationService.logout(email, accessToken, refreshToken);
+        SecurityContextHolder.getContext().setAuthentication(null);
+        ResponseCookie cookie = securityUtil.clearRefreshToken();
+        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(null);
+    }
 
-	@ApiMessage("Login google")
-	@PostMapping("/login-google-mobile")
-	public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleMobileByAuthCode request) {
-		UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAuthCode(request.authCode());
-		log.info("profileUserGoogle: {}", profileUserGoogle);
-		return login(profileUserGoogle.email());
-	}
+    @ApiMessage("Login google")
+    @PostMapping("/login-google-mobile")
+    public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleMobileByAuthCode request) {
+        UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAuthCode(request.authCode());
+        log.info("profileUserGoogle: {}", profileUserGoogle);
+        return login(profileUserGoogle.email());
+    }
 
-	@ApiMessage("Login google web")
-	@PostMapping("/login-google-web")
-	public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleWebByAccessToken request) {
-		UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAccessToken(request.accessToken());
-		return login(profileUserGoogle.email());
-	}
+    @ApiMessage("Login google web")
+    @PostMapping("/login-google-web")
+    public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleWebByAccessToken request) {
+        UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAccessToken(request.accessToken());
+        return login(profileUserGoogle.email());
+    }
 
-	private ResponseEntity<ResponseAuthentication> login(String phoneNumber) {
-		ResponseAuthentication response = authenticationService.loginByPhoneNumber(phoneNumber);
-		ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());
-		return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(response);
-	}
+    private ResponseEntity<ResponseAuthentication> login(String phoneNumber) {
+        ResponseAuthentication response = authenticationService.loginByPhoneNumber(phoneNumber);
+        ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());
+        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(response);
+    }
 }

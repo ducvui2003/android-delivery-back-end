@@ -1,6 +1,7 @@
 package com.spring.delivery.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,26 +9,33 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
+@Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-	String phoneNumber;
+    String phoneNumber;
 
-	String email;
+    String email;
 
-	@JsonIgnore
-	String password;
+    @JsonIgnore
+    String password;
 
-	String fullName;
+    String fullName;
 
-	boolean verified;
+    boolean verified;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
 }

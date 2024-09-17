@@ -20,7 +20,7 @@ import com.spring.delivery.util.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class RoleUserConfig {

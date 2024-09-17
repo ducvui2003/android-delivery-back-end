@@ -1,0 +1,28 @@
+# notification_service
+
+###
+# @name send mail
+POST http://localhost:8084/api/v1/email/template
+Content-Type: application/json
+
+{
+  "sender": {
+    "email": "ducvui2003@gmail.com"
+  },
+  "params": {
+    "name": "ducvui2003",
+    "code": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "template": "VERIFY_EMAIL",
+  "to": [
+    {
+      "email": "lamdepzai@yopmail.com",
+      "name": "Jimmy"
+    }
+  ]
+}

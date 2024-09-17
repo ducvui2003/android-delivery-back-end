@@ -1,0 +1,10 @@
+# file_service
+
+###
+# @name upload a file
+POST http://localhost:8087/api/v1/file/product/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+###
+# @name get detail file
+GET http://localhost:8087/api/v1/file/66d4195f6b05267dffa281f0

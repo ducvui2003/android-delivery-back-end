@@ -71,7 +71,7 @@ app:
       refreshToken: refresh_token
     defaultValue:
       refreshToken: empty
-  host: ${HOST}
+  host: ${HOST:localhost}
   otp:
     length: 6
     expiration: 600000
