@@ -2,6 +2,7 @@ package com.spring.delivery.util;
 
 import com.spring.delivery.domain.response.UserInfoGoogle;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @AllArgsConstructor
+@Getter
 public class CustomOAuth2User implements OAuth2User {
     private final UserInfoGoogle userInfoGoogle;
 

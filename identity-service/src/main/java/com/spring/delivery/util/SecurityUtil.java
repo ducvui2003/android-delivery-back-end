@@ -109,6 +109,7 @@ public class SecurityUtil {
             case UserDetails springSecurityUser -> springSecurityUser.getUsername();
             case Jwt jwt -> jwt.getSubject();
             case String s -> s;
+            case CustomOAuth2User customOAuth2User -> customOAuth2User.getAttribute("email");
             default -> null;
         };
     }

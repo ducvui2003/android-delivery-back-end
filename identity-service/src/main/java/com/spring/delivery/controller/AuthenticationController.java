@@ -144,7 +144,9 @@ public class AuthenticationController {
     public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleMobileByAuthCode request) {
         UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAuthCode(request.authCode());
         log.info("profileUserGoogle: {}", profileUserGoogle);
+//        Append to SecurityContextHolder
         OAuth2User authenticationToken = new CustomOAuth2User(profileUserGoogle);
+        authenticationService.createUserOAuth2(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticationToken, null, Collections.emptyList()));
         ResponseAuthentication response = authenticationService.loginByEmail();
         ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());

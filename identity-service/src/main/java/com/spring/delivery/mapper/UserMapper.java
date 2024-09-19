@@ -1,6 +1,7 @@
 package com.spring.delivery.mapper;
 
 import com.spring.delivery.domain.response.ResponseAuthentication;
+import com.spring.delivery.model.JwtPayload;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -15,5 +16,7 @@ public interface UserMapper {
     User toUser(RequestRegister userRequest);
 
     ResponseAuthentication.UserDTO toUserDTO(User user);
+
+    JwtPayload.UserPayload toUserPayload(User user);
 
 }

@@ -2,8 +2,13 @@ package com.spring.delivery.service.authentication;
 
 import com.spring.delivery.model.JwtPayload;
 import com.spring.delivery.model.Permission;
+import com.spring.delivery.model.Role;
+import com.spring.delivery.repository.RoleRepository;
+import com.spring.delivery.util.enums.RoleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     TokenService tokenService;
     UserMapper userMapper = UserMapper.INSTANCE;
     SecurityUtil securityUtil;
+    RoleRepository roleRepository;
 
     @Override
     public User register(String idToken, User user) {
@@ -60,10 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
 
-        JwtPayload jwtPayload = JwtPayload.builder()
-                .email(user.getEmail())
-                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
-                .build();
+        JwtPayload jwtPayload = getJwtPayload(user);
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
 
@@ -119,9 +122,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = this.getUserByPhoneNumber(phoneNumber);
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+        JwtPayload jwtPayload = getJwtPayload(user);
 
+        String accessToken = securityUtil.createAccessToken(jwtPayload);
+
+        String refreshToken = securityUtil.createRefreshToken(jwtPayload);
+
+        return ResponseAuthentication.builder()
+                .user(userDTO)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Override
+    public ResponseAuthentication loginByEmail() {
+//        Không cần case TH user không tồn tại vì đã được nạp vào context
+        String email = SecurityUtil.getCurrentUserLogin().get();
+        log.info("email {}", email);
+
+        User user = this.getUserByEmail(email);
+
+        ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+        JwtPayload.UserPayload userPayload = userMapper.toUserPayload(user);
         JwtPayload jwtPayload = JwtPayload.builder()
                 .email(user.getEmail())
+                .user(userPayload)
+                .role(user.getRole().getName().name())
                 .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
                 .build();
 
@@ -137,28 +164,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseAuthentication loginByEmail() {
-//        Không cần case TH user không tồn tại vì đã được xử lý ở phần loadUserDetail
-        String email = SecurityUtil.getCurrentUserLogin().get();
-        log.info("email {}", email);
+    public void createUserOAuth2(OAuth2User oAuth2User) {
+        String email = oAuth2User.getAttribute("email");
+        if (userRepository.existsByEmail(email)) return;
 
-        User user = this.getUserByEmail(email);
-
-        ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
-
-        JwtPayload jwtPayload = JwtPayload.builder()
-                .email(user.getEmail())
-                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
+        Role roleUser = roleRepository.findByName(RoleEnum.USER);
+        User user = User.builder()
+                .email(email)
+                .fullName(oAuth2User.getAttribute("name"))
+                .verified(true)
+                .role(roleUser)
                 .build();
+        userRepository.save(user);
+    }
 
-        String accessToken = securityUtil.createAccessToken(jwtPayload);
-
-        String refreshToken = securityUtil.createRefreshToken(jwtPayload);
-
-        return ResponseAuthentication.builder()
-                .user(userDTO)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+    private JwtPayload getJwtPayload(User user) {
+        return JwtPayload.builder()
+                .email(user.getEmail())
+                .role(user.getRole().getName().name())
+                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
+                .timeExpiredPlus(1)
                 .build();
     }
 }

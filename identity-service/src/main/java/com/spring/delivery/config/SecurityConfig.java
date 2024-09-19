@@ -53,7 +53,6 @@ public class SecurityConfig {
                         .authenticated())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .oauth2Login(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(Customizer.withDefaults()).authenticationEntryPoint(customAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

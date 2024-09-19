@@ -14,10 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
-
-import static com.spring.delivery.util.enums.RoleEnum.USER;
 
 @Component("userDetailsService")
 @AllArgsConstructor

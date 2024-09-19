@@ -14,6 +14,8 @@ public class JwtPayload {
     List<String> permissions;
     long timeExpiredPlus;
 
+    @Data
+    @Builder
     public static class UserPayload {
         long id;
         String phoneNumber;

@@ -1,6 +1,5 @@
 package com.spring.delivery.model;
 
-import com.spring.delivery.util.enums.HttpMethod;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

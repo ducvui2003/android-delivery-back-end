@@ -11,6 +11,7 @@ import java.util.*;
 
 import com.spring.delivery.model.Permission;
 import com.spring.delivery.repository.PermissionRepository;
+import com.spring.delivery.util.enums.RoleEnum;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,7 +76,7 @@ public class RoleInitData {
 
         // Create roles using the permission map
         Role userRole = Role.builder()
-                .name("USER")
+                .name(RoleEnum.USER)
                 .permissions(new HashSet<>(Arrays.asList(
                         permissionMap.get("USER_CHANGE_INFO"),
                         permissionMap.get("USER_CHANGE_PASSWORD"),
@@ -92,7 +93,7 @@ public class RoleInitData {
                 .build();
 
         Role adminRole = Role.builder()
-                .name("ADMIN")
+                .name(RoleEnum.ADMIN)
                 .permissions(new HashSet<>(Arrays.asList(
                         permissionMap.get("USER_CHANGE_INFO"),
                         permissionMap.get("USER_CHANGE_PASSWORD"),
@@ -106,7 +107,7 @@ public class RoleInitData {
                 .build();
 
         Role shipperRole = Role.builder()
-                .name("SHIPPER")
+                .name(RoleEnum.SHIPPER)
                 .permissions(new HashSet<>(Arrays.asList(
                         permissionMap.get("USER_CHANGE_INFO"),
                         permissionMap.get("USER_CHANGE_PASSWORD"),

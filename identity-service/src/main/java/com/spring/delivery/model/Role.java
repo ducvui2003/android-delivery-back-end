@@ -7,6 +7,7 @@
  **/
 package com.spring.delivery.model;
 
+import com.spring.delivery.util.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +26,8 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String name;
+    @Enumerated(EnumType.STRING)
+    RoleEnum name;
 
     @ManyToMany
     @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
