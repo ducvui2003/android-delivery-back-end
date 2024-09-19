@@ -1,5 +1,12 @@
 package com.spring.delivery.config;
 
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import com.spring.delivery.config.properties.ApplicationProps;
+import com.spring.delivery.config.properties.JwtProperties;
+import com.spring.delivery.util.SecurityUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,27 +18,14 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.spring.delivery.config.properties.ApplicationProps;
-import com.spring.delivery.config.properties.JwtProperties;
-import com.spring.delivery.util.SecurityUtil;
-
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,6 +35,7 @@ public class SecurityConfig {
     JwtProperties jwtProperties;
     CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     ApplicationProps applicationProps;
+    CustomJwtGrantedAuthoritiesConverter customJwtGrantedAuthoritiesConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -79,7 +74,7 @@ public class SecurityConfig {
             try {
                 return jwtDecoder.decode(token);
             } catch (Exception e) {
-                System.out.println(">>> JWT error: " + e.getMessage());
+                log.info(">>> JWT error: {}", e.getMessage());
                 throw e;
             }
         };
@@ -87,13 +82,9 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("permission");
-
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return converter;
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customJwtGrantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
     }
 
 }
