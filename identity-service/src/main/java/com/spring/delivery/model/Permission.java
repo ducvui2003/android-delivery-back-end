@@ -13,14 +13,12 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String path;
-    @Enumerated(EnumType.STRING)
-    HttpMethod httpMethod;
+    Long id;
     String name;
     @ManyToMany(mappedBy = "permissions")
     Set<Role> role;

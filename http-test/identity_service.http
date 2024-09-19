@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "email": "ducvui2003@gmail.com",
-  "password": "123456Duc@."
+  "password": "123456Duc@"
 }
 
 ###
@@ -50,8 +50,8 @@ Content-Type: application/json
 
 {
   "region": "VN",
-  "phoneNumber": "0855354919",
-  "password": "0855354919@Lam"
+  "phoneNumber": "0965809127",
+  "password": "123456Duc@"
 }
 
 ###
@@ -70,9 +70,6 @@ Content-Type: application/json
 ###
 # group: authentication test
 # @name login google on mobile
-//< {%
-    // TODO: you can add here Pre-request handler
-//%}
 POST {{BASE_PATH}}/{{REQUEST_MAPPTING_AUTHENTICATION}}/login-google-mobile
 Content-Type: application/json
 
@@ -83,9 +80,6 @@ Content-Type: application/json
 ###
 # group: authentication test
 # @name login google on web
-//< {%
-    // TODO: you can add here Pre-request handler
-//%}
 POST {{BASE_PATH}}/{{REQUEST_MAPPTING_AUTHENTICATION}}/login-google-web
 Authorization: Bearer {{set_token}}
 Content-Type: application/json
@@ -130,11 +124,3 @@ Content-Type: application/json
   "otp": "103354",
   "password": "1289"
 }
-
-###
-# group: google map
-# @name New Request
-GET https://maps.googleapis.com/maps/api/place/details/json?
-    place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&
-    fields=name%2Crating%2Cformatted_phone_number&
-    key=AIzaSyBhT_kMGNkNJrzr77COPoFr0-Q_zSBtM0A

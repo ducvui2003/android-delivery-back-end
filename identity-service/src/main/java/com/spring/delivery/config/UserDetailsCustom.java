@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static com.spring.delivery.util.enums.RoleEnum.USER;
 
@@ -29,7 +30,8 @@ public class UserDetailsCustom implements UserDetailsService {
         User user = authenticationService.getUserByPhoneNumber(username);
         if (user == null) throw new AppException(AppErrorCode.USER_NOT_FOUND);
 
-        Collection<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + USER.name()));
+        Collection<GrantedAuthority> authorities = user.getRole().getPermissions().stream().map(permission ->
+                new SimpleGrantedAuthority(permission.getName())).collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getPhoneNumber(),

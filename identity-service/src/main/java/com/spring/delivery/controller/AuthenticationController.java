@@ -1,5 +1,29 @@
 package com.spring.delivery.controller;
 
+import com.spring.delivery.config.properties.CookieProperties;
+import com.spring.delivery.domain.request.RequestCheckBeforeRegister;
+import com.spring.delivery.domain.request.RequestLogin;
+import com.spring.delivery.domain.request.RequestLoginGoogleMobileByAuthCode;
+import com.spring.delivery.domain.request.RequestRegister;
+import com.spring.delivery.domain.response.ResponseAuthentication;
+import com.spring.delivery.domain.response.UserInfoGoogle;
+import com.spring.delivery.mapper.UserMapper;
+import com.spring.delivery.model.User;
+import com.spring.delivery.service.authentication.AuthenticationService;
+import com.spring.delivery.service.authentication.GoogleAuthService;
+import com.spring.delivery.util.CustomOAuth2User;
+import com.spring.delivery.util.MyPhoneNumberUtil;
+import com.spring.delivery.util.SecurityUtil;
+import com.spring.delivery.util.anotation.ApiMessage;
+import com.spring.delivery.util.exception.AppErrorCode;
+import com.spring.delivery.util.exception.AppException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -8,29 +32,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.delivery.config.properties.CookieProperties;
-import com.spring.delivery.domain.request.*;
-import com.spring.delivery.domain.response.ResponseAuthentication;
-import com.spring.delivery.domain.response.UserInfoGoogle;
-import com.spring.delivery.mapper.UserMapper;
-import com.spring.delivery.model.User;
-import com.spring.delivery.service.authentication.AuthenticationService;
-import com.spring.delivery.service.authentication.GoogleAuthService;
-import com.spring.delivery.service.token.TokenService;
-import com.spring.delivery.util.MyPhoneNumberUtil;
-import com.spring.delivery.util.SecurityUtil;
-import com.spring.delivery.util.anotation.ApiMessage;
-import com.spring.delivery.util.exception.AppErrorCode;
-import com.spring.delivery.util.exception.AppException;
+import java.util.Collections;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -43,7 +49,6 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
     AuthenticationManagerBuilder authenticationManagerBuilder;
     SecurityUtil securityUtil;
-    TokenService tokenService;
     GoogleAuthService googleAuthService;
 
     @ApiMessage("Login")
@@ -51,15 +56,16 @@ public class AuthenticationController {
     public ResponseEntity<ResponseAuthentication> login(@Valid @RequestBody RequestLogin userLogin) {
         if (!MyPhoneNumberUtil.isPhoneNumberValid(userLogin.region(), userLogin.phoneNumber()))
             throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
-
+        String phoneNumber = MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(), userLogin.phoneNumber());
         // Nạp input gồm username và password vào Security
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(), userLogin.phoneNumber()), userLogin.password());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber, userLogin.password());
         // Sử dụng method loadUserDetail đã implement để lấy ra user trong db
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         // Get user đã đăng nhập thành công vào SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return login(MyPhoneNumberUtil.formatPhoneNumber(userLogin.region(), userLogin.phoneNumber()));
+        ResponseAuthentication response = authenticationService.loginByPhoneNumber();
+        ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
     @ApiMessage("check info before Register")
@@ -105,18 +111,8 @@ public class AuthenticationController {
         //  Check user by refresh authCode
         String email =
                 SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-        User user = authenticationService.getUserByEmail(email);
 
-        ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
-
-        String accessToken = securityUtil.createAccessToken(userDTO);
-
-        tokenService.saveToken(user.getEmail(), accessToken);
-
-        ResponseAuthentication responseBody = ResponseAuthentication.builder()
-                .user(userDTO)
-                .accessToken(accessToken)
-                .build();
+        ResponseAuthentication responseBody = authenticationService.getAccessToken(email);
 
         return ResponseEntity.ok().body(responseBody);
     }
@@ -140,7 +136,7 @@ public class AuthenticationController {
         this.authenticationService.logout(email, accessToken, refreshToken);
         SecurityContextHolder.getContext().setAuthentication(null);
         ResponseCookie cookie = securityUtil.clearRefreshToken();
-        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(null);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(null);
     }
 
     @ApiMessage("Login google")
@@ -148,19 +144,10 @@ public class AuthenticationController {
     public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleMobileByAuthCode request) {
         UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAuthCode(request.authCode());
         log.info("profileUserGoogle: {}", profileUserGoogle);
-        return login(profileUserGoogle.email());
-    }
-
-    @ApiMessage("Login google web")
-    @PostMapping("/login-google-web")
-    public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleWebByAccessToken request) {
-        UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAccessToken(request.accessToken());
-        return login(profileUserGoogle.email());
-    }
-
-    private ResponseEntity<ResponseAuthentication> login(String phoneNumber) {
-        ResponseAuthentication response = authenticationService.loginByPhoneNumber(phoneNumber);
+        OAuth2User authenticationToken = new CustomOAuth2User(profileUserGoogle);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticationToken, null, Collections.emptyList()));
+        ResponseAuthentication response = authenticationService.loginByEmail();
         ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());
-        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body(response);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 }
