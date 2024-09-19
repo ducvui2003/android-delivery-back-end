@@ -4,6 +4,7 @@ import com.spring.delivery.model.JwtPayload;
 import com.spring.delivery.model.Permission;
 import com.spring.delivery.model.Role;
 import com.spring.delivery.repository.RoleRepository;
+import com.spring.delivery.util.enums.AuthType;
 import com.spring.delivery.util.enums.RoleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,13 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = this.getUserByEmail(email);
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
-        JwtPayload.UserPayload userPayload = userMapper.toUserPayload(user);
-        JwtPayload jwtPayload = JwtPayload.builder()
-                .email(user.getEmail())
-                .user(userPayload)
-                .role(user.getRole().getName().name())
-                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
-                .build();
+        JwtPayload jwtPayload = getJwtPayload(user);
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
 
@@ -174,6 +169,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .fullName(oAuth2User.getAttribute("name"))
                 .verified(true)
                 .role(roleUser)
+                .authType(AuthType.OAUTH2)
                 .build();
         userRepository.save(user);
     }
@@ -181,6 +177,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private JwtPayload getJwtPayload(User user) {
         return JwtPayload.builder()
                 .email(user.getEmail())
+                .user(userMapper.toUserPayload(user))
                 .role(user.getRole().getName().name())
                 .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
                 .timeExpiredPlus(1)

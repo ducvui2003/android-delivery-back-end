@@ -56,12 +56,14 @@ public class SecurityUtil {
 
 
     public String createAccessToken(JwtPayload jwtPayload) {
+        jwtPayload.setTimeExpiredPlus(jwtProperties.getAccessTokenExpiredTime());
         JwtClaimsSet claims = generateClaims(jwtPayload);
         JwsHeader header = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
     public String createRefreshToken(JwtPayload jwtPayload) {
+        jwtPayload.setTimeExpiredPlus(jwtProperties.getRefreshTokenExpiredTime());
         JwtClaimsSet claims = generateClaims(jwtPayload);
         JwsHeader header = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

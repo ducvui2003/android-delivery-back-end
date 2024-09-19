@@ -1,11 +1,12 @@
 package com.spring.delivery.model;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.spring.delivery.util.enums.converter.AuthTypeConverter;
+import com.spring.delivery.util.enums.AuthType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -34,6 +35,10 @@ public class User implements Serializable {
     String fullName;
 
     boolean verified;
+
+    @Column(nullable = false)
+    @Convert(converter = AuthTypeConverter.class)
+    AuthType authType = AuthType.USERNAME_PASSWORD;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

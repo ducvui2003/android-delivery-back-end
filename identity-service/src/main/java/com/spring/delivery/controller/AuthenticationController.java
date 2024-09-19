@@ -3,15 +3,11 @@ package com.spring.delivery.controller;
 import com.spring.delivery.config.properties.CookieProperties;
 import com.spring.delivery.domain.request.RequestCheckBeforeRegister;
 import com.spring.delivery.domain.request.RequestLogin;
-import com.spring.delivery.domain.request.RequestLoginGoogleMobileByAuthCode;
 import com.spring.delivery.domain.request.RequestRegister;
 import com.spring.delivery.domain.response.ResponseAuthentication;
-import com.spring.delivery.domain.response.UserInfoGoogle;
 import com.spring.delivery.mapper.UserMapper;
 import com.spring.delivery.model.User;
 import com.spring.delivery.service.authentication.AuthenticationService;
-import com.spring.delivery.service.authentication.GoogleAuthService;
-import com.spring.delivery.util.CustomOAuth2User;
 import com.spring.delivery.util.MyPhoneNumberUtil;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.anotation.ApiMessage;
@@ -32,10 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 
 
 @Slf4j
@@ -49,7 +42,6 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
     AuthenticationManagerBuilder authenticationManagerBuilder;
     SecurityUtil securityUtil;
-    GoogleAuthService googleAuthService;
 
     @ApiMessage("Login")
     @PostMapping("/login")
@@ -139,17 +131,4 @@ public class AuthenticationController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(null);
     }
 
-    @ApiMessage("Login google")
-    @PostMapping("/login-google-mobile")
-    public ResponseEntity<ResponseAuthentication> loginGoogle(@RequestBody RequestLoginGoogleMobileByAuthCode request) {
-        UserInfoGoogle profileUserGoogle = googleAuthService.getProfileByAuthCode(request.authCode());
-        log.info("profileUserGoogle: {}", profileUserGoogle);
-//        Append to SecurityContextHolder
-        OAuth2User authenticationToken = new CustomOAuth2User(profileUserGoogle);
-        authenticationService.createUserOAuth2(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticationToken, null, Collections.emptyList()));
-        ResponseAuthentication response = authenticationService.loginByEmail();
-        ResponseCookie cookie = securityUtil.updateRefreshToken(response.getRefreshToken());
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
-    }
 }
