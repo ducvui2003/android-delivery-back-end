@@ -42,9 +42,14 @@ spring:
           google:
             client-id: 897537541683-7ikcdbpl9c00tfcgbtu10dfu8si2gav4.apps.googleusercontent.com
             client-secret: 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
-            scope:
-              - email
-              - profile
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            authorization-grant-type: authorization_code
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
 
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
@@ -66,12 +71,15 @@ app:
     - /v3/api-docs
     - /v3/api-docs/**
     - /swagger-ui/**
+    - /oauth2/**
+    - /auth/**
+    - /auth/google
   cookie:
     key:
       refreshToken: refresh_token
     defaultValue:
       refreshToken: empty
-  host: ${HOST}
+  host: ${HOST:localhost}
   otp:
     length: 6
     expiration: 600000

@@ -5,29 +5,42 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.spring.delivery.util.enums.converter.AuthTypeConverter;
+import com.spring.delivery.util.enums.AuthType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-	String phoneNumber;
+    String phoneNumber;
 
-	String email;
+    String email;
 
-	@JsonIgnore
-	String password;
+    @JsonIgnore
+    String password;
 
-	String fullName;
+    String fullName;
 
-	boolean verified;
+    boolean verified;
+
+    @Column(nullable = false)
+    @Convert(converter = AuthTypeConverter.class)
+    AuthType authType = AuthType.USERNAME_PASSWORD;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
 }

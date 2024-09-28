@@ -1,0 +1,69 @@
+# api_gateway
+
+###
+# group: identity_service (public)
+# @name login
+POST {{API_GATEWAY}}/{{IDENTITY_SERVICE}}/login
+Content-Type: application/json
+
+{
+  "region": "VN",
+  "phoneNumber": "+84965809127",
+  "password": "0855354919@Lam"
+}
+
+###
+# group: identity_service (public)
+# @name register
+POST {{API_GATEWAY}}/{{IDENTITY_SERVICE}}/register
+Content-Type: application/json
+
+{
+  "email": "ducvui2003@gmail.com",
+  "password": "123456Duc@."
+}
+
+
+###
+# group: identity_service (public)
+# @name refresh-token
+POST {{API_GATEWAY}}/{{IDENTITY_SERVICE}}/refresh-token
+
+###
+# group: identity_service (private)
+# @name logout
+POST {{API_GATEWAY}}/{{IDENTITY_SERVICE}}/logout
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# group: identity_service (private)
+# @name account
+GET {{API_GATEWAY}}/{{IDENTITY_SERVICE}}/account
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# group: product_service (public) / product
+# @name get all
+GET {{API_GATEWAY}}/{{PRODUCT_SERVICE}}/product?
+    page=1
+
+###
+# group: product_service (public) / product
+# @name get by id
+GET {{API_GATEWAY}}/{{PRODUCT_SERVICE}}/product/66d31ce03d76c79dc1ee4847
+
+###
+# group: product_service (public) / category
+# @name get all
+GET {{API_GATEWAY}}/{{PRODUCT_SERVICE}}/category
+
+###
+# group: product_service (public) / category
+# @name get by id
+GET {{API_GATEWAY}}/{{PRODUCT_SERVICE}}/category/66d31b1443a67fd67b714c97
+
+###
+# group: rating_service (public)
+# @name pageable rating by product id
+GET {{API_GATEWAY}}/{{RATING_SERVICE}}/review/product/pageable/1?
+    rating=4
