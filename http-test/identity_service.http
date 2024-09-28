@@ -1,0 +1,126 @@
+# identity_service
+
+###
+# group: authentication test
+# @name register
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/register
+Content-Type: application/json
+
+{
+  "email": "ducvui2003@gmail.com",
+  "password": "123456Duc@"
+}
+
+###
+# group: authentication test
+# @name check before register
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/check-before-register
+Content-Type: application/json
+
+{
+  "email": "kiminonawa1305@gmail.com"
+}
+
+###
+# group: authentication test
+# @name refresh token
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/refresh-token
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# group: authentication test
+# @name account
+GET {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/account
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# group: authentication test
+# @name logout
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/logout
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# group: authentication test
+# @name login
+//< {%
+    // TODO: you can add here Pre-request handler
+//%}
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/login
+Content-Type: application/json
+
+{
+  "region": "VN",
+  "phoneNumber": "0965809127",
+  "password": "123456Duc@"
+}
+
+###
+# group: authentication test
+# @name login phone number
+//< {%
+    // TODO: you can add here Pre-request handler
+//%}
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/login-phone-number
+Content-Type: application/json
+
+{
+  "id_token": ""
+}
+
+###
+# group: authentication test
+# @name login google on mobile
+POST {{BASE_PATH}}/{{REQUEST_MAPPTING_AUTHENTICATION}}/login-google-mobile
+Content-Type: application/json
+
+{
+  "authCode": "4/0AcvDMrAGhLeZKc2KMUs44uk86omBnuiE26-hkYXuVgsMmxC9TVcOPzg_UBLtrBIDjXJSug"
+}
+
+###
+# group: authentication test
+# @name login google on web
+POST {{BASE_PATH}}/{{REQUEST_MAPPTING_AUTHENTICATION}}/login-google-web
+Authorization: Bearer {{set_token}}
+Content-Type: application/json
+
+{
+  "accessToken": "ya29.a0AcM612zLBXXQqvaMAk0rq9lKhqpvg6Ja0O-y1xRX6wXvKG0RoFthLJUo9i7iCzNx1OEFdKJvi6RLPhHogTgwK0vR2t8f9XABiDz0bSpETh1p6-ibRShj5_QbgdZuJSqUxrZfG2EqsoOncpIw2vYNYIP1HApX6TlbbAaCgYKAWQSARMSFQHGX2MiPNjABV7hWuViILVHXm3aGw0169"
+}
+
+###
+# group: authentication test
+# @name verify
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/verify
+email: ducvui2003@gmail.com
+Content-Type: application/json
+
+{
+  "email": "ducvui2003@gmail.com",
+  "otp": "brm56R"
+}
+
+###
+# group: authentication test
+# @name verify resend
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/verify-resent
+email: kiminonawa1305@gmail.com
+Content-Type: application/x-www-form-urlencoded
+
+###
+# group: authentication test
+# @name forgot password
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/password/forgot
+email: ducvui2003@gmail.com
+
+###
+# group: authentication test
+# @name reset password
+POST {{HOST_IDENTITY_SERVICE}}/{{REQUEST_MAPPING_IDENTITY}}/password/reset
+email: kiminonawa1305@gmail.com
+Content-Type: application/json
+
+{
+  "otp": "103354",
+  "password": "1289"
+}

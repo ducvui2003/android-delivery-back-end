@@ -44,10 +44,12 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
 //    OAuth
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-client")
+    implementation("org.springframework.security:spring-security-oauth2-client")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 

@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +34,7 @@ public class PasswordController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHIPPER')")
     @ApiMessage("Change Password")
     @PostMapping("/change-password")
     public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody RequestChangePassword requestChangePassword) {
