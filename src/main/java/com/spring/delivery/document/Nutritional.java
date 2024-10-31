@@ -1,6 +1,7 @@
 package com.spring.delivery.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.spring.delivery.util.enums.Unit;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,12 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Metadata {
-    Long size;
-    String contentType;
-    String bucket;
-    String etag;
+public class Nutritional {
+    String name;
+    Double value;
+    Unit unit;
 }
