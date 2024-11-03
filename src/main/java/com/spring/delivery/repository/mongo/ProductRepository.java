@@ -9,14 +9,21 @@
 package com.spring.delivery.repository.mongo;
 
 import com.spring.delivery.document.Product;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
+    List<Product> findAllByCategoryIdAndDeletedIsFalse(String id, PageRequest pageRequest);
 
-    List<Product> findAllByCategoryId(String id, PageRequest pageRequest);
+    List<Product> findAllByDeletedIsFalse(PageRequest pageRequest);
+
+    Optional<Product> findByIdAndDeletedIsFalse(String id);
+
+    boolean existsById(@NotNull String id);
 }

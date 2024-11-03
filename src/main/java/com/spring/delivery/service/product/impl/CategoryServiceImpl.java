@@ -47,4 +47,9 @@ public class CategoryServiceImpl implements CategoryService {
         var option = categoryRepository.findById(id);
         return option.map(categoryMapper::toCategoryDTO).orElseThrow(() -> new AppException(AppErrorCode.CATEGORY_NOT_FOUND));
     }
+
+    @Override
+    public boolean existById(String id) {
+        return categoryRepository.existsById(id);
+    }
 }

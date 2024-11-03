@@ -2,6 +2,7 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
+import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.service.product.ProductService;
@@ -25,13 +26,13 @@ public class ProductController {
     @GetMapping("/{id}")
     @ApiMessage("Get product by id")
     public ResponseEntity<ProductDTO> getById(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body(productService.findById(id));
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping
     @ApiMessage("Get all product per page")
     public ResponseEntity<List<ProductDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "0") int page) {
-        return ResponseEntity.ok().body(productService.findAll(page));
+        return ResponseEntity.ok(productService.findAll(page));
     }
 
     @GetMapping("/category/{id}")
@@ -46,21 +47,39 @@ public class ProductController {
         return ResponseEntity.ok(productService.save(request));
     }
 
+    @PutMapping(path = "/{id}", consumes = "application/json;charset=UTF-8")
+    @ApiMessage("Create product")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("id") String id, @Valid @RequestBody RequestProductUpdated request) {
+        return ResponseEntity.ok(productService.updateProduct(id, request));
+    }
+
     @DeleteMapping("/discount/{id}")
     @ApiMessage("Remove discount product")
     public ResponseEntity<ProductDTO> removeDiscount(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body(productService.removeDiscount(id));
+        return ResponseEntity.ok(productService.removeDiscount(id));
     }
 
     @PutMapping("/discount/{id}")
     @ApiMessage("Set discount for product")
     public ResponseEntity<ProductDTO> setDiscount(@PathVariable("id") String id, @Valid @RequestBody RequestDiscountCreated request) {
-        return ResponseEntity.ok().body(productService.setDiscount(id, request));
+        return ResponseEntity.ok(productService.setDiscount(id, request));
     }
 
     @PutMapping("/image/{id}")
     @ApiMessage("Update url image product")
     public ResponseEntity<ProductDTO> updateUrlImage(@PathVariable("id") String id, @Valid @RequestBody RequestUpdateImage request) {
-        return ResponseEntity.ok().body(productService.updateUrlImage(id, request));
+        return ResponseEntity.ok(productService.updateUrlImage(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiMessage("Delete product by id")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable("id") String id) {
+        return ResponseEntity.ok(productService.deleteProduct(id));
+    }
+
+    @PostMapping("/{id}")
+    @ApiMessage("Undelete product by id")
+    public ResponseEntity<ProductDTO> unDeleteProduct(@PathVariable("id") String id) {
+        return ResponseEntity.ok(productService.unDeleteProduct(id));
     }
 }

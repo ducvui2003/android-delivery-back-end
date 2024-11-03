@@ -10,6 +10,7 @@ package com.spring.delivery.service.product;
 
 import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
+import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import jakarta.validation.Valid;
@@ -31,4 +32,10 @@ public interface ProductService {
     ProductDTO save(RequestProductCreated request);
 
     ProductDTO updateUrlImage(String id, @Valid RequestUpdateImage request);
+
+    ProductDTO updateProduct(String id, RequestProductUpdated request);
+
+    ProductDTO deleteProduct(String id);
+
+    ProductDTO unDeleteProduct(String id);
 }

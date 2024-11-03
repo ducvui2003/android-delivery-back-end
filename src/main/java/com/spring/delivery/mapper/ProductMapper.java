@@ -8,14 +8,23 @@
 
 package com.spring.delivery.mapper;
 
+import com.spring.delivery.document.Nutritional;
 import com.spring.delivery.document.Product;
+import com.spring.delivery.domain.request.product.RequestNutritionalCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
+import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import org.mapstruct.Mapper;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
     ProductDTO toProductDTO(Product product);
 
     Product toProduct(RequestProductCreated request);
+
+    Product toProduct(RequestProductUpdated request);
+
+    List<Nutritional> toNutritional(List<RequestNutritionalCreated> requests);
 }

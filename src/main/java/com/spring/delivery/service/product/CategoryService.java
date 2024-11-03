@@ -17,4 +17,5 @@ public interface CategoryService {
     CategoryDTO save(RequestCategoryCreated category);
     List<CategoryDTO> findAll();
     CategoryDTO findById(String id);
+    boolean existById(String id);
 }

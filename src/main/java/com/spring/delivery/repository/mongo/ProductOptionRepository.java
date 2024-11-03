@@ -9,10 +9,11 @@
 package com.spring.delivery.repository.mongo;
 
 import com.spring.delivery.document.ProductOption;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductOptionRepository extends MongoRepository<ProductOption, String> {
-
+    boolean existsById(@NotNull String id);
 }

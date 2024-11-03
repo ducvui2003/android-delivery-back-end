@@ -19,4 +19,6 @@ public interface ProductOptionService {
     List<ProductOptionDTO> findAll();
 
     ProductOptionDTO findById(String id);
+
+    boolean existById(String id);
 }

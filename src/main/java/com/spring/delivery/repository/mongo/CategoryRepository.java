@@ -9,9 +9,11 @@
 package com.spring.delivery.repository.mongo;
 
 import com.spring.delivery.document.Category;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends MongoRepository<Category, String> {
+    boolean existsById(@NotNull String id);
 }

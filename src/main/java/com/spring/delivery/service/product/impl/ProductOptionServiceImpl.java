@@ -43,4 +43,9 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     public ProductOptionDTO findById(String id) {
         return productOptionRepository.findById(id).map(mapper::toProductOptionDTO).orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_OPTION_NOT_FOUND));
     }
+
+    @Override
+    public boolean existById(String id) {
+        return productOptionRepository.existsById(id);
+    }
 }

@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
   main:
     allow-bean-definition-overriding: true
   profiles:
