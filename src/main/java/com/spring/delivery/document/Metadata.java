@@ -15,7 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Metadata {
     Long size;
+
     String contentType;
+
     String bucket;
+
     String etag;
 }

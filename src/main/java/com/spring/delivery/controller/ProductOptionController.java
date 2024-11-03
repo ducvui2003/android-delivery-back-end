@@ -3,6 +3,7 @@ package com.spring.delivery.controller;
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,17 +21,20 @@ public class ProductOptionController {
 
 
     @GetMapping("/{id}")
+    @ApiMessage("Get product option by id")
     public ResponseEntity<ProductOptionDTO> getById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(productOptionService.findById(id));
+        return ResponseEntity.ok().body(productOptionService.findById(id));
     }
 
     @GetMapping
+    @ApiMessage("Get all product option")
     public ResponseEntity<List<ProductOptionDTO>> getAll() {
-        return ResponseEntity.ok(productOptionService.findAll());
+        return ResponseEntity.ok().body(productOptionService.findAll());
     }
 
     @PostMapping
+    @ApiMessage("Create product option")
     public ResponseEntity<ProductOptionDTO> create(@RequestBody RequestOptionCreated request) {
-        return ResponseEntity.ok(productOptionService.save(request));
+        return ResponseEntity.ok().body(productOptionService.save(request));
     }
 }

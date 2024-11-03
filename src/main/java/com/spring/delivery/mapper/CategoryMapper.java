@@ -14,7 +14,7 @@ import com.spring.delivery.domain.response.product.CategoryDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public  interface CategoryMapper {
+public interface CategoryMapper {
     CategoryDTO toCategoryDTO(Category product);
 
     Category toCategory(RequestCategoryCreated request);

@@ -14,11 +14,12 @@ import com.spring.delivery.domain.response.product.CategoryDTO;
 import com.spring.delivery.mapper.CategoryMapper;
 import com.spring.delivery.repository.mongo.CategoryRepository;
 import com.spring.delivery.service.product.CategoryService;
+import com.spring.delivery.util.exception.AppErrorCode;
+import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO findById(String id) {
         var option = categoryRepository.findById(id);
-        return option.map(categoryMapper::toCategoryDTO).orElse(null);
+        return option.map(categoryMapper::toCategoryDTO).orElseThrow(() -> new AppException(AppErrorCode.CATEGORY_NOT_FOUND));
     }
 }

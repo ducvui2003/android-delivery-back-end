@@ -1,16 +1,15 @@
 package com.spring.delivery.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -19,8 +18,10 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document
 public class DiscountInfo {
-    @Id
-    ObjectId id;
+    @MongoId
+    String id;
+
     Double discount;
-    Instant expired;
+
+    LocalDateTime expired;
 }

@@ -16,9 +16,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,8 +31,10 @@ import java.util.List;
 @Document(collection = "options")
 @TypeAlias("ProductOption")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public class ProductOption {
     @MongoId
+    @Field(targetType = FieldType.STRING)
     String id;
 
     String name;

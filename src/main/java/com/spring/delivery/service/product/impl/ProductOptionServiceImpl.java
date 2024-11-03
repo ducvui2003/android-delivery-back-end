@@ -13,6 +13,8 @@ import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import com.spring.delivery.mapper.ProductOptionMapper;
 import com.spring.delivery.repository.mongo.ProductOptionRepository;
 import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.util.exception.AppErrorCode;
+import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -39,6 +41,6 @@ public class ProductOptionServiceImpl implements ProductOptionService {
 
     @Override
     public ProductOptionDTO findById(String id) {
-        return productOptionRepository.findById(id).map(mapper::toProductOptionDTO).orElse(null);
+        return productOptionRepository.findById(id).map(mapper::toProductOptionDTO).orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_OPTION_NOT_FOUND));
     }
 }
