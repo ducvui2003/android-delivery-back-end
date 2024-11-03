@@ -1,0 +1,90 @@
+/**
+ * Author: Nguyen Dinh Lam
+ * Email: kiminonawa1305@gmail.com
+ * Phone number: +84 855354919
+ * Create at: 5:19 PM - 30/10/2024
+ * User: lam-nguyen
+ **/
+
+package com.spring.delivery.service.product.impl;
+
+import com.spring.delivery.document.Category;
+import com.spring.delivery.document.Product;
+import com.spring.delivery.document.ProductOption;
+import com.spring.delivery.domain.request.product.RequestDiscountCreated;
+import com.spring.delivery.domain.request.product.RequestProductCreated;
+import com.spring.delivery.domain.request.product.RequestUpdateImage;
+import com.spring.delivery.domain.response.product.ProductDTO;
+import com.spring.delivery.mapper.DiscountInfoMapper;
+import com.spring.delivery.mapper.ProductMapper;
+import com.spring.delivery.repository.mongo.ProductRepository;
+import com.spring.delivery.service.product.ProductService;
+import com.spring.delivery.util.exception.AppErrorCode;
+import com.spring.delivery.util.exception.AppException;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ProductServiceImpl implements ProductService {
+    final ProductRepository productRepository;
+    final ProductMapper mapper;
+    final DiscountInfoMapper discountInfoMapper;
+    @Value("${app.paging.size}")
+    int pageSize;
+
+    public List<ProductDTO> findAll(int page) {
+        return productRepository.findAll(PageRequest.of(page, pageSize)).stream().map(mapper::toProductDTO).toList();
+    }
+
+    @Override
+    public List<ProductDTO> findAllByCategoryId(String id, int page) {
+        return productRepository.findAllByCategoryId(id, PageRequest.of(page, pageSize)).stream().map(mapper::toProductDTO).toList();
+    }
+
+    @Override
+    public ProductDTO findById(String id) {
+        return productRepository.findById(id).map(mapper::toProductDTO).orElse(null);
+    }
+
+    @Override
+    public ProductDTO removeDiscount(String id) {
+        var optionalProduct = productRepository.findById(id);
+        var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.EXIST));
+        product.setDiscountInfo(null);
+        return mapper.toProductDTO(productRepository.save(product));
+    }
+
+    @Override
+    public ProductDTO setDiscount(String id, RequestDiscountCreated request) {
+        var optionalProduct = productRepository.findById(id);
+        var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.EXIST));
+        product.setDiscountInfo(discountInfoMapper.toDiscountInfo(request));
+        return mapper.toProductDTO(productRepository.save(product));
+    }
+
+    @Override
+    public ProductDTO save(RequestProductCreated request) {
+        var product = mapper.toProduct(request);
+        product.setCategory(Category.builder().id(request.categoryId()).build());
+        product.setOptions(request.optionIds().stream().map(id -> ProductOption.builder().id(id).build()).toList());
+        return mapper.toProductDTO(productRepository.save(product));
+    }
+
+    @Override
+    public ProductDTO updateUrlImage(String id, RequestUpdateImage request) {
+        var optionalProduct = productRepository.findById(id);
+        var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.EXIST));
+        product.setImage(request.url());
+        return mapper.toProductDTO(productRepository.save(product));
+    }
+}

@@ -26,7 +26,10 @@ public enum AppErrorCode {
     PHONE_NUMBER_EXISTED(HttpServletResponse.SC_CONFLICT, "Phone number is already used"),
     INVALID_TOKEN(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token"),
     PHONE_NUMBER_INVALID(HttpServletResponse.SC_BAD_REQUEST, "Phone number is invalid"),
-    ERROR_OAUTH2(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred during OAuth2 authentication");
+    ERROR_OAUTH2(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred during OAuth2 authentication"),
+    PRODUCT_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product not found"),
+    CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Category not found"),
+    PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found");
 
     private int code;
     private String message;
