@@ -16,12 +16,14 @@ import com.spring.delivery.domain.request.product.RequestProductCreated;
 import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
 import com.spring.delivery.domain.response.product.ProductDTO;
-import com.spring.delivery.mapper.DiscountInfoMapper;
-import com.spring.delivery.mapper.ProductMapper;
-import com.spring.delivery.repository.mongo.ProductRepository;
-import com.spring.delivery.service.product.CategoryService;
-import com.spring.delivery.service.product.ProductOptionService;
-import com.spring.delivery.service.product.ProductService;
+import com.spring.delivery.domain.response.review.AverageRatingProduct;
+import com.spring.delivery.mapper.IDiscountInfoMapper;
+import com.spring.delivery.mapper.IProductMapper;
+import com.spring.delivery.repository.mongo.IProductRepository;
+import com.spring.delivery.service.business.review.IReviewProductService;
+import com.spring.delivery.service.product.ICategoryService;
+import com.spring.delivery.service.product.IProductOptionService;
+import com.spring.delivery.service.product.IProductService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
@@ -32,20 +34,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductServiceImpl implements ProductService {
-    final ProductRepository productRepository;
-    final ProductMapper mapper;
-    final DiscountInfoMapper discountInfoMapper;
-    final ProductOptionService productOptionService;
-    final CategoryService categoryService;
+public class ProductServiceImpl implements IProductService {
+    final IProductRepository productRepository;
+    final IProductMapper mapper;
+    final IDiscountInfoMapper discountInfoMapper;
+    final IProductOptionService productOptionService;
+    final ICategoryService categoryService;
+    final IReviewProductService reviewProductService;
     @Value("${app.paging.size}")
     int pageSize;
+    @Value("${app.database.entry.product-review.limit}")
+    int limitProductHomePage;
 
     public List<ProductDTO> findAll(int page) {
         return productRepository.findAllByDeletedIsFalse(PageRequest.of(page, pageSize)).stream().map(mapper::toProductDTO).toList();
@@ -117,6 +123,12 @@ public class ProductServiceImpl implements ProductService {
         var product = getProductById(id);
         product.setDeleted(false);
         return mapper.toProductDTO(productRepository.save(product));
+    }
+
+    @Override
+    public List<ProductDTO> findProductForHomePage() {
+        var ids = reviewProductService.findAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
+        return productRepository.findByIdIsIn(ids).stream().map(mapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::name)).limit(limitProductHomePage).toList();
     }
 
     private void initCategoryAndProductOption(Product product, String categoryId, List<String> productOptions) {

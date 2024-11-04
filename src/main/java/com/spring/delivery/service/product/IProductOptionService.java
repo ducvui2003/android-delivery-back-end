@@ -13,7 +13,7 @@ import com.spring.delivery.domain.response.product.ProductOptionDTO;
 
 import java.util.List;
 
-public interface ProductOptionService {
+public interface IProductOptionService {
     ProductOptionDTO save(RequestOptionCreated category);
 
     List<ProductOptionDTO> findAll();

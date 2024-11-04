@@ -5,7 +5,8 @@ import com.spring.delivery.domain.request.product.RequestProductCreated;
 import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
 import com.spring.delivery.domain.response.product.ProductDTO;
-import com.spring.delivery.service.product.ProductService;
+import com.spring.delivery.service.business.review.IReviewProductService;
+import com.spring.delivery.service.product.IProductService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -21,7 +22,7 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class ProductController {
-    ProductService productService;
+    IProductService productService;
 
     @GetMapping("/{id}")
     @ApiMessage("Get product by id")
@@ -81,5 +82,11 @@ public class ProductController {
     @ApiMessage("Undelete product by id")
     public ResponseEntity<ProductDTO> unDeleteProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.unDeleteProduct(id));
+    }
+
+    @GetMapping("test")
+    @ApiMessage("Test")
+    public ResponseEntity<List<ProductDTO>> find() {
+        return ResponseEntity.ok(productService.findProductForHomePage());
     }
 }

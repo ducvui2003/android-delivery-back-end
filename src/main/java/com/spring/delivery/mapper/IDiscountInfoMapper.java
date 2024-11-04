@@ -13,6 +13,6 @@ import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface DiscountInfoMapper {
+public interface IDiscountInfoMapper {
     DiscountInfo toDiscountInfo(RequestDiscountCreated request);
 }

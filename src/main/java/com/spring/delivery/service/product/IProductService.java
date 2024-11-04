@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
-public interface ProductService {
+public interface IProductService {
 
     List<ProductDTO> findAll(int page);
 
@@ -38,4 +38,6 @@ public interface ProductService {
     ProductDTO deleteProduct(String id);
 
     ProductDTO unDeleteProduct(String id);
+
+    List<ProductDTO> findProductForHomePage();
 }

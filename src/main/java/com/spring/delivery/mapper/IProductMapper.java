@@ -19,7 +19,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ProductMapper {
+public interface IProductMapper {
     ProductDTO toProductDTO(Product product);
 
     Product toProduct(RequestProductCreated request);

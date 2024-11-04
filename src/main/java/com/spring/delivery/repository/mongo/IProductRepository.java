@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends MongoRepository<Product, String> {
+public interface IProductRepository extends MongoRepository<Product, String> {
     List<Product> findAllByCategoryIdAndDeletedIsFalse(String id, PageRequest pageRequest);
 
     List<Product> findAllByDeletedIsFalse(PageRequest pageRequest);
@@ -26,4 +26,6 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Optional<Product> findByIdAndDeletedIsFalse(String id);
 
     boolean existsById(@NotNull String id);
+
+    List<Product> findByIdIsIn(List<String> ids);
 }

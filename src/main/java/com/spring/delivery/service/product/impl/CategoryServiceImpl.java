@@ -8,12 +8,11 @@
 
 package com.spring.delivery.service.product.impl;
 
-import com.spring.delivery.document.Category;
 import com.spring.delivery.domain.request.product.RequestCategoryCreated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
 import com.spring.delivery.mapper.CategoryMapper;
 import com.spring.delivery.repository.mongo.CategoryRepository;
-import com.spring.delivery.service.product.CategoryService;
+import com.spring.delivery.service.product.ICategoryService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
@@ -28,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements ICategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
 

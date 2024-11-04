@@ -2,7 +2,7 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.product.RequestCategoryCreated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
-import com.spring.delivery.service.product.CategoryService;
+import com.spring.delivery.service.product.ICategoryService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
 public class CategoryController {
-    CategoryService categoryService;
+    ICategoryService categoryService;
 
     @GetMapping("/{id}")
     @ApiMessage("Get categoryId by id")

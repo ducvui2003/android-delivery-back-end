@@ -13,7 +13,7 @@ import com.spring.delivery.domain.response.product.CategoryDTO;
 
 import java.util.List;
 
-public interface CategoryService {
+public interface ICategoryService {
     CategoryDTO save(RequestCategoryCreated category);
     List<CategoryDTO> findAll();
     CategoryDTO findById(String id);

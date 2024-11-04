@@ -12,7 +12,7 @@ import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import com.spring.delivery.mapper.ProductOptionMapper;
 import com.spring.delivery.repository.mongo.ProductOptionRepository;
-import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.service.product.IProductOptionService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class ProductOptionServiceImpl implements ProductOptionService {
+public class ProductOptionServiceImpl implements IProductOptionService {
     ProductOptionRepository productOptionRepository;
     ProductOptionMapper mapper;
 

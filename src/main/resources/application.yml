@@ -93,3 +93,7 @@ app:
     resend:
       expiration: 1440000
       max-try: 3
+  database:
+    entry:
+      product-review:
+        limit: 10
