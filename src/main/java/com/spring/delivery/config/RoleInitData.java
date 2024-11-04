@@ -20,6 +20,7 @@ import com.spring.delivery.repository.mysql.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 //@Component

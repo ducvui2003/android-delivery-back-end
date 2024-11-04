@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.6"
     id("com.diffplug.spotless") version "6.22.0"
+    kotlin("jvm") version "2.0.21"
 }
 
 group = "com.spring"
@@ -67,6 +68,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
     implementation("com.brevo:brevo:1.0.0")
+    implementation(kotlin("stdlib-jdk8"))
 }
 dependencyManagement {
     imports {

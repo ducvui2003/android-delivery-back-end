@@ -1,7 +1,5 @@
 package com.spring.delivery.model;
 
-import com.spring.delivery.util.enums.Rating;
-import com.spring.delivery.util.enums.converter.RatingConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

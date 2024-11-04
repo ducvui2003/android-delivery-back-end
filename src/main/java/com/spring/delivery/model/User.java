@@ -37,7 +37,8 @@ public class User {
     boolean verified;
 
     @Column(nullable = false)
-    @Convert(converter = AuthTypeConverter.class)
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
     AuthType authType = AuthType.USERNAME_PASSWORD;
 
     @ManyToOne

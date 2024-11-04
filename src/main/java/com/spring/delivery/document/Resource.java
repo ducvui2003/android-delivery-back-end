@@ -1,5 +1,6 @@
 package com.spring.delivery.document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.util.enums.Folder;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +15,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "files")
 public class Resource {
     @MongoId
