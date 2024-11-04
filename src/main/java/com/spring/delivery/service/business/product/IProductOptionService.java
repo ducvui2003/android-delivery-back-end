@@ -6,7 +6,7 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product;
+package com.spring.delivery.service.business.product;
 
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;

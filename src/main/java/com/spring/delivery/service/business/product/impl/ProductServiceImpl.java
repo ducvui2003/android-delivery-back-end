@@ -6,7 +6,7 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product.impl;
+package com.spring.delivery.service.business.product.impl;
 
 import com.spring.delivery.document.Category;
 import com.spring.delivery.document.Product;
@@ -23,10 +23,10 @@ import com.spring.delivery.mapper.IDiscountInfoMapper;
 import com.spring.delivery.mapper.IProductMapper;
 import com.spring.delivery.repository.mongo.IProductRepository;
 import com.spring.delivery.service.business.review.IReviewProductService;
-import com.spring.delivery.service.product.ICategoryService;
-import com.spring.delivery.service.product.IProductOptionService;
-import com.spring.delivery.service.product.IProductService;
-import com.spring.delivery.service.product.IUserProductFavoriteService;
+import com.spring.delivery.service.business.product.ICategoryService;
+import com.spring.delivery.service.business.product.IProductOptionService;
+import com.spring.delivery.service.business.product.IProductService;
+import com.spring.delivery.service.business.product.IUserProductFavoriteService;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;

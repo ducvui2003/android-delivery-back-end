@@ -6,13 +6,13 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product.impl;
+package com.spring.delivery.service.business.product.impl;
 
 import com.spring.delivery.domain.request.product.RequestCategoryCreated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
 import com.spring.delivery.mapper.CategoryMapper;
-import com.spring.delivery.repository.mongo.CategoryRepository;
-import com.spring.delivery.service.product.ICategoryService;
+import com.spring.delivery.repository.mongo.ICategoryRepository;
+import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
@@ -28,7 +28,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class CategoryServiceImpl implements ICategoryService {
-    CategoryRepository categoryRepository;
+    ICategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
 
     @Override

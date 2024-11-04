@@ -2,7 +2,7 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.product.RequestCategoryCreated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
-import com.spring.delivery.service.product.ICategoryService;
+import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -6,7 +6,7 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product;
+package com.spring.delivery.service.business.product;
 
 import java.util.List;
 

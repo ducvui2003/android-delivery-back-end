@@ -29,6 +29,8 @@ public class Category {
 
     String name;
 
+    String urlImage;
+
     Boolean deleted = false;
 
     @CreatedDate

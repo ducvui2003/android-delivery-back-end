@@ -6,11 +6,11 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product.impl;
+package com.spring.delivery.service.business.product.impl;
 
 import com.spring.delivery.model.UserProductFavorite;
 import com.spring.delivery.repository.mysql.IUserProductFavoriteRepository;
-import com.spring.delivery.service.product.IUserProductFavoriteService;
+import com.spring.delivery.service.business.product.IUserProductFavoriteService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
