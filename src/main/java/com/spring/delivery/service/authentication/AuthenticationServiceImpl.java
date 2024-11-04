@@ -4,6 +4,7 @@ import com.spring.delivery.model.JwtPayload;
 import com.spring.delivery.model.Permission;
 import com.spring.delivery.model.Role;
 import com.spring.delivery.repository.mysql.RoleRepository;
+import com.spring.delivery.service.email.EmailService;
 import com.spring.delivery.util.enums.AuthType;
 import com.spring.delivery.util.enums.RoleEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     UserMapper userMapper;
     SecurityUtil securityUtil;
     RoleRepository roleRepository;
+    EmailService emailService;
+    VerifyService verifyService;
 
     @Override
     public User register(String idToken, User user) {
@@ -51,6 +54,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         checkBeforeRegister(user.getEmail(), user.getPhoneNumber());
 
+        user.setVerified(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User register(User user) {
         user.setVerified(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
