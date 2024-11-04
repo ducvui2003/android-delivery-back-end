@@ -13,6 +13,7 @@ import com.spring.delivery.document.Product;
 import com.spring.delivery.domain.request.product.RequestNutritionalCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
 import com.spring.delivery.domain.request.product.RequestProductUpdated;
+import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import org.mapstruct.Mapper;
 
@@ -22,9 +23,9 @@ import java.util.List;
 public interface IProductMapper {
     ProductDTO toProductDTO(Product product);
 
-    Product toProduct(RequestProductCreated request);
+    CardProductDTO toCardProductDTO(Product product);
 
-    Product toProduct(RequestProductUpdated request);
+    Product toProduct(RequestProductCreated request);
 
     List<Nutritional> toNutritional(List<RequestNutritionalCreated> requests);
 }

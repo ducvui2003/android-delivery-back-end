@@ -10,7 +10,8 @@ package com.spring.delivery.repository.mongo;
 
 import com.spring.delivery.document.Product;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,9 +20,9 @@ import java.util.Optional;
 
 @Repository
 public interface IProductRepository extends MongoRepository<Product, String> {
-    List<Product> findAllByCategoryIdAndDeletedIsFalse(String id, PageRequest pageRequest);
+    Page<Product> findAllByCategoryIdAndDeletedIsFalse(String id, Pageable pageable);
 
-    List<Product> findAllByDeletedIsFalse(PageRequest pageRequest);
+    Page<Product> findAllByDeletedIsFalse(Pageable pageable);
 
     Optional<Product> findByIdAndDeletedIsFalse(String id);
 

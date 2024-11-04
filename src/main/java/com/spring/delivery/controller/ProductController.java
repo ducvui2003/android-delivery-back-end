@@ -1,13 +1,16 @@
 package com.spring.delivery.controller;
 
+import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
 import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
+import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
-import com.spring.delivery.service.business.review.IReviewProductService;
 import com.spring.delivery.service.product.IProductService;
+import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.anotation.ApiMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +27,22 @@ import java.util.List;
 public class ProductController {
     IProductService productService;
 
+
     @GetMapping("/{id}")
     @ApiMessage("Get product by id")
-    public ResponseEntity<ProductDTO> getById(@PathVariable("id") String id) {
+    public ResponseEntity<ProductDTO> getById(HttpServletRequest request, @PathVariable("id") String id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping
     @ApiMessage("Get all product per page")
-    public ResponseEntity<List<ProductDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "0") int page) {
+    public ResponseEntity<ApiPaging<CardProductDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "0") int page) {
         return ResponseEntity.ok(productService.findAll(page));
     }
 
     @GetMapping("/category/{id}")
     @ApiMessage("Get product by id categoryId")
-    public ResponseEntity<?> getByCategory(@PathVariable("id") String id, @RequestParam(required = false, name = "page", defaultValue = "0") int page) {
+    public ResponseEntity<ApiPaging<CardProductDTO>> getByCategory(@PathVariable("id") String id, @RequestParam(required = false, name = "page", defaultValue = "0") int page) {
         return ResponseEntity.ok(productService.findAllByCategoryId(id, page));
     }
 
@@ -85,8 +89,8 @@ public class ProductController {
     }
 
     @GetMapping("test")
-    @ApiMessage("Test")
-    public ResponseEntity<List<ProductDTO>> find() {
+    @ApiMessage("Find product for home page")
+    public ResponseEntity<List<ProductDTO>> findProductForHomePage() {
         return ResponseEntity.ok(productService.findProductForHomePage());
     }
 }

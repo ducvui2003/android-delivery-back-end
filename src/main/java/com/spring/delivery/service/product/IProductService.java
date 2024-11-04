@@ -8,10 +8,12 @@
 
 package com.spring.delivery.service.product;
 
+import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
 import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.request.product.RequestUpdateImage;
+import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import jakarta.validation.Valid;
 
@@ -19,9 +21,9 @@ import java.util.List;
 
 public interface IProductService {
 
-    List<ProductDTO> findAll(int page);
+    ApiPaging<CardProductDTO> findAll(int page);
 
-    List<ProductDTO> findAllByCategoryId(String id, int page);
+    ApiPaging<CardProductDTO> findAllByCategoryId(String id, int page);
 
     ProductDTO findById(String id);
 

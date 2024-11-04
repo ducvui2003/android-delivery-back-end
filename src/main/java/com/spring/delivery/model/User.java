@@ -1,6 +1,7 @@
 package com.spring.delivery.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,9 +39,14 @@ public class User {
 
     @Column(nullable = false)
     @Convert(converter = AuthTypeConverter.class)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
     AuthType authType = AuthType.USERNAME_PASSWORD;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    @OneToMany(mappedBy = "user")
+    List<UserProductFavorite> productFavorites;
 }
