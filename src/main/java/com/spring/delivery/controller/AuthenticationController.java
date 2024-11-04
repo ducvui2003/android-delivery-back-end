@@ -79,6 +79,13 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @ApiMessage("Register")
+    @PostMapping("/register-email")
+    public ResponseEntity<User> registerByEmail(@Valid @RequestBody RequestRegister userRegister) {
+        User user = authenticationService.register(userMapper.toUser(userRegister));
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
     // Sử dụng để client lấy lại data người dùng khi F5 trang
     // (người dùng đã login trước đó và cookie đã set refresh)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHIPPER')")
