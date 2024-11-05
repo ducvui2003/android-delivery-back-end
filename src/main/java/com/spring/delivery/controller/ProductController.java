@@ -5,8 +5,8 @@ import com.spring.delivery.domain.request.product.*;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.service.business.product.IProductService;
+import com.spring.delivery.service.business.user.IUserProductFavoriteService;
 import com.spring.delivery.util.anotation.ApiMessage;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     IProductService productService;
-
+    IUserProductFavoriteService userProductFavoriteService;
 
     @GetMapping("/{id}")
     @ApiMessage("Get product by id")
@@ -94,5 +94,19 @@ public class ProductController {
     @ApiMessage("Search product")
     public ResponseEntity<ApiPaging<CardProductDTO>> searchProduct(RequestSearchProduct request) {
         return ResponseEntity.ok(productService.searchProduct(request));
+    }
+
+    @PostMapping("/favorite")
+    @ApiMessage("Favorite product success")
+    public ResponseEntity<Void> favorite(@RequestBody RequestProductFavorite request) {
+        userProductFavoriteService.addProductFavorite(request);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/favorite")
+    @ApiMessage("Remove favorite product success")
+    public ResponseEntity<Void> unFavorite(@RequestBody RequestProductFavorite request) {
+        userProductFavoriteService.removeProductFavorite(request);
+        return ResponseEntity.ok(null);
     }
 }

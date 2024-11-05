@@ -41,4 +41,6 @@ public interface IProductService {
     List<ProductDTO> findProductForHomePage();
 
     ApiPaging<CardProductDTO> searchProduct(RequestSearchProduct request);
+
+    public boolean existsProductById(String id);
 }

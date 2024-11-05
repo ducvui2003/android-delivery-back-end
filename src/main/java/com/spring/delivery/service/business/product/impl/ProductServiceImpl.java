@@ -23,7 +23,7 @@ import com.spring.delivery.service.business.review.IReviewProductService;
 import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.service.business.product.IProductService;
-import com.spring.delivery.service.business.product.IUserProductFavoriteService;
+import com.spring.delivery.service.business.user.IUserProductFavoriteService;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
@@ -154,6 +154,11 @@ public class ProductServiceImpl implements IProductService {
         paging.setSize(products.size());
         paging.setTotalPage((int) (total % pageSize != 0 ? (total / pageSize) + 1 : total / pageSize));
         return paging;
+    }
+
+    @Override
+    public boolean existsProductById(String id) {
+        return productRepository.existsById(id);
     }
 
     private void initCategoryAndProductOption(Product product, String categoryId, List<String> productOptions) {

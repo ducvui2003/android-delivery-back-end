@@ -6,11 +6,18 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.business.product;
+package com.spring.delivery.service.business.user;
+
+import com.spring.delivery.domain.request.product.RequestProductFavorite;
 
 import java.util.List;
 
 public interface IUserProductFavoriteService {
     List<String> findProductIdByUserId(Long useId, List<String> productIds);
+
     boolean existsProductFavorite(Long userId, String productId);
+
+    void addProductFavorite(RequestProductFavorite request);
+
+    void removeProductFavorite(RequestProductFavorite request);
 }
