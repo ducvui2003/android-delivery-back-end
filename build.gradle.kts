@@ -68,7 +68,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
     implementation("com.brevo:brevo:1.0.0")
-    implementation(kotlin("stdlib-jdk8"))
 }
 dependencyManagement {
     imports {
