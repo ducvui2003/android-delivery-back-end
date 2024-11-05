@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProductOptionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product option")
     public ResponseEntity<ProductOptionDTO> create(@RequestBody RequestOptionCreated request) {
         return ResponseEntity.ok().body(productOptionService.save(request));

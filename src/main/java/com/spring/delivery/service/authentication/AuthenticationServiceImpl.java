@@ -186,7 +186,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(user.getEmail())
                 .user(userMapper.toUserPayload(user))
                 .role(user.getRole().getName().name())
-                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
+                .permissions(user.getPermissions().stream().map(Permission::getName).toList())
                 .timeExpiredPlus(1)
                 .build();
     }

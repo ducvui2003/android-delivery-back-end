@@ -1,36 +1,33 @@
-# Stage 1: Build Stage
-FROM gradle:8.2.1-jdk21 AS build
-
-# Set the working directory inside the container
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:21-jdk-slim
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the Gradle wrapper, build.gradle.kts, and settings.gradle.kts for dependency caching
+# Copy all necessary files
+COPY gradlew gradlew
+COPY gradlew.bat gradlew.bat
+COPY gradle gradle
 COPY build.gradle.kts settings.gradle.kts ./
-COPY gradle ./gradle
 
-# Download dependencies to cache them if only build files change
-RUN gradle build -x test --no-daemon || return 0
+# Set executable permissions for gradlew
+RUN chmod +x gradlew
 
-# Copy the source code to the working directory
-COPY src ./src
+# Install required dependencies
+RUN apt-get update  \
+    && apt-get install -y bash dos2unix  \
+    && dos2unix gradlew
 
-# Build the application, generating a JAR file
-RUN gradle bootJar -x test --no-daemon
+# Test gradlew
+RUN bash ./gradlew --version
 
-# Stage 2: Run Stage
-FROM eclipse-temurin:21-jre-alpine
+# Build the application with gradlew
+RUN bash ./gradlew build --no-daemon
 
-# Set the working directory inside the container
-WORKDIR /app
+# Copy the built jar file to the container
+COPY build/libs/*.jar app.jar
 
-# Copy the Spring Boot application JAR from the build stage
-COPY --from=build /app/build/libs/*.jar app.jar
-
-# Expose the port that Spring Boot will run on
+# Expose the port the app runs on
 EXPOSE 8080
 
-# Optional: Set environment variables for Java options
-ENV JAVA_OPTS=""
-
-# Run the Spring Boot application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]

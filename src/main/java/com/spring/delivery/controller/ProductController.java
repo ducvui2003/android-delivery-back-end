@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,42 +44,49 @@ public class ProductController {
     }
 
     @PostMapping(consumes = "application/json;charset=UTF-8")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody RequestProductCreated request) {
         return ResponseEntity.ok(productService.save(request));
     }
 
     @PutMapping(path = "/{id}", consumes = "application/json;charset=UTF-8")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable("id") String id, @Valid @RequestBody RequestProductUpdated request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
     @DeleteMapping("/discount/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Remove discount product")
     public ResponseEntity<ProductDTO> removeDiscount(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.removeDiscount(id));
     }
 
     @PutMapping("/discount/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Set discount for product")
     public ResponseEntity<ProductDTO> setDiscount(@PathVariable("id") String id, @Valid @RequestBody RequestDiscountCreated request) {
         return ResponseEntity.ok(productService.setDiscount(id, request));
     }
 
     @PutMapping("/image/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Update url image product")
     public ResponseEntity<ProductDTO> updateUrlImage(@PathVariable("id") String id, @Valid @RequestBody RequestUpdateImage request) {
         return ResponseEntity.ok(productService.updateUrlImage(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Delete product by id")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.deleteProduct(id));
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Undelete product by id")
     public ResponseEntity<ProductDTO> unDeleteProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.unDeleteProduct(id));
@@ -97,6 +105,7 @@ public class ProductController {
     }
 
     @PostMapping("/favorite")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Favorite product success")
     public ResponseEntity<Void> favorite(@RequestBody RequestProductFavorite request) {
         userProductFavoriteService.addProductFavorite(request);
@@ -104,6 +113,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/favorite")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Remove favorite product success")
     public ResponseEntity<Void> unFavorite(@RequestBody RequestProductFavorite request) {
         userProductFavoriteService.removeProductFavorite(request);
