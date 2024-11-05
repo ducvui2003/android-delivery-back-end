@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public interface AuthenticationService {
     User register(String idToken, User user);
 
+    User register(User user);
+
     ResponseAuthentication getAccessToken(String email);
 
     void logout(String email, String accessToken, String refreshToken);
