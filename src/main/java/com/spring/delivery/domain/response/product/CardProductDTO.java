@@ -19,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardProductDTO {
     String id;
+    String name;
     double price;
     DiscountInfo discountInfo;
     double avgRating;

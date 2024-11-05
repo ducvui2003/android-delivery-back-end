@@ -20,19 +20,19 @@ public class CategoryController {
     ICategoryService categoryService;
 
     @GetMapping("/{id}")
-    @ApiMessage("Get categoryId by id")
+    @ApiMessage("Get category by id")
     public ResponseEntity<CategoryDTO> getById(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(categoryService.findById(id));
     }
 
     @GetMapping
-    @ApiMessage("Get all categoryId")
+    @ApiMessage("Get all category")
     public ResponseEntity<List<CategoryDTO>> getAll() {
         return ResponseEntity.ok().body(categoryService.findAll());
     }
 
     @PostMapping
-    @ApiMessage("Create categoryId")
+    @ApiMessage("Create category")
     public ResponseEntity<CategoryDTO> create(@RequestBody RequestCategoryCreated request) {
         return ResponseEntity.ok().body(categoryService.save(request));
     }

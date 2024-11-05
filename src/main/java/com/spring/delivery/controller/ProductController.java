@@ -1,10 +1,7 @@
 package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.ApiPaging;
-import com.spring.delivery.domain.request.product.RequestDiscountCreated;
-import com.spring.delivery.domain.request.product.RequestProductCreated;
-import com.spring.delivery.domain.request.product.RequestProductUpdated;
-import com.spring.delivery.domain.request.product.RequestUpdateImage;
+import com.spring.delivery.domain.request.product.*;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.service.business.product.IProductService;
@@ -29,19 +26,19 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @ApiMessage("Get product by id")
-    public ResponseEntity<ProductDTO> getById(HttpServletRequest request, @PathVariable("id") String id) {
+    public ResponseEntity<ProductDTO> getById(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping
     @ApiMessage("Get all product per page")
-    public ResponseEntity<ApiPaging<CardProductDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "0") int page) {
+    public ResponseEntity<ApiPaging<CardProductDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "1") int page) {
         return ResponseEntity.ok(productService.findAll(page));
     }
 
     @GetMapping("/category/{id}")
-    @ApiMessage("Get product by id categoryId")
-    public ResponseEntity<ApiPaging<CardProductDTO>> getByCategory(@PathVariable("id") String id, @RequestParam(required = false, name = "page", defaultValue = "0") int page) {
+    @ApiMessage("Get product by id category")
+    public ResponseEntity<ApiPaging<CardProductDTO>> getByCategory(@PathVariable("id") String id, @RequestParam(required = false, name = "page", defaultValue = "1") int page) {
         return ResponseEntity.ok(productService.findAllByCategoryId(id, page));
     }
 
@@ -87,9 +84,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.unDeleteProduct(id));
     }
 
-    @GetMapping("test")
+    @GetMapping("/home-page")
     @ApiMessage("Find product for home page")
     public ResponseEntity<List<ProductDTO>> findProductForHomePage() {
         return ResponseEntity.ok(productService.findProductForHomePage());
+    }
+
+    @GetMapping("/search")
+    @ApiMessage("Search product")
+    public ResponseEntity<ApiPaging<CardProductDTO>> searchProduct(RequestSearchProduct request) {
+        return ResponseEntity.ok(productService.searchProduct(request));
     }
 }

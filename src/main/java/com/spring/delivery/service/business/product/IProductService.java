@@ -9,10 +9,7 @@
 package com.spring.delivery.service.business.product;
 
 import com.spring.delivery.domain.ApiPaging;
-import com.spring.delivery.domain.request.product.RequestDiscountCreated;
-import com.spring.delivery.domain.request.product.RequestProductCreated;
-import com.spring.delivery.domain.request.product.RequestProductUpdated;
-import com.spring.delivery.domain.request.product.RequestUpdateImage;
+import com.spring.delivery.domain.request.product.*;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import jakarta.validation.Valid;
@@ -42,4 +39,6 @@ public interface IProductService {
     ProductDTO unDeleteProduct(String id);
 
     List<ProductDTO> findProductForHomePage();
+
+    ApiPaging<CardProductDTO> searchProduct(RequestSearchProduct request);
 }
