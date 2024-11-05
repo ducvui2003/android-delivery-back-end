@@ -22,8 +22,11 @@ spring:
       uri: ${MONGODB_URI}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
   security:
     allowed:
       origins:
@@ -81,6 +84,7 @@ app:
     - /oauth2/**
     - /auth/**
     - /auth/google
+    - /profile/v1/**
   cookie:
     key:
       refreshToken: refresh_token

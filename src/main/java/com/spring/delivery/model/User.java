@@ -1,16 +1,15 @@
 package com.spring.delivery.model;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import com.spring.delivery.util.enums.converter.AuthTypeConverter;
 import com.spring.delivery.util.enums.AuthType;
+import com.spring.delivery.util.enums.converter.AuthTypeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -46,6 +45,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    Set<Address> address;
 
     @OneToMany(mappedBy = "user")
     List<UserProductFavorite> productFavorites;
