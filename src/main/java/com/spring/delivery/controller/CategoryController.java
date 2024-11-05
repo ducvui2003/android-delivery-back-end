@@ -1,9 +1,10 @@
 package com.spring.delivery.controller;
 
-import com.spring.delivery.domain.request.product.RequestCategoryCreated;
+import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
 import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.util.anotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +34,25 @@ public class CategoryController {
 
     @PostMapping
     @ApiMessage("Create category")
-    public ResponseEntity<CategoryDTO> create(@RequestBody RequestCategoryCreated request) {
+    public ResponseEntity<CategoryDTO> create(@RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
         return ResponseEntity.ok().body(categoryService.save(request));
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiMessage("Delete category")
+    public ResponseEntity<CategoryDTO> delete(@PathVariable String id) {
+        return ResponseEntity.ok().body(categoryService.delete(id));
+    }
+
+    @PutMapping("/{id}")
+    @ApiMessage("Update category")
+    public ResponseEntity<CategoryDTO> update(@PathVariable String id, @RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
+        return ResponseEntity.ok().body(categoryService.update(id, request));
+    }
+
+    @PostMapping("/{id}")
+    @ApiMessage("Update category")
+    public ResponseEntity<CategoryDTO> undelete(@PathVariable String id) {
+        return ResponseEntity.ok().body(categoryService.undelete(id));
     }
 }

@@ -61,7 +61,8 @@ public class UserProductFavoriteServiceImpl implements IUserProductFavoriteServi
     }
 
     private User productFavoriteHelper(RequestProductFavorite request) {
-        if (!productRepository.existsById(request.productId()))
+        var product = productRepository.findByIdAndDeletedIsFalse(request.productId());
+        if (product.isEmpty() || product.get().isDeleted())
             throw new AppException(AppErrorCode.PRODUCT_NOT_FOUND);
         var optionalUserDTO = securityUtil.getCurrentUserDTOFromAccessToken();
         if (optionalUserDTO.isEmpty()) throw new AppException(AppErrorCode.UNAUTHORIZED);

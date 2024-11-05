@@ -141,7 +141,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductDTO> findProductForHomePage() {
         var ids = reviewProductService.findAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
-        return productRepository.findByIdIsIn(ids).stream().map(mapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
+        return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(mapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public boolean existsProductById(String id) {
-        return productRepository.existsById(id);
+        return getProductByIdAndCategoryHasDeletedIsFalse(id) != null;
     }
 
     private void initCategoryAndProductOption(Product product, String categoryId, List<String> productOptions) {
@@ -173,6 +173,11 @@ public class ProductServiceImpl implements IProductService {
             product.setOptions(productOptions.stream().map(optionId -> ProductOption.builder().id(optionId).build()).toList());
     }
 
+    private Product getProductByIdAndCategoryHasDeletedIsFalse(String id) {
+        var product = getProductById(id);
+        return product != null && !product.getCategory().isDeleted() ? product : null;
+    }
+
     private Product getProductById(String id) {
         var optionalProduct = productRepository.findById(id);
         return optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_FOUND));
@@ -184,20 +189,21 @@ public class ProductServiceImpl implements IProductService {
     }
 
     private ApiPaging<CardProductDTO> findCardProductHelper(Page<Product> pageProducts, int page) {
-        var products = pageProducts.getContent();
+        var products = pageProducts.getContent().stream().filter(pro -> !pro.getCategory().isDeleted()).toList();
 
         var listProductFavorite = getProductFavorite(products);
-        var productDTOs = pageProducts.getContent().stream().map(it -> {
+        var productDTOs = products.stream().map(it -> {
             var productDTO = mapper.toCardProductDTO(it);
             productDTO.setFavorite(listProductFavorite.contains(it.getId()));
             return productDTO;
         }).toList();
 
-        return ApiPaging.<CardProductDTO>builder().content(productDTOs).totalPage(pageProducts.getTotalPages()).current(page).size(pageProducts.getContent().size()).build();
+        return ApiPaging.<CardProductDTO>builder().content(productDTOs).totalPage(pageProducts.getTotalPages()).current(page).size(products.size()).build();
     }
 
     private ApiPaging<CardProductDTO> searchCardProductHelper(List<Product> products, int page) {
         var listProductFavorite = getProductFavorite(products);
+        products = products.stream().filter(pro -> !pro.getCategory().isDeleted()).toList();
         var productDTOs = products.stream().map(it -> {
             var productDTO = mapper.toCardProductDTO(it);
             productDTO.setFavorite(listProductFavorite.contains(it.getId()));

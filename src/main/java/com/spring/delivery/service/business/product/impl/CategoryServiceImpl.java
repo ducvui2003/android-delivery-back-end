@@ -8,7 +8,7 @@
 
 package com.spring.delivery.service.business.product.impl;
 
-import com.spring.delivery.domain.request.product.RequestCategoryCreated;
+import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
 import com.spring.delivery.mapper.CategoryMapper;
 import com.spring.delivery.repository.mongo.ICategoryRepository;
@@ -32,7 +32,8 @@ public class CategoryServiceImpl implements ICategoryService {
     CategoryMapper categoryMapper;
 
     @Override
-    public CategoryDTO save(RequestCategoryCreated category) {
+    public CategoryDTO save(RequestCategoryCreatedAndUpdated category) {
+        if (categoryRepository.existsByName(category.name())) throw new AppException(AppErrorCode.EXIST);
         return categoryMapper.toCategoryDTO(categoryRepository.save(categoryMapper.toCategory(category)));
     }
 
@@ -43,12 +44,40 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryDTO findById(String id) {
-        var option = categoryRepository.findById(id);
+        var option = categoryRepository.findByIdAndDeletedIsFalse(id);
         return option.map(categoryMapper::toCategoryDTO).orElseThrow(() -> new AppException(AppErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override
     public boolean existById(String id) {
-        return categoryRepository.existsById(id);
+        return categoryRepository.existsByIdAndDeletedIsFalse(id);
+    }
+
+    @Override
+    public CategoryDTO update(String id, RequestCategoryCreatedAndUpdated request) {
+        var optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) throw new AppException(AppErrorCode.EXIST);
+        var category = optionalCategory.get();
+        if (request.name() != null) category.setName(request.name());
+        if (request.urlImage() != null) category.setUrlImage(request.urlImage());
+        return categoryMapper.toCategoryDTO(categoryRepository.save(category));
+    }
+
+    @Override
+    public CategoryDTO delete(String id) {
+        return deleteHelper(id, true);
+    }
+
+    @Override
+    public CategoryDTO undelete(String id) {
+        return deleteHelper(id, false);
+    }
+
+    private CategoryDTO deleteHelper(String id, boolean delete) {
+        var optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) throw new AppException(AppErrorCode.EXIST);
+        var category = optionalCategory.get();
+        category.setDeleted(delete);
+        return categoryMapper.toCategoryDTO(categoryRepository.save(category));
     }
 }

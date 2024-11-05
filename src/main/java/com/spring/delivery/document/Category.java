@@ -31,7 +31,7 @@ public class Category {
 
     String urlImage;
 
-    Boolean deleted = false;
+    boolean deleted = false;
 
     @CreatedDate
     LocalDateTime createdAt;
