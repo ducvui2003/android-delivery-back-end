@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
   main:
     allow-bean-definition-overriding: true
   profiles:
@@ -98,3 +100,7 @@ app:
       max-try: 3
   paging:
     size: 10
+  database:
+    entry:
+      product-review:
+        limit: 10

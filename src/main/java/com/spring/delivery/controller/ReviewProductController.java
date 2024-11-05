@@ -3,7 +3,7 @@ package com.spring.delivery.controller;
 import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.response.review.ProductReviewResponse;
 import com.spring.delivery.domain.response.review.ProductReviewDetailResponse;
-import com.spring.delivery.service.business.review.ReviewProductService;
+import com.spring.delivery.service.business.review.IReviewProductService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import com.spring.delivery.util.enums.Rating;
 import com.spring.delivery.util.enums.converter.SortConverter;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReviewProductController {
-    ReviewProductService reviewProductService;
+    IReviewProductService reviewProductService;
 
     @GetMapping("/product/{product_id}")
     @ApiMessage("Review overall for a product")

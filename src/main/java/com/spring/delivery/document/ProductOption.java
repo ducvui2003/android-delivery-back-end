@@ -43,7 +43,7 @@ public class ProductOption {
 
     Double price;
 
-    Boolean deleted = false;
+    boolean deleted = false;
 
     @CreatedDate
     LocalDateTime createdAt;

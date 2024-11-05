@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record RequestProductCreated(
+public record RequestProductUpdated(
         String name,
 
         Double price,
@@ -16,8 +16,6 @@ public record RequestProductCreated(
 
         String categoryId,
 
-        @NotNull(message = "Product option Id is required")
-        @NotEmpty(message = "Product option Id cannot be empty")
         List<@NotEmpty(message = "Each Product option must be non-empty") String> optionIds,
 
         List<RequestNutritionalCreated> nutritional
