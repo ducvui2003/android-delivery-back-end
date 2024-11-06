@@ -1,12 +1,15 @@
 package com.spring.delivery.mapper;
 
 import com.spring.delivery.document.Promotion;
+import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PromotionMapper {
+
+//    @Mapping(source = )
     PromotionDTO toPromotionDTO(Promotion promotion);
 
-    Promotion toPromotion(PromotionDTO promotionDTO);
+    Promotion toPromotion(RequestPromotionCreated req);
 }

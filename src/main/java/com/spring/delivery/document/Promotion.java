@@ -1,15 +1,19 @@
 package com.spring.delivery.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.spring.delivery.util.enums.converter.PromotionType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -36,8 +40,13 @@ public class Promotion {
 
     String applicableScope;
 
-    double discountAmount;
-
     String termsAndConditions;
 
+    DiscountPromotionInfo discountPromotionInfo;
+
+    PromotionType type;
+
+    public Promotion orElseThrow(Object o) {
+        return null;
+    }
 }
