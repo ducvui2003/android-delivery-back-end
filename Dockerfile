@@ -21,7 +21,7 @@ RUN apt-get update  \
 RUN bash ./gradlew --version
 
 # Build the application with gradlew
-RUN bash ./gradlew build --no-daemon
+RUN bash ./gradlew clean bootJar
 
 # Copy the built jar file to the container
 COPY build/libs/*.jar app.jar

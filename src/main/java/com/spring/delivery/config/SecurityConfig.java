@@ -36,6 +36,7 @@ public class SecurityConfig {
     CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     ApplicationProps applicationProps;
     CustomJwtGrantedAuthoritiesConverter customJwtGrantedAuthoritiesConverter;
+    CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,7 +50,9 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults()).authenticationEntryPoint(customAuthenticationEntryPoint))
+                        oauth2.jwt(Customizer.withDefaults())
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
