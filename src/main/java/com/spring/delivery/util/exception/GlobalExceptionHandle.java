@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -43,6 +44,20 @@ public class GlobalExceptionHandle {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(JwtException exception) {
+        StackTraceElement[] stackTrace = getStackTraces(exception);
+
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .message(exception.getMessage())
+                .error("JWT Exception")
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .stackTrace(stackTrace)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
