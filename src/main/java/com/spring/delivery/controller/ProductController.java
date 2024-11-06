@@ -79,14 +79,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') AND hasAuthority('PRODUCT_DELETE')")
     @ApiMessage("Delete product by id")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.deleteProduct(id));
     }
 
     @PostMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') AND hasAuthority('PRODUCT_DELETE')")
     @ApiMessage("Undelete product by id")
     public ResponseEntity<ProductDTO> unDeleteProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.unDeleteProduct(id));
