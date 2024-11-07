@@ -5,8 +5,8 @@ import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.mapper.OrderDetailMapper;
 import com.spring.delivery.repository.mysql.OrderDetailRepository;
+import com.spring.delivery.service.business.product.IProductService;
 import com.spring.delivery.service.order.OrderDetailService;
-import com.spring.delivery.service.product.ProductService;
 import com.spring.delivery.service.promotion.PromotionService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
@@ -29,7 +29,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     OrderDetailMapper orderDetailMapper;
     OrderDetailRepository orderDetailRepository;
     PromotionService promotionService;
-    ProductService productService;
+    IProductService productService;
 
 
     @Override
