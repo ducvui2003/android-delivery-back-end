@@ -4,6 +4,7 @@ import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.mapper.PromotionMapper;
 import com.spring.delivery.repository.mongo.PromotionRepository;
+import com.spring.delivery.repository.mysql.UserRepository;
 import com.spring.delivery.service.promotion.PromotionService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
@@ -19,10 +20,11 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PromotionServiceImpl implements PromotionService {
-    final PromotionRepository promotionRepository;
-    final PromotionMapper mapper;
+     PromotionRepository promotionRepository;
+     PromotionMapper mapper;
+     UserRepository userRepository;
 
     @Override
     public List<PromotionDTO> getPromotions() {
@@ -31,10 +33,7 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public PromotionDTO getPromotion(String id) {
-        var promotion = promotionRepository.findById(id).orElseThrow();
-        log.info("Promotion found: {}", promotion);
-        log.info("Promotion found: {}", id);
-        return mapper.toPromotionDTO(promotion);
+        return mapper.toPromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.PROMOTION_NOT_FOUND)));
     }
 
     @Override
@@ -48,8 +47,9 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Boolean createPromotion(RequestPromotionCreated req) {
-        promotionRepository.save(mapper.toPromotion(req));
-        return true;
+    public PromotionDTO createPromotion(RequestPromotionCreated req) {
+        if(userRepository.findById(req.userId()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
+        var promotion = promotionRepository.save(mapper.toPromotion(req));
+        return mapper.toPromotionDTO(promotion);
     }
 }

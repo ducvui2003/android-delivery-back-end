@@ -4,7 +4,9 @@ import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.service.promotion.PromotionService;
 import com.spring.delivery.util.anotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class PromotionController {
 
     @PostMapping("/add")
     @ApiMessage("add promotion")
-    public ResponseEntity<Boolean> addPromotion(@RequestBody RequestPromotionCreated promotionDTO) {
-        return ResponseEntity.ok().body(promotionService.createPromotion(promotionDTO));
+    public ResponseEntity<PromotionDTO> addPromotion(@Valid @RequestBody RequestPromotionCreated req) {
+        return ResponseEntity.ok().body(promotionService.createPromotion(req));
     }
 }

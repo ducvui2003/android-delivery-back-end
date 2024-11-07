@@ -9,5 +9,5 @@ public interface PromotionService {
     List<PromotionDTO> getPromotions();
     PromotionDTO getPromotion(String id);
     Boolean hasValidity(String promotionId);
-    Boolean createPromotion(RequestPromotionCreated req);
+    PromotionDTO createPromotion(RequestPromotionCreated req);
 }

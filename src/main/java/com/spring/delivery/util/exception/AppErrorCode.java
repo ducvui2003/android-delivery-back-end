@@ -31,6 +31,7 @@ public enum AppErrorCode {
     PRODUCT_DETAIL_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product detail not found"),
     PROMOTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Promotion not found"),
     CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Category not found"),
+    DATA_INVALID(HttpServletResponse.SC_BAD_REQUEST, "Data is invalid"),
     PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found");
 
     private int code;

@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface PromotionMapper {
 
-//    @Mapping(source = )
     PromotionDTO toPromotionDTO(Promotion promotion);
 
     Promotion toPromotion(RequestPromotionCreated req);

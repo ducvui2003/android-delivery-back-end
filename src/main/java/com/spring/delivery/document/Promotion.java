@@ -2,12 +2,13 @@ package com.spring.delivery.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.util.enums.converter.PromotionType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -44,9 +45,21 @@ public class Promotion {
 
     DiscountPromotionInfo discountPromotionInfo;
 
+    @Enumerated(EnumType.STRING)
     PromotionType type;
 
-    public Promotion orElseThrow(Object o) {
-        return null;
-    }
+    @Builder.Default
+    Boolean deleted = false;
+
+    @CreatedDate
+    LocalDateTime createdAt;
+
+    @LastModifiedDate
+    LocalDateTime updateAt;
+
+    @CreatedBy
+    String createdBy;
+
+    @LastModifiedBy
+    String updatedBy;
 }
