@@ -2,7 +2,7 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
-import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product-option")
 public class ProductOptionController {
-    ProductOptionService productOptionService;
+    IProductOptionService productOptionService;
 
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.spring.delivery.service.business.review;
 
 import com.spring.delivery.domain.ApiPaging;
+import com.spring.delivery.domain.response.review.AverageRatingProduct;
 import com.spring.delivery.domain.response.review.ProductReviewResponse;
 import com.spring.delivery.domain.response.review.ProductReviewDetailResponse;
 import com.spring.delivery.util.enums.Rating;
@@ -8,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface ReviewProductService {
+public interface IReviewProductService {
     ProductReviewResponse getRatingOverall(String id);
 
     List<ProductReviewResponse> getRatingOverall(List<String> ids);
@@ -16,4 +17,6 @@ public interface ReviewProductService {
     ApiPaging<ProductReviewDetailResponse> getProductRatingDetail(String id, Pageable pageable);
 
     ApiPaging<ProductReviewDetailResponse> getProductRatingDetail(String id, Rating rating, Pageable pageable);
+
+    List<AverageRatingProduct> findAverageRatingProduct();
 }

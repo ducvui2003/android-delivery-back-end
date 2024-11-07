@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum AppErrorCode {
     EXIST(HttpServletResponse.SC_CONFLICT, "Data is already exist"),
+    NOT_EXIST(HttpServletResponse.SC_CONFLICT, "Data is not exist"),
     ACCESS_TOKEN_EXPIRED(HttpServletResponse.SC_REQUEST_TIMEOUT, "Access authCode is expired"),
     ACCESS_TOKEN_NOT_FOUND(HttpServletResponse.SC_UNAUTHORIZED, "Access authCode not found"),
     USER_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "User not found"),
@@ -31,6 +32,8 @@ public enum AppErrorCode {
     PRODUCT_DETAIL_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product detail not found"),
     PROMOTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Promotion not found"),
     CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Category not found"),
+    PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found"),
+    ADDRESS_FULL(HttpServletResponse.SC_BAD_REQUEST, "You can only have 5 addresses"),
     DATA_INVALID(HttpServletResponse.SC_BAD_REQUEST, "Data is invalid"),
     PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found");
 

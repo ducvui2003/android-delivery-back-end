@@ -9,7 +9,7 @@
 package com.spring.delivery.mapper;
 
 import com.spring.delivery.document.Category;
-import com.spring.delivery.domain.request.product.RequestCategoryCreated;
+import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
 import org.mapstruct.Mapper;
 
@@ -17,5 +17,5 @@ import org.mapstruct.Mapper;
 public interface CategoryMapper {
     CategoryDTO toCategoryDTO(Category product);
 
-    Category toCategory(RequestCategoryCreated request);
+    Category toCategory(RequestCategoryCreatedAndUpdated request);
 }

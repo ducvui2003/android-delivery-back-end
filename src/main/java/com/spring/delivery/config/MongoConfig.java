@@ -11,6 +11,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Configuration
@@ -21,7 +22,7 @@ public class MongoConfig {
 
     @Bean(name = "auditingDateTimeProvider")
     public DateTimeProvider dateTimeProvider() {
-        return () -> Optional.of(OffsetDateTime.now());
+        return () -> Optional.of(OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
     }
 
     @Bean(name = "auditorProvider")

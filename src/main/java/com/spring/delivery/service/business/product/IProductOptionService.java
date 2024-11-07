@@ -6,17 +6,19 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product;
+package com.spring.delivery.service.business.product;
 
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
 
 import java.util.List;
 
-public interface ProductOptionService {
+public interface IProductOptionService {
     ProductOptionDTO save(RequestOptionCreated category);
 
     List<ProductOptionDTO> findAll();
 
     ProductOptionDTO findById(String id);
+
+    boolean existById(String id);
 }
