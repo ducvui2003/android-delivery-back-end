@@ -2,7 +2,6 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.6"
-    id("com.diffplug.spotless") version "6.22.0"
     kotlin("jvm") version "2.0.21"
 }
 
@@ -16,7 +15,6 @@ java {
 }
 
 val springCloudVersion: String by extra("2023.0.2")
-
 
 configurations {
     compileOnly {
@@ -68,6 +66,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
     implementation("com.brevo:brevo:1.0.0")
+    // Kotlin standard library
     implementation(kotlin("stdlib-jdk8"))
 }
 dependencyManagement {
@@ -75,18 +74,10 @@ dependencyManagement {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     }
 }
-spotless {
-    java {
-        // Target only Java files in src/main/java
-        target("src/main/java/**/*.java");
-//        palantirJavaFormat();
-        removeUnusedImports();
-        toggleOffOn();
-        trimTrailingWhitespace();
-        indentWithTabs(4);
-        importOrder("java", "javax", "org", "com", "com.diffplug");
-    }
-}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+    mainClass.set("com.spring.delivery.DeliveryApplication") // Replace with your actual main class
 }
