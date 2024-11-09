@@ -17,7 +17,6 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class ResponseAuthentication {
-    @JsonProperty("access_token")
     private String accessToken;
 
     @JsonIgnore
@@ -34,12 +33,13 @@ public class ResponseAuthentication {
 
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record UserDTO(long id, String phoneNumber, String email, String fullName) {
+    public record UserDTO(long id, String phoneNumber, String email, String fullName, String role) {
         public static UserDTO initFromMapInfoUserDTO(Map<String, Object> mapUser) {
             return UserDTO.builder()
                     .id((Long) mapUser.get("id"))
                     .phoneNumber((String) mapUser.get("phoneNumber"))
                     .email((String) mapUser.get("email"))
+                    .role((String) mapUser.get("role"))
                     .fullName((String) mapUser.get("fullName"))
                     .build();
         }
