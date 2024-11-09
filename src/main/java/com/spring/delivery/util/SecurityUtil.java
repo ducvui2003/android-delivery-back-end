@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import com.spring.delivery.domain.response.ResponseAuthentication;
 import com.spring.delivery.model.JwtPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -146,14 +147,14 @@ public class SecurityUtil {
      *
      * @return access token
      */
-    public String getAccessToken() {
+    public Optional<String> getAccessToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication instanceof JwtAuthenticationToken jwtToken) {
             Jwt jwt = jwtToken.getToken();
-            return jwt.getTokenValue(); // This returns the raw JWT token
+            return Optional.of(jwt.getTokenValue()); // This returns the raw JWT token
         }
-        return null;
+        return Optional.empty();
     }
 
     public long remainderTimeToken(String token) {
@@ -161,5 +162,16 @@ public class SecurityUtil {
         Instant createdToken = getExpirationInstant(token);
         Duration duration = Duration.between(now, createdToken);
         return duration.getSeconds();
+    }
+
+    public Optional<ResponseAuthentication.UserDTO> getCurrentUserDTOFromAccessToken() {
+        var optionalToken = getAccessToken();
+        if (optionalToken.isEmpty()) return null;
+        var tokenDecode = jwtDecoder.decode(optionalToken.get());
+        var userJson = tokenDecode.getClaimAsMap("user");
+        var user = ResponseAuthentication.UserDTO.initFromMapInfoUserDTO(userJson);
+        if (user == null)
+            return Optional.empty();
+        return Optional.of(user);
     }
 }

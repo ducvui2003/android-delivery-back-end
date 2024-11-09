@@ -1,12 +1,19 @@
-package com.spring.delivery.service.business.review;
+package com.spring.delivery.service.business.review.impl;
 
 import com.spring.delivery.domain.ApiPaging;
+import com.spring.delivery.domain.response.review.AverageRatingProduct;
 import com.spring.delivery.domain.response.review.ProductReviewResponse;
 import com.spring.delivery.domain.response.review.ProductReviewDetailResponse;
 import com.spring.delivery.mapper.ReviewMapper;
 import com.spring.delivery.model.ReviewProduct;
-import com.spring.delivery.repository.mysql.ReviewProductProductRepository;
+import com.spring.delivery.repository.mysql.IReviewProductRepository;
+import com.spring.delivery.service.business.review.IReviewProductService;
+import com.spring.delivery.service.business.review.spec.ReviewProductSpecs;
 import com.spring.delivery.util.enums.Rating;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,9 +24,13 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
-public class ReviewProductServiceImpl implements ReviewProductService {
-    ReviewProductProductRepository reviewProductRepository;
-    ReviewMapper reviewMapper;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+public class ReviewProductServiceImpl implements IReviewProductService {
+    final IReviewProductRepository reviewProductRepository;
+    final ReviewMapper reviewMapper;
+    @Value("${app.database.entry.product-review.limit}")
+    int limit;
 
     @Override
     public ProductReviewResponse getRatingOverall(String id) {
@@ -61,5 +72,10 @@ public class ReviewProductServiceImpl implements ReviewProductService {
                 .size(pageable.getPageSize())
                 .content(data)
                 .build();
+    }
+
+    @Override
+    public List<AverageRatingProduct> findAverageRatingProduct() {
+        return reviewProductRepository.findAverageRatingProduct(limit);
     }
 }

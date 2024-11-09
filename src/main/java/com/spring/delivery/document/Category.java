@@ -29,7 +29,9 @@ public class Category {
 
     String name;
 
-    Boolean deleted = false;
+    String urlImage;
+
+    boolean deleted = false;
 
     @CreatedDate
     LocalDateTime createdAt;

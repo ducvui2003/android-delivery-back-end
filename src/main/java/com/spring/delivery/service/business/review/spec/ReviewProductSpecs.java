@@ -1,4 +1,4 @@
-package com.spring.delivery.service.business.review;
+package com.spring.delivery.service.business.review.spec;
 
 import com.spring.delivery.model.ReviewProduct;
 import com.spring.delivery.util.enums.Rating;

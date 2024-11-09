@@ -6,13 +6,13 @@
  * User: lam-nguyen
  **/
 
-package com.spring.delivery.service.product.impl;
+package com.spring.delivery.service.business.product.impl;
 
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import com.spring.delivery.mapper.ProductOptionMapper;
-import com.spring.delivery.repository.mongo.ProductOptionRepository;
-import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.repository.mongo.IProductOptionRepository;
+import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
@@ -25,8 +25,8 @@ import java.util.List;
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class ProductOptionServiceImpl implements ProductOptionService {
-    ProductOptionRepository productOptionRepository;
+public class ProductOptionServiceImpl implements IProductOptionService {
+    IProductOptionRepository productOptionRepository;
     ProductOptionMapper mapper;
 
     @Override
@@ -42,5 +42,10 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     @Override
     public ProductOptionDTO findById(String id) {
         return productOptionRepository.findById(id).map(mapper::toProductOptionDTO).orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_OPTION_NOT_FOUND));
+    }
+
+    @Override
+    public boolean existById(String id) {
+        return productOptionRepository.existsById(id);
     }
 }
