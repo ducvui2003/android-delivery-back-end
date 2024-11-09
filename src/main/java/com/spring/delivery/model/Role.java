@@ -13,6 +13,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,4 +30,7 @@ public class Role implements Serializable {
     Long id;
     @Enumerated(EnumType.STRING)
     RoleEnum name;
+
+    @OneToMany(mappedBy = "role")
+    List<User> users;
 }
