@@ -29,11 +29,4 @@ public class Role implements Serializable {
     Long id;
     @Enumerated(EnumType.STRING)
     RoleEnum name;
-
-    @ManyToMany
-    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    Set<Permission> permissions;
-
-    @OneToMany(mappedBy = "role")
-    Set<User> users;
 }

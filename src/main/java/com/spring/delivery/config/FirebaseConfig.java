@@ -2,6 +2,7 @@ package com.spring.delivery.config;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.json.gson.GsonFactory;
@@ -64,6 +65,6 @@ public class FirebaseConfig {
     public GoogleClientSecrets googleClientSecrets() throws IOException {
         com.google.api.client.json.JsonFactory jsonFactory = new GsonFactory();
         return GoogleClientSecrets.load(
-                jsonFactory, new FileReader(clientSecret.getFile()));
+                jsonFactory, new InputStreamReader(clientSecret.getInputStream()));
     }
 }

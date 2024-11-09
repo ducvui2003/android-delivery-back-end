@@ -20,5 +20,5 @@ public class Permission {
     Long id;
     String name;
     @ManyToMany(mappedBy = "permissions")
-    Set<Role> role;
+    Set<User> users;
 }

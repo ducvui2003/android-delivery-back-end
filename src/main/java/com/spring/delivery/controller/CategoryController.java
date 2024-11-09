@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,25 +34,29 @@ public class CategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create category")
     public ResponseEntity<CategoryDTO> create(@RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
         return ResponseEntity.ok().body(categoryService.save(request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Delete category")
     public ResponseEntity<CategoryDTO> delete(@PathVariable String id) {
         return ResponseEntity.ok().body(categoryService.delete(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Update category")
     public ResponseEntity<CategoryDTO> update(@PathVariable String id, @RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
         return ResponseEntity.ok().body(categoryService.update(id, request));
     }
 
     @PostMapping("/{id}")
-    @ApiMessage("Update category")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiMessage("Un delete category")
     public ResponseEntity<CategoryDTO> undelete(@PathVariable String id) {
         return ResponseEntity.ok().body(categoryService.undelete(id));
     }

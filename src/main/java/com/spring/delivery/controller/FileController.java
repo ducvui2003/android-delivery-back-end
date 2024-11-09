@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,7 @@ public class FileController {
     ResourceMapper resourceMapper;
 
     @PostMapping("/{type}/upload")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Upload a file")
     public ResponseEntity<ResponseFileUpload> upload(@PathVariable("type") @EnumValid(enumClass = Folder.class) String type, @RequestParam("file") MultipartFile multipartFile) {
         try {
@@ -43,6 +45,7 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Get URL")
     public ResponseEntity<ResponseFileUpload> getUrl(@PathVariable("id") String id) {
         Resource resource = fileService.findById(id);
