@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class Promotion {
     String id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long userId;
+    List<Long> userIds;
 
     String name;
 

@@ -48,7 +48,8 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public PromotionDTO createPromotion(RequestPromotionCreated req) {
-        if(userRepository.findById(req.userId()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
+        if(req.userIds() != null)
+            if(userRepository.findByIdIn(req.userIds()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
         var promotion = promotionRepository.save(mapper.toPromotion(req));
         return mapper.toPromotionDTO(promotion);
     }

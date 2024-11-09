@@ -6,6 +6,7 @@ import com.spring.delivery.util.enums.converter.PromotionType;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -13,7 +14,7 @@ public record PromotionDTO(
 
         String id,
 
-        Long userId,
+        List<Long> userIds,
 
         String name,
 

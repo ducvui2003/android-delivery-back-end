@@ -5,9 +5,10 @@ import com.spring.delivery.util.enums.converter.PromotionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 public record RequestPromotionCreated(
-        @NotNull(message = "userId must be not null")
-        Long userId,
+        List<Long> userIds,
 
         @NotBlank(message = "name promotion not empty")
         String name,
