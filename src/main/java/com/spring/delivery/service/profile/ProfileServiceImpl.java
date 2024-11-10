@@ -10,6 +10,7 @@ import com.spring.delivery.repository.mysql.IAddressRepository;
 import com.spring.delivery.repository.mysql.UserRepository;
 import com.spring.delivery.service.address.IAddressService;
 import com.spring.delivery.util.MyPhoneNumberUtil;
+import com.spring.delivery.util.PropertyNameNullUtil;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
@@ -48,22 +49,9 @@ public class ProfileServiceImpl implements IProfileService {
             addressService.addAddress(requestAddress);
         }
         RequestUpdateProfile requestUpdateProfile = objectMapper.convertValue(updateRequest, RequestUpdateProfile.class);
-        BeanUtils.copyProperties(requestUpdateProfile, user, getNullPropertyNames(requestUpdateProfile));
+        BeanUtils.copyProperties(requestUpdateProfile, user, PropertyNameNullUtil.getNullPropertyNames(requestUpdateProfile));
         user.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(region, user.getPhoneNumber()));
         userRepository.save(user);
     }
 
-    //lấy tên các thuộc tính null của object
-    private String[] getNullPropertyNames(Object source) {
-        final BeanWrapper wrappedSource = new BeanWrapperImpl(source);
-        Set<String> emptyNames = new HashSet<>();
-
-        for (var propertyDescriptor : wrappedSource.getPropertyDescriptors()) {
-            String propertyName = propertyDescriptor.getName();
-            if (wrappedSource.getPropertyValue(propertyName) == null) {
-                emptyNames.add(propertyName);
-            }
-        }
-        return emptyNames.toArray(new String[0]);
-    }
 }
