@@ -3,10 +3,7 @@ package com.spring.delivery.service.profile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.delivery.domain.request.RequestUpdateProfile;
 import com.spring.delivery.domain.request.address.RequestAddress;
-import com.spring.delivery.mapper.UserMapper;
-import com.spring.delivery.model.Address;
 import com.spring.delivery.model.User;
-import com.spring.delivery.repository.mysql.IAddressRepository;
 import com.spring.delivery.repository.mysql.UserRepository;
 import com.spring.delivery.service.address.IAddressService;
 import com.spring.delivery.util.MyPhoneNumberUtil;
@@ -18,27 +15,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProfileServiceImpl implements IProfileService {
     UserRepository userRepository;
-    IAddressRepository addressRepository;
-    UserMapper userMapper;
     ObjectMapper objectMapper;
     IAddressService addressService;
 
     @Override
     public void updateProfile(Map<String, Object> updateRequest) {
-        String region = updateRequest.get("region").toString();
+
         User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().get())
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
         if (updateRequest.containsKey("address")) {
@@ -48,9 +39,12 @@ public class ProfileServiceImpl implements IProfileService {
             );
             addressService.addAddress(requestAddress);
         }
+        String region = updateRequest.getOrDefault("region", "").toString();
         RequestUpdateProfile requestUpdateProfile = objectMapper.convertValue(updateRequest, RequestUpdateProfile.class);
         BeanUtils.copyProperties(requestUpdateProfile, user, PropertyNameNullUtil.getNullPropertyNames(requestUpdateProfile));
-        user.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(region, user.getPhoneNumber()));
+        if (!region.isEmpty()) {
+            user.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(region, user.getPhoneNumber()));
+        }
         userRepository.save(user);
     }
 
