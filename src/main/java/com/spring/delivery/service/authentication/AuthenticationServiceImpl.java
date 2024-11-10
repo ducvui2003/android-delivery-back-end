@@ -61,6 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User register(User user) {
+        checkBeforeRegister(user.getEmail(), user.getPhoneNumber());
         user.setVerified(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -186,7 +187,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(user.getEmail())
                 .user(userMapper.toUserPayload(user))
                 .role(user.getRole().getName().name())
-                .permissions(user.getRole().getPermissions().stream().map(Permission::getName).toList())
+                .permissions(user.getPermissions().stream().map(Permission::getName).toList())
                 .timeExpiredPlus(1)
                 .build();
     }

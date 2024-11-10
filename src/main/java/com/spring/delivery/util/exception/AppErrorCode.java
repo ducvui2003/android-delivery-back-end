@@ -29,10 +29,11 @@ public enum AppErrorCode {
     PHONE_NUMBER_INVALID(HttpServletResponse.SC_BAD_REQUEST, "Phone number is invalid"),
     ERROR_OAUTH2(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred during OAuth2 authentication"),
     PRODUCT_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product not found"),
+    PRODUCT_DETAIL_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product detail not found"),
+    PROMOTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Promotion not found"),
     CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Category not found"),
     PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found"),
     ADDRESS_FULL(HttpServletResponse.SC_BAD_REQUEST, "You can only have 5 addresses");
-
 
     private int code;
     private String message;

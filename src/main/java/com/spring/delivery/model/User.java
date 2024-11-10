@@ -53,6 +53,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_permissions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    Set<Permission> permissions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     Set<Address> address;

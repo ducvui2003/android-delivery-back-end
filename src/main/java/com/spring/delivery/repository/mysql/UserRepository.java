@@ -1,5 +1,6 @@
 package com.spring.delivery.repository.mysql;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	boolean existsByEmail(String email);
 
+	List<User> findByIdIn(List<Long> ids);
 	@Transactional
 	void deleteByVerifiedFalse();
 

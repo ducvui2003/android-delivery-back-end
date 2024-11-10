@@ -84,7 +84,7 @@ app:
     - /oauth2/**
     - /auth/**
     - /auth/google
-    - /profile/v1/**
+    - /api/v1/product/home-page
   cookie:
     key:
       refreshToken: refresh_token
