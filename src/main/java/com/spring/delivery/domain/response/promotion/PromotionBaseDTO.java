@@ -1,6 +1,7 @@
 package com.spring.delivery.domain.response.promotion;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.spring.delivery.util.enums.converter.PromotionType;
 import lombok.Builder;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public record PromotionBaseDTO(
 
         List<Long> userIds,
 
-        String name
+        String name,
+
+         PromotionType type
 ) {
 }
