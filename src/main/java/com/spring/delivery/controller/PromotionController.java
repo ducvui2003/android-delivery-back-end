@@ -1,6 +1,7 @@
 package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
+import com.spring.delivery.domain.response.promotion.PromotionBaseDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.service.promotion.PromotionService;
 import com.spring.delivery.util.anotation.ApiMessage;
@@ -23,7 +24,7 @@ public class PromotionController {
 
     @GetMapping("/")
     @ApiMessage("Get all promotions")
-    public ResponseEntity<List<PromotionDTO>> getPromotions() {
+    public ResponseEntity<List<PromotionBaseDTO>> getPromotions() {
         return ResponseEntity.ok().body(promotionService.getPromotions());
     }
 

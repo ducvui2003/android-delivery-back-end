@@ -1,6 +1,7 @@
 package com.spring.delivery.service.promotion.impl;
 
 import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
+import com.spring.delivery.domain.response.promotion.PromotionBaseDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.mapper.PromotionMapper;
 import com.spring.delivery.repository.mongo.PromotionRepository;
@@ -27,8 +28,8 @@ public class PromotionServiceImpl implements PromotionService {
      UserRepository userRepository;
 
     @Override
-    public List<PromotionDTO> getPromotions() {
-        return promotionRepository.findAll().stream().map(mapper::toPromotionDTO).toList();
+    public List<PromotionBaseDTO> getPromotions() {
+        return promotionRepository.findAll().stream().map(mapper::toPromotionBaseDTO).toList();
     }
 
     @Override
