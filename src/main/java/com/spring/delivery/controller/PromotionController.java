@@ -30,13 +30,13 @@ public class PromotionController {
 
     @GetMapping("/{userId}")
     @ApiMessage("Get promotions by user id")
-    public ResponseEntity<List<PromotionBaseDTO>> getPromotionsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<PromotionBaseDTO>> getPromotionsByUserId(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok().body(promotionService.getPromotionsByUserId(userId));
     }
 
-    @GetMapping("/get")
+    @GetMapping("/detail/{id}")
     @ApiMessage("Get promotion by id")
-    public ResponseEntity<PromotionDTO> getPromotionById(@RequestParam String id) {
+    public ResponseEntity<PromotionDTO> getPromotionById(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(promotionService.getPromotion(id));
     }
 
