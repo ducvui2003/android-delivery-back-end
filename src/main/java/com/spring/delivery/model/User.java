@@ -25,6 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "phone_number")
     String phoneNumber;
 
     String email;
@@ -32,9 +33,16 @@ public class User {
     @JsonIgnore
     String password;
 
+    @Column(name = "full_name")
     String fullName;
 
     boolean verified;
+
+    String sex;
+
+    String avatar;
+
+    String birthday;
 
     @Column(nullable = false)
     @Convert(converter = AuthTypeConverter.class)
