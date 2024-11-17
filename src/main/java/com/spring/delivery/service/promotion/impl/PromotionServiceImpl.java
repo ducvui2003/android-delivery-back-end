@@ -54,4 +54,9 @@ public class PromotionServiceImpl implements PromotionService {
         var promotion = promotionRepository.save(mapper.toPromotion(req));
         return mapper.toPromotionDTO(promotion);
     }
+
+    @Override
+    public List<PromotionBaseDTO> getPromotionsByUserId(Long userId) {
+        return promotionRepository.findPromotionsByUserId(userId).stream().map(mapper::toPromotionBaseDTO).toList();
+    }
 }

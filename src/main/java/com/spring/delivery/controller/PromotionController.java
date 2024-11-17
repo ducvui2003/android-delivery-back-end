@@ -28,6 +28,12 @@ public class PromotionController {
         return ResponseEntity.ok().body(promotionService.getPromotions());
     }
 
+    @GetMapping("/{userId}")
+    @ApiMessage("Get promotions by user id")
+    public ResponseEntity<List<PromotionBaseDTO>> getPromotionsByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(promotionService.getPromotionsByUserId(userId));
+    }
+
     @GetMapping("/get")
     @ApiMessage("Get promotion by id")
     public ResponseEntity<PromotionDTO> getPromotionById(@RequestParam String id) {
