@@ -1,6 +1,7 @@
 package com.spring.delivery.service.promotion.impl;
 
 import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
+import com.spring.delivery.domain.response.promotion.PromotionBaseDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.mapper.PromotionMapper;
 import com.spring.delivery.repository.mongo.PromotionRepository;
@@ -27,8 +28,8 @@ public class PromotionServiceImpl implements PromotionService {
      UserRepository userRepository;
 
     @Override
-    public List<PromotionDTO> getPromotions() {
-        return promotionRepository.findAll().stream().map(mapper::toPromotionDTO).toList();
+    public List<PromotionBaseDTO> getPromotions() {
+        return promotionRepository.findAll().stream().map(mapper::toPromotionBaseDTO).toList();
     }
 
     @Override
@@ -52,5 +53,10 @@ public class PromotionServiceImpl implements PromotionService {
             if(userRepository.findByIdIn(req.userIds()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
         var promotion = promotionRepository.save(mapper.toPromotion(req));
         return mapper.toPromotionDTO(promotion);
+    }
+
+    @Override
+    public List<PromotionBaseDTO> getPromotionsByUserId(Long userId) {
+        return promotionRepository.findPromotionsByUserId(userId).stream().map(mapper::toPromotionBaseDTO).toList();
     }
 }
