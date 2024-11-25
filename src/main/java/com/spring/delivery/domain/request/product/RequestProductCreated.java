@@ -16,8 +16,6 @@ public record RequestProductCreated(
 
         String categoryId,
 
-        RequestDiscountCreated discountInfo,
-
         @NotNull(message = "Product option Id is required")
         @NotEmpty(message = "Product option Id cannot be empty")
         List<@NotEmpty(message = "Each Product option must be non-empty") String> optionIds,

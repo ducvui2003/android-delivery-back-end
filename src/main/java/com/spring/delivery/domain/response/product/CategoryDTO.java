@@ -14,5 +14,6 @@ import lombok.Builder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public record CategoryDTO(String id,
-                          String name) {
+                          String name,
+                          String urlImage) {
 }

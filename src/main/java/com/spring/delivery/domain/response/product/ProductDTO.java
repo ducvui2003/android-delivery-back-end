@@ -11,33 +11,34 @@ package com.spring.delivery.domain.response.product;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.document.DiscountInfo;
 import com.spring.delivery.document.Nutritional;
-import lombok.Builder;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ProductDTO(
-        String id,
+public class ProductDTO {
+    String id;
+    String name;
+    String image;
+    String description;
+    Integer quantity;
+    Double price;
+    CategoryDTO category;
 
-        String name,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<ProductOptionDTO> options;
 
-        String image,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<Nutritional> nutritional;
 
-        String description,
+    DiscountInfo discountInfo;
 
-        Integer quantity,
-
-        Double price,
-
-        CategoryDTO category,
-
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        List<ProductOptionDTO> options,
-
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        List<Nutritional> nutritional,
-
-        DiscountInfo discountInfo
-) {
+    boolean isFavorite;
 }

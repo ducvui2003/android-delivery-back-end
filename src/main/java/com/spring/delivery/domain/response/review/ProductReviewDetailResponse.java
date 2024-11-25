@@ -10,7 +10,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductReviewDetailResponse {
+public class    ProductReviewDetailResponse {
     UserProductRatingDetailDTO user;
     String content;
     int rating;

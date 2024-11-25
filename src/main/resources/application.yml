@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
   main:
     allow-bean-definition-overriding: true
   profiles:
@@ -20,8 +22,11 @@ spring:
       uri: ${MONGODB_URI}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
   security:
     allowed:
       origins:
@@ -79,6 +84,7 @@ app:
     - /oauth2/**
     - /auth/**
     - /auth/google
+    - /api/v1/product/home-page
   cookie:
     key:
       refreshToken: refresh_token
@@ -94,3 +100,7 @@ app:
       max-try: 3
   paging:
     size: 10
+  database:
+    entry:
+      product-review:
+        limit: 10

@@ -1,13 +1,15 @@
 package com.spring.delivery.controller;
 
-import com.spring.delivery.domain.request.product.RequestCategoryCreated;
+import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
-import com.spring.delivery.service.product.CategoryService;
+import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.util.anotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,23 +19,45 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
 public class CategoryController {
-    CategoryService categoryService;
+    ICategoryService categoryService;
 
     @GetMapping("/{id}")
-    @ApiMessage("Get categoryId by id")
+    @ApiMessage("Get category by id")
     public ResponseEntity<CategoryDTO> getById(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(categoryService.findById(id));
     }
 
     @GetMapping
-    @ApiMessage("Get all categoryId")
+    @ApiMessage("Get all category")
     public ResponseEntity<List<CategoryDTO>> getAll() {
         return ResponseEntity.ok().body(categoryService.findAll());
     }
 
     @PostMapping
-    @ApiMessage("Create categoryId")
-    public ResponseEntity<CategoryDTO> create(@RequestBody RequestCategoryCreated request) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiMessage("Create category")
+    public ResponseEntity<CategoryDTO> create(@RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
         return ResponseEntity.ok().body(categoryService.save(request));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiMessage("Delete category")
+    public ResponseEntity<CategoryDTO> delete(@PathVariable String id) {
+        return ResponseEntity.ok().body(categoryService.delete(id));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiMessage("Update category")
+    public ResponseEntity<CategoryDTO> update(@PathVariable String id, @RequestBody @Valid RequestCategoryCreatedAndUpdated request) {
+        return ResponseEntity.ok().body(categoryService.update(id, request));
+    }
+
+    @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiMessage("Un delete category")
+    public ResponseEntity<CategoryDTO> undelete(@PathVariable String id) {
+        return ResponseEntity.ok().body(categoryService.undelete(id));
     }
 }

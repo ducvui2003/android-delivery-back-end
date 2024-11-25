@@ -2,12 +2,13 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
-import com.spring.delivery.service.product.ProductOptionService;
+import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product-option")
 public class ProductOptionController {
-    ProductOptionService productOptionService;
+    IProductOptionService productOptionService;
 
 
     @GetMapping("/{id}")
@@ -33,6 +34,7 @@ public class ProductOptionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product option")
     public ResponseEntity<ProductOptionDTO> create(@RequestBody RequestOptionCreated request) {
         return ResponseEntity.ok().body(productOptionService.save(request));
