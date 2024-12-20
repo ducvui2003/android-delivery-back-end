@@ -119,7 +119,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User getUserByPhoneNumber(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        return userRepository.findByPhoneNumberAndVerifiedIsTrue(phoneNumber).orElse(null);
     }
 
     @Override
