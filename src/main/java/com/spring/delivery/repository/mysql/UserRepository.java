@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("UPDATE User user SET user.password = :passwordEncoded WHERE user.phoneNumber = :phoneNumber")
 	void updatePasswordByPhoneNumber(@Param("phoneNumber") String email, @Param("passwordEncoded") String passwordEncoded);
 
-	Optional<User> findByPhoneNumber(String email);
+	Optional<User> findByPhoneNumberAndVerifiedIsTrue(String email);
 
 	boolean existsByEmailAndVerifiedIsTrue(String email);
 

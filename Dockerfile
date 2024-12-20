@@ -31,3 +31,7 @@ EXPOSE 8080
 
 # Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Build: docker build -t ducvui2003/spring-delivery  .
+# Tag: docker tag ducvui2003/spring-delivery ducvui2003/spring-delivery:version
+# Push: docker push ducvui2003/spring-delivery:version
