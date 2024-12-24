@@ -19,10 +19,10 @@ import com.spring.delivery.domain.response.review.AverageRatingProduct;
 import com.spring.delivery.mapper.IDiscountInfoMapper;
 import com.spring.delivery.mapper.IProductMapper;
 import com.spring.delivery.repository.mongo.IProductRepository;
-import com.spring.delivery.service.business.review.IReviewProductService;
 import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.service.business.product.IProductService;
+import com.spring.delivery.service.business.review.IReviewProductService;
 import com.spring.delivery.service.business.user.IUserProductFavoriteService;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.exception.AppErrorCode;
@@ -78,6 +78,7 @@ public class ProductServiceImpl implements IProductService {
         var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_FOUND));
         var favorite = securityUtil.getCurrentUserDTOFromAccessToken().map(userDTO -> userProductFavoriteService.existsProductFavorite(userDTO.id(), product.getId())).orElse(false);
         var productDto = mapper.toProductDTO(product);
+        productDto.setRating(reviewProductService.getRatingOverall(id));
         productDto.setFavorite(favorite);
         return productDto;
     }
@@ -140,7 +141,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<ProductDTO> findProductForHomePage() {
-        var ids = reviewProductService.findAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
+        var ids = reviewProductService.findTopAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
         return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(mapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
     }
 
@@ -192,9 +193,11 @@ public class ProductServiceImpl implements IProductService {
         var products = pageProducts.getContent().stream().filter(pro -> !pro.getCategory().isDeleted()).toList();
 
         var listProductFavorite = getProductFavorite(products);
+        var listAvgRating = reviewProductService.findAverageRatingProduct(products.stream().map(Product::getId).toList());
         var productDTOs = products.stream().map(it -> {
             var productDTO = mapper.toCardProductDTO(it);
             productDTO.setFavorite(listProductFavorite.contains(it.getId()));
+            productDTO.setAvgRating(listAvgRating.stream().filter(avgRating -> avgRating.productId().equals(it.getId())).findFirst().orElse(new AverageRatingProduct(it.getId(), 0.0)).averageRating());
             return productDTO;
         }).toList();
 

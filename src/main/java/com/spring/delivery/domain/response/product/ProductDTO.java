@@ -11,6 +11,7 @@ package com.spring.delivery.domain.response.product;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.document.DiscountInfo;
 import com.spring.delivery.document.Nutritional;
+import com.spring.delivery.domain.response.review.ProductReviewResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -39,6 +40,8 @@ public class ProductDTO {
     List<Nutritional> nutritional;
 
     DiscountInfo discountInfo;
+
+    ProductReviewResponse rating;
 
     boolean isFavorite;
 }

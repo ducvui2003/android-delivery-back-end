@@ -18,5 +18,7 @@ public interface IReviewProductService {
 
     ApiPaging<ProductReviewDetailResponse> getProductRatingDetail(String id, Rating rating, Pageable pageable);
 
-    List<AverageRatingProduct> findAverageRatingProduct();
+    List<AverageRatingProduct> findTopAverageRatingProduct();
+
+    List<AverageRatingProduct> findAverageRatingProduct(List<String> ids);
 }
