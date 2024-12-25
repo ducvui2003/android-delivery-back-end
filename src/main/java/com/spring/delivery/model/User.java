@@ -23,8 +23,6 @@ import java.util.Set;
 public class User extends BaseModel {
 
     @Column(name = "phone_number")
-
-    @Column(name = "phone_number")
     String phoneNumber;
 
     String email;
