@@ -20,10 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class User extends BaseModel {
 
     @Column(name = "phone_number")
     String phoneNumber;
@@ -66,4 +63,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<UserProductFavorite> productFavorites;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    Cart cart;
+
 }
