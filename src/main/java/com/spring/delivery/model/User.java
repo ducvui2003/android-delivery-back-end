@@ -22,6 +22,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends BaseModel {
 
+    @Column(name = "phone_number")
 
     @Column(name = "phone_number")
     String phoneNumber;
