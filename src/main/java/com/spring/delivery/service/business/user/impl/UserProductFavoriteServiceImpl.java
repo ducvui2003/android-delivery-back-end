@@ -66,8 +66,8 @@ public class UserProductFavoriteServiceImpl implements IUserProductFavoriteServi
             throw new AppException(AppErrorCode.PRODUCT_NOT_FOUND);
         var optionalUserDTO = securityUtil.getCurrentUserDTOFromAccessToken();
         if (optionalUserDTO.isEmpty()) throw new AppException(AppErrorCode.UNAUTHORIZED);
-        return User.builder()
-                .id(optionalUserDTO.get().id())
-                .build();
+        User user = new User();
+        user.setId(optionalUserDTO.get().id());
+        return user;
     }
 }

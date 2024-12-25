@@ -137,5 +137,4 @@ public class AuthenticationController {
         ResponseCookie cookie = securityUtil.clearRefreshToken();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(null);
     }
-
 }
