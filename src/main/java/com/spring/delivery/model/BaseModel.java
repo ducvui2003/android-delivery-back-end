@@ -2,6 +2,7 @@ package com.spring.delivery.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
@@ -17,14 +18,15 @@ public class BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    boolean deleted = Boolean.FALSE;
-
     @Column(nullable = false, updatable = false)
     Instant createdAt;
 
     String createdBy;
+
+    Instant updatedAt;
+
+    String updatedBy;
+
 
     @PrePersist
     protected void onCreate() {
