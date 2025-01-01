@@ -84,7 +84,9 @@ app:
     - /oauth2/**
     - /auth/**
     - /auth/google
-    - /api/v1/product/home-page
+    - /api/v1/product/**
+    - /api/v1/category/**
+    - /api/v1/health/**
   cookie:
     key:
       refreshToken: refresh_token

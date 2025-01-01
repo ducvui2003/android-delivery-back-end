@@ -101,6 +101,7 @@ public class ProductController {
     @GetMapping("/search")
     @ApiMessage("Search product")
     public ResponseEntity<ApiPaging<CardProductDTO>> searchProduct(RequestSearchProduct request) {
+        System.out.println(request);
         return ResponseEntity.ok(productService.searchProduct(request));
     }
 

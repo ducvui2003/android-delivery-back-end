@@ -166,7 +166,7 @@ public class SecurityUtil {
 
     public Optional<ResponseAuthentication.UserDTO> getCurrentUserDTOFromAccessToken() {
         var optionalToken = getAccessToken();
-        if (optionalToken.isEmpty()) return null;
+        if (optionalToken.isEmpty()) return Optional.empty();
         var tokenDecode = jwtDecoder.decode(optionalToken.get());
         var userJson = tokenDecode.getClaimAsMap("user");
         var user = ResponseAuthentication.UserDTO.initFromMapInfoUserDTO(userJson);

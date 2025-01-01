@@ -20,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 public class CardProductDTO {
     String id;
     String name;
+    String image;
     double price;
     DiscountInfo discountInfo;
     double avgRating;

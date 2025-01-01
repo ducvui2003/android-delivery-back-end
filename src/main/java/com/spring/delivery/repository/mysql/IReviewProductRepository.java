@@ -4,7 +4,6 @@ import com.spring.delivery.domain.response.review.AverageRatingProduct;
 import com.spring.delivery.domain.response.review.ProductReviewResponse;
 import com.spring.delivery.model.ReviewProduct;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -74,5 +73,15 @@ public interface IReviewProductRepository extends JpaRepository<ReviewProduct, L
                                                                  order by avg_rating desc
                                                                  limit :limit) as t2)
             """)
-    List<AverageRatingProduct> findAverageRatingProduct(@Param("limit") int limit);
+    List<AverageRatingProduct> findTopAverageRatingProduct(@Param("limit") int limit);
+
+    @Query("""
+            select new com.spring.delivery.domain.response.review.AverageRatingProduct(
+                                        rp.productId,
+                                        avg(rp.rating))
+                                 from ReviewProduct rp
+                                               where rp.productId in :ids
+                                 group by rp.productId
+            """)
+    List<AverageRatingProduct> findTopAverageRatingProduct(@Param("ids") List<String> ids);
 }

@@ -20,10 +20,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Order extends DeletedModel {
 
     Double price;
 

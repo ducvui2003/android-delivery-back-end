@@ -75,7 +75,12 @@ public class ReviewProductServiceImpl implements IReviewProductService {
     }
 
     @Override
-    public List<AverageRatingProduct> findAverageRatingProduct() {
-        return reviewProductRepository.findAverageRatingProduct(limit);
+    public List<AverageRatingProduct> findTopAverageRatingProduct() {
+        return reviewProductRepository.findTopAverageRatingProduct(limit);
+    }
+
+    @Override
+    public List<AverageRatingProduct> findAverageRatingProduct(List<String> ids) {
+        return reviewProductRepository.findTopAverageRatingProduct(limit);
     }
 }
