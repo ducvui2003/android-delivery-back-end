@@ -28,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -92,10 +93,10 @@ public class AuthenticationController {
     @ApiMessage("Get info account")
     @GetMapping("/account")
     public ResponseEntity<ResponseAuthentication.UserGetAccount> getAccount() {
-        String email = SecurityUtil.getCurrentUserLogin().orElse("");
+        String email = SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new UsernameNotFoundException("User not found"));
         User user = authenticationService.getUserByEmail(email);
         if (user == null)
-            throw new AppException("Xử lý if else user trong hàm getAccount của AuthenticationController");
+            throw new AppException(AppErrorCode.USER_NOT_FOUND);
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
         return ResponseEntity.ok().body(new ResponseAuthentication.UserGetAccount(userDTO));

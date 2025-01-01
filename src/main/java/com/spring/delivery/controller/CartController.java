@@ -1,7 +1,6 @@
 package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.cart.RequestCartCreated;
-import com.spring.delivery.domain.request.cart.RequestCartUpdated;
 import com.spring.delivery.domain.response.cart.ResponseCart;
 import com.spring.delivery.service.business.cart.ICartServices;
 import com.spring.delivery.util.SecurityUtil;
