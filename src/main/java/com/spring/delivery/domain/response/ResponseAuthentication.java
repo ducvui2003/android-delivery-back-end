@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -34,13 +35,21 @@ public class ResponseAuthentication {
 
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record UserDTO(long id, String phoneNumber, String email, String fullName) {
+    public record UserDTO(
+            long id,
+            String phoneNumber,
+            String email,
+            String fullName,
+            String role,
+            List<String> permissions) {
         public static UserDTO initFromMapInfoUserDTO(Map<String, Object> mapUser) {
             return UserDTO.builder()
                     .id((Long) mapUser.get("id"))
                     .phoneNumber((String) mapUser.get("phoneNumber"))
                     .email((String) mapUser.get("email"))
                     .fullName((String) mapUser.get("fullName"))
+                    .role((String) mapUser.get("role"))
+                    .permissions((List<String>) mapUser.get("permissions"))
                     .build();
         }
     }

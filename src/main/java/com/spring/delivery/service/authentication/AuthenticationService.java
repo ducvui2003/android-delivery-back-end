@@ -9,7 +9,7 @@ public interface AuthenticationService {
 
     User register(User user);
 
-    ResponseAuthentication getAccessToken(String email);
+    ResponseAuthentication createAccessToken(String email);
 
     void logout(String email, String accessToken, String refreshToken);
 

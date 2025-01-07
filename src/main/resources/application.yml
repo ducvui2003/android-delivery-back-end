@@ -63,8 +63,8 @@ spring:
 
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
-  access-token-validity-in-seconds: 86400
-  refresh-token-validity-in-seconds: 8640000
+  access-token-validity-in-seconds: 30
+  refresh-token-validity-in-seconds: 50
 
 app:
   whitelist:

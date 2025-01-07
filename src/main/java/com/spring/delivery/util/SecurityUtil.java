@@ -59,9 +59,9 @@ public class SecurityUtil {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
-    public void validateRefreshToken(String refreshToken) {
+    public Jwt validateRefreshToken(String refreshToken) {
         try {
-            jwtDecoder.decode(refreshToken);
+            return jwtDecoder.decode(refreshToken);
         } catch (JwtException e) {
             log.error("JWT error {} ", e.getMessage());
             throw new JwtException("Invalid refresh token");
@@ -169,6 +169,10 @@ public class SecurityUtil {
         if (optionalToken.isEmpty()) return Optional.empty();
         var tokenDecode = jwtDecoder.decode(optionalToken.get());
         var userJson = tokenDecode.getClaimAsMap("user");
+        var roleJson = tokenDecode.getClaimAsString("role");
+        var permissionsJson = tokenDecode.getClaimAsStringList("permissions");
+        userJson.put("role", roleJson);
+        userJson.put("permissions", permissionsJson);
         var user = ResponseAuthentication.UserDTO.initFromMapInfoUserDTO(userJson);
         if (user == null)
             return Optional.empty();

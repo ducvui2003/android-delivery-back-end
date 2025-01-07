@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component("beererAuthSkipFilter")
+//@Component("beererAuthSkipFilter")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class BeererAuthSkipFilter extends OncePerRequestFilter {

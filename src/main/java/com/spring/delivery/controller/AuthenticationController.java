@@ -29,6 +29,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -107,12 +108,14 @@ public class AuthenticationController {
     @PostMapping("/refresh-token")
     public ResponseEntity<ResponseAuthentication> refreshAccessToken(
             @CookieValue(name = "refresh_token") String refreshToken) {
-        securityUtil.validateRefreshToken(refreshToken);
         //  Check user by refresh authCode
-        String email =
-                SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
+        Jwt decodedToken = securityUtil.validateRefreshToken(refreshToken);
+        String email = decodedToken.getSubject();
 
-        ResponseAuthentication responseBody = authenticationService.getAccessToken(email);
+        if (email == null)
+            throw  new AppException(AppErrorCode.USER_NOT_FOUND);
+
+        ResponseAuthentication responseBody = authenticationService.createAccessToken(email);
 
         return ResponseEntity.ok().body(responseBody);
     }
