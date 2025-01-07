@@ -3,6 +3,7 @@ package com.spring.delivery.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.util.enums.AuthType;
+import com.spring.delivery.util.enums.Gender;
 import com.spring.delivery.util.enums.converter.AuthTypeConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,7 +36,10 @@ public class User extends BaseModel {
 
     boolean verified;
 
-    String sex;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    Gender sex = Gender.UNKNOWN;
 
     String avatar;
 

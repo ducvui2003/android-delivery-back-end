@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseAuthentication getAccessToken(String email) {
+    public ResponseAuthentication createAccessToken(String email) {
         User user = this.getUserByEmail(email);
 
         if (user == null) throw new AppException(AppErrorCode.USER_NOT_FOUND);
@@ -79,14 +79,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
 
-        tokenService.saveToken(user.getEmail(), accessToken);
-
-        String refreshToken = securityUtil.createRefreshToken(jwtPayload);
+        tokenService.saveToken(accessToken, user.getEmail());
 
         return ResponseAuthentication.builder()
                 .user(userDTO)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -131,6 +128,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = this.getUserByPhoneNumber(phoneNumber);
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+
         JwtPayload jwtPayload = getJwtPayload(user);
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
