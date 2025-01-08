@@ -18,4 +18,10 @@ public class CookieProperties {
 
 	@Value("${app.cookie.defaultValue.refreshToken}")
 	String refreshTokenDefault;
+	
+	@Value("${app.cookie.key.accessToken}")
+	String accessToken;
+
+	@Value("${app.cookie.defaultValue.accessToken}")
+	String accessTokenDefault;
 }

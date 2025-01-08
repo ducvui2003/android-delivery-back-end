@@ -113,14 +113,13 @@ public class AuthenticationController {
         String email = decodedToken.getSubject();
 
         if (email == null)
-            throw  new AppException(AppErrorCode.USER_NOT_FOUND);
+            throw new AppException(AppErrorCode.USER_NOT_FOUND);
 
         ResponseAuthentication responseBody = authenticationService.createAccessToken(email);
 
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SHIPPER')")
     @ApiMessage("Logout")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
@@ -128,14 +127,17 @@ public class AuthenticationController {
                     name = "${app.cookie.key.refreshToken}",
                     defaultValue = "${app.cookie.defaultValue.refreshToken}")
             String refreshToken,
-            HttpServletRequest request)
+            @CookieValue(
+                    name = "${app.cookie.key.accessToken}",
+                    defaultValue = "${app.cookie.defaultValue.accessToken}")
+            String accessToken)
             throws AppException {
+        if (accessToken.equals(cookieProperties.getAccessTokenDefault()))
+            throw new AppException(AppErrorCode.ACCESS_TOKEN_NOT_FOUND);
         if (refreshToken.equals(cookieProperties.getRefreshTokenDefault()))
             throw new AppException(AppErrorCode.REFRESH_TOKEN_NOT_FOUND);
         String email =
                 SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-        String accessToken = SecurityUtil.getAccessTokenFromRequest(request)
-                .orElseThrow(() -> new AppException(AppErrorCode.ACCESS_TOKEN_NOT_FOUND));
         this.authenticationService.logout(email, accessToken, refreshToken);
         SecurityContextHolder.getContext().setAuthentication(null);
         ResponseCookie cookie = securityUtil.clearRefreshToken();
