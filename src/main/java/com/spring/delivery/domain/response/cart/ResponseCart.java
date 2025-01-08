@@ -10,11 +10,13 @@ import java.util.List;
 public class ResponseCart {
     Long id;
     String productId;
-    Integer quantity;
+    int quantity;
+    int quantityValid;
     String name;
     String thumbnail;
     double price;
     List<Option> options;
+    double discount;
 
     @Data
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
