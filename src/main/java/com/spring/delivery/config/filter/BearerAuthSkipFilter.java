@@ -7,17 +7,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-//@Component("beererAuthSkipFilter")
+//@Component("BearerAuthSkipFilter")
+//@Order(2)
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
-public class BeererAuthSkipFilter extends OncePerRequestFilter {
-    String BEERER_PREFIX = "Bearer ";
+public class BearerAuthSkipFilter extends OncePerRequestFilter {
+    String BEARER_PREFIX = "Bearer ";
     ApplicationProps applicationProps;
 
     @Override
@@ -31,7 +33,7 @@ public class BeererAuthSkipFilter extends OncePerRequestFilter {
                 .anyMatch(pattern -> requestURI.matches(convertPatternToRegex(pattern)));
 
         // Skip authentication if it's a whitelisted path and Beerer token is found
-        if (isWhitelisted && authorizationHeader != null && authorizationHeader.startsWith(BEERER_PREFIX)) {
+        if (isWhitelisted && authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
             SecurityContextHolder.clearContext();  // Skip authentication
         }
 
