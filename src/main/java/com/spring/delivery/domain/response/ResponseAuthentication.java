@@ -3,7 +3,7 @@ package com.spring.delivery.domain.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.spring.delivery.model.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @Data
@@ -41,6 +42,7 @@ public class ResponseAuthentication {
             String email,
             String fullName,
             String role,
+            ResponseAddress address,
             List<String> permissions) {
         public static UserDTO initFromMapInfoUserDTO(Map<String, Object> mapUser) {
             return UserDTO.builder()

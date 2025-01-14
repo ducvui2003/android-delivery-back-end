@@ -2,6 +2,7 @@ package com.spring.delivery.mapper;
 
 import com.spring.delivery.domain.request.RequestRegister;
 import com.spring.delivery.domain.request.RequestUpdateProfile;
+import com.spring.delivery.domain.response.ResponseAddress;
 import com.spring.delivery.domain.response.ResponseAuthentication;
 import com.spring.delivery.model.Address;
 import com.spring.delivery.model.JwtPayload;
@@ -27,6 +28,7 @@ public interface UserMapper {
 
     @Mapping(source = "role.name", target = "role")
     @Mapping(source = "permissions", target = "permissions", qualifiedByName = "stringToPermissionsSet")
+    @Mapping(source = "address", target = "address", qualifiedByName = "getDefaultAddress")
     ResponseAuthentication.UserDTO toUserDTO(User user);
 
     JwtPayload.UserPayload toUserPayload(User user);
@@ -51,5 +53,22 @@ public interface UserMapper {
             return Collections.emptyList();
         }
         return permissions.stream().map(Permission::getName).collect(Collectors.toList());
+    }
+
+    @Named("getDefaultAddress")
+    default ResponseAddress defaultAddress(Set<Address> setAddress) {
+        var address = setAddress.stream().filter(Address::isDefault).findFirst().orElse(setAddress.stream().findFirst().orElse(null));
+        return mapToResponseAddress(address);
+    }
+
+    private ResponseAddress mapToResponseAddress(Address address) {
+        if (address == null) return null;
+        return ResponseAddress.builder()
+                .id(address.getId())
+                .name(address.getName())
+                .address(address.getAddress())
+                .isDefault(address.isDefault())
+                .updatedAt(address.getUpdatedAt())
+                .build();
     }
 }

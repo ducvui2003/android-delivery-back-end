@@ -1,7 +1,10 @@
 package com.spring.delivery.controller;
 
+import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.ApiResponse;
 import com.spring.delivery.domain.request.RequestUpdateProfile;
+import com.spring.delivery.domain.response.ResponseAddress;
+import com.spring.delivery.service.address.IAddressService;
 import com.spring.delivery.service.profile.IProfileService;
 import com.spring.delivery.util.anotation.ApiMessage;
 import lombok.AccessLevel;
@@ -20,6 +23,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/user")
 public class UserController {
     IProfileService profileService;
+    IAddressService addressService;
 
     @ApiMessage("Update Profile")
     @PutMapping("/update-profile")

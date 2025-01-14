@@ -6,11 +6,13 @@ import com.spring.delivery.domain.request.RequestLogin;
 import com.spring.delivery.domain.request.RequestRegister;
 import com.spring.delivery.domain.response.ResponseAuthentication;
 import com.spring.delivery.mapper.UserMapper;
+import com.spring.delivery.model.Role;
 import com.spring.delivery.model.User;
 import com.spring.delivery.service.authentication.AuthenticationService;
 import com.spring.delivery.util.MyPhoneNumberUtil;
 import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.anotation.ApiMessage;
+import com.spring.delivery.util.enums.RoleEnum;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -113,7 +115,7 @@ public class AuthenticationController {
         String email = decodedToken.getSubject();
 
         if (email == null)
-            throw  new AppException(AppErrorCode.USER_NOT_FOUND);
+            throw new AppException(AppErrorCode.USER_NOT_FOUND);
 
         ResponseAuthentication responseBody = authenticationService.createAccessToken(email);
 

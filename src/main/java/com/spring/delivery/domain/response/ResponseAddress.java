@@ -13,7 +13,8 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ResponseAddress {
     Long id;
+    String name;
     String address;
-    Instant createdAt;
+    boolean isDefault;
     Instant updatedAt;
 }

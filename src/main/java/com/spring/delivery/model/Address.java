@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 public class Address extends BaseModel {
-
+    String name;
     String address;
 
     @Column(name = "is_default", columnDefinition = "boolean default false")
@@ -24,5 +24,4 @@ public class Address extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
-
 }

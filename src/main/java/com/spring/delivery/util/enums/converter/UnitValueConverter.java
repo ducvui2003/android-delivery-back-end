@@ -9,14 +9,18 @@
 package com.spring.delivery.util.enums.converter;
 
 import com.spring.delivery.util.enums.Unit;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.convert.PropertyValueConverter;
 import org.springframework.data.convert.ValueConversionContext;
 
+import java.util.Arrays;
+
+@Slf4j
 public class UnitValueConverter implements PropertyValueConverter<Unit, String, ValueConversionContext<?>> {
 
     @Override
     public Unit read(String value, ValueConversionContext context) {
-        return Unit.getEntries().stream().filter(unit -> unit.getValue().equals(value)).findFirst().get();
+        return Arrays.stream(Unit.values()).filter(unit -> unit.getValue().equals(value)).findFirst().get();
     }
 
     @Override

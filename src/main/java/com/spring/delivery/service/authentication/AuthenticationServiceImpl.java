@@ -56,6 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setVerified(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.builder().name(RoleEnum.USER).build());
         return userRepository.save(user);
     }
 
