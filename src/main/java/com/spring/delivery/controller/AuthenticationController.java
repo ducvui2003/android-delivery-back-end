@@ -4,6 +4,7 @@ import com.spring.delivery.config.properties.CookieProperties;
 import com.spring.delivery.domain.request.RequestCheckBeforeRegister;
 import com.spring.delivery.domain.request.RequestLogin;
 import com.spring.delivery.domain.request.RequestRegister;
+import com.spring.delivery.domain.request.authentication.RequestLogout;
 import com.spring.delivery.domain.response.ResponseAuthentication;
 import com.spring.delivery.mapper.UserMapper;
 import com.spring.delivery.model.User;
@@ -13,7 +14,6 @@ import com.spring.delivery.util.SecurityUtil;
 import com.spring.delivery.util.anotation.ApiMessage;
 import com.spring.delivery.util.exception.AppErrorCode;
 import com.spring.delivery.util.exception.AppException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -123,22 +123,11 @@ public class AuthenticationController {
     @ApiMessage("Logout")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            @CookieValue(
-                    name = "${app.cookie.key.refreshToken}",
-                    defaultValue = "${app.cookie.defaultValue.refreshToken}")
-            String refreshToken,
-            @CookieValue(
-                    name = "${app.cookie.key.accessToken}",
-                    defaultValue = "${app.cookie.defaultValue.accessToken}")
-            String accessToken)
+           @Valid @RequestBody RequestLogout requestLogout)
             throws AppException {
-        if (accessToken.equals(cookieProperties.getAccessTokenDefault()))
-            throw new AppException(AppErrorCode.ACCESS_TOKEN_NOT_FOUND);
-        if (refreshToken.equals(cookieProperties.getRefreshTokenDefault()))
-            throw new AppException(AppErrorCode.REFRESH_TOKEN_NOT_FOUND);
         String email =
                 SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-        this.authenticationService.logout(email, accessToken, refreshToken);
+        this.authenticationService.logout(email, requestLogout.accessToken(), requestLogout.refreshToken());
         SecurityContextHolder.getContext().setAuthentication(null);
         ResponseCookie cookie = securityUtil.clearRefreshToken();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(null);
