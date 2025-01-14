@@ -11,11 +11,20 @@ package com.spring.delivery.mapper;
 import com.spring.delivery.document.Category;
 import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
+import com.spring.delivery.util.FirebaseUrlUtil;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public interface ICategoryMapper {
+    @Mapping(target = "urlImage", source = "urlImage", qualifiedByName = "mapImageUrl")
     CategoryDTO toCategoryDTO(Category product);
 
     Category toCategory(RequestCategoryCreatedAndUpdated request);
+
+    @Named("mapImageUrl")
+    default String mapImageUrl(String firebaseUrl) {
+        return FirebaseUrlUtil.getPublicUrl(firebaseUrl);
+    }
 }

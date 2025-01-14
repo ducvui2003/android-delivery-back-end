@@ -8,8 +8,6 @@
 
 package com.spring.delivery.service.business.user;
 
-import com.spring.delivery.domain.request.product.RequestProductFavorite;
-
 import java.util.List;
 
 public interface IUserProductFavoriteService {
@@ -17,7 +15,7 @@ public interface IUserProductFavoriteService {
 
     boolean existsProductFavorite(Long userId, String productId);
 
-    void addProductFavorite(RequestProductFavorite request);
+    void addProductFavorite(String id);
 
-    void removeProductFavorite(RequestProductFavorite request);
+    void removeProductFavorite(String id);
 }
