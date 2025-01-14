@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum AppErrorCode {
     EXIST(HttpServletResponse.SC_CONFLICT, "Data is already exist"),
+    INVALID_EMAIL(HttpServletResponse.SC_BAD_REQUEST, "Invalid email"),
     NOT_EXIST(HttpServletResponse.SC_CONFLICT, "Data is not exist"),
     ACCESS_TOKEN_EXPIRED(HttpServletResponse.SC_REQUEST_TIMEOUT, "Access authCode is expired"),
     ACCESS_TOKEN_NOT_FOUND(HttpServletResponse.SC_UNAUTHORIZED, "Access authCode not found"),

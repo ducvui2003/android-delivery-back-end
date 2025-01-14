@@ -25,21 +25,12 @@ import java.util.Map;
 public class ProfileServiceImpl implements IProfileService {
     UserRepository userRepository;
     ObjectMapper objectMapper;
-    IAddressService addressService;
 
     @Override
     public void updateProfile(Map<String, Object> updateRequest) {
-
         User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().get())
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND));
-        if (updateRequest.containsKey("address")) {
-            RequestAddress requestAddress = objectMapper.convertValue(
-                    Map.of("address", updateRequest.get("address")),
-                    RequestAddress.class
-            );
-            addressService.addAddress(requestAddress);
-        }
-        String region = updateRequest.getOrDefault("region", "").toString();
+        String region = updateRequest.getOrDefault("region", "VN").toString();
         RequestUpdateProfile requestUpdateProfile = objectMapper.convertValue(updateRequest, RequestUpdateProfile.class);
         BeanUtils.copyProperties(requestUpdateProfile, user, PropertyNameNullUtil.getNullPropertyNames(requestUpdateProfile));
         if (!region.isEmpty()) {

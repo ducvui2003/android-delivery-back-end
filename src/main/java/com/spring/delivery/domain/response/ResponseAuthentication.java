@@ -38,6 +38,7 @@ public class ResponseAuthentication {
     public record UserDTO(
             long id,
             String phoneNumber,
+            int countryCode,
             String email,
             String fullName,
             String role,
