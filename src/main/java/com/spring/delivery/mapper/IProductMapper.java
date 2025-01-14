@@ -12,20 +12,29 @@ import com.spring.delivery.document.Nutritional;
 import com.spring.delivery.document.Product;
 import com.spring.delivery.domain.request.product.RequestNutritionalCreated;
 import com.spring.delivery.domain.request.product.RequestProductCreated;
-import com.spring.delivery.domain.request.product.RequestProductUpdated;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
+import com.spring.delivery.util.FirebaseUrlUtil;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface IProductMapper {
+    @Mapping(target = "image", source = "image", qualifiedByName = "mapImageUrl")
     ProductDTO toProductDTO(Product product);
 
+    @Mapping(target = "image", source = "image", qualifiedByName = "mapImageUrl")
     CardProductDTO toCardProductDTO(Product product);
 
     Product toProduct(RequestProductCreated request);
 
     List<Nutritional> toNutritional(List<RequestNutritionalCreated> requests);
+
+    @Named("mapImageUrl")
+    default String mapImageUrl(String firebaseUrl) {
+        return FirebaseUrlUtil.getPublicUrl(firebaseUrl);
+    }
 }

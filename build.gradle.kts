@@ -60,7 +60,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation("com.google.firebase:firebase-admin:9.3.0")
+    implementation("com.google.firebase:firebase-admin:9.4.2")
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.56")
 

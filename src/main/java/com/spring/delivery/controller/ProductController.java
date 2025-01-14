@@ -105,19 +105,19 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchProduct(request));
     }
 
-    @PostMapping("/favorite")
+    @PostMapping("/favorite/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Favorite product success")
-    public ResponseEntity<Void> favorite(@RequestBody RequestProductFavorite request) {
-        userProductFavoriteService.addProductFavorite(request);
+    public ResponseEntity<Void> favorite(@PathVariable("id")String id) {
+        userProductFavoriteService.addProductFavorite(id);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/favorite")
+    @DeleteMapping("/favorite/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Remove favorite product success")
-    public ResponseEntity<Void> unFavorite(@RequestBody RequestProductFavorite request) {
-        userProductFavoriteService.removeProductFavorite(request);
+    public ResponseEntity<Void> unFavorite(@PathVariable("id")String id) {
+        userProductFavoriteService.removeProductFavorite(id);
         return ResponseEntity.ok(null);
     }
 }

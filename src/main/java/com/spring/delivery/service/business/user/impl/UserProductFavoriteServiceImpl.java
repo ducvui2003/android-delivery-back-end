@@ -8,7 +8,6 @@
 
 package com.spring.delivery.service.business.user.impl;
 
-import com.spring.delivery.domain.request.product.RequestProductFavorite;
 import com.spring.delivery.model.User;
 import com.spring.delivery.model.UserProductFavorite;
 import com.spring.delivery.repository.mongo.IProductRepository;
@@ -44,24 +43,24 @@ public class UserProductFavoriteServiceImpl implements IUserProductFavoriteServi
     }
 
     @Override
-    public void addProductFavorite(RequestProductFavorite request) {
-        var user = productFavoriteHelper(request);
-        if (userProductFavoriteRepository.existsByUser_IdAndProductId(user.getId(), request.productId()))
+    public void addProductFavorite(String id) {
+        var user = productFavoriteHelper(id);
+        if (userProductFavoriteRepository.existsByUser_IdAndProductId(user.getId(), id))
             throw new AppException(AppErrorCode.EXIST);
         userProductFavoriteRepository.save(UserProductFavorite.builder()
                 .user(user)
-                .productId(request.productId())
+                .productId(id)
                 .build());
     }
 
     @Override
-    public void removeProductFavorite(RequestProductFavorite request) {
-        if (userProductFavoriteRepository.deleteByProductId(request.productId()) == 0)
+    public void removeProductFavorite(String id) {
+        if (userProductFavoriteRepository.deleteByProductId(id) == 0)
             throw new AppException(AppErrorCode.NOT_EXIST);
     }
 
-    private User productFavoriteHelper(RequestProductFavorite request) {
-        var product = productRepository.findByIdAndDeletedIsFalse(request.productId());
+    private User productFavoriteHelper(String id) {
+        var product = productRepository.findByIdAndDeletedIsFalse(id);
         if (product.isEmpty() || product.get().isDeleted())
             throw new AppException(AppErrorCode.PRODUCT_NOT_FOUND);
         var optionalUserDTO = securityUtil.getCurrentUserDTOFromAccessToken();
