@@ -1,5 +1,6 @@
 package com.spring.delivery.controller;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.spring.delivery.config.properties.CookieProperties;
 import com.spring.delivery.domain.request.RequestCheckBeforeRegister;
 import com.spring.delivery.domain.request.RequestLogin;
@@ -65,6 +66,7 @@ public class AuthenticationController {
     @ApiMessage("check info before Register")
     @PostMapping("/check-before-register")
     public ResponseEntity<Void> checkBeforeRegister(@Valid @RequestBody RequestCheckBeforeRegister requestCheckBeforeRegister) {
+        log.info("Check before register: {}", requestCheckBeforeRegister);
         if (!MyPhoneNumberUtil.isPhoneNumberValid(requestCheckBeforeRegister.region(), requestCheckBeforeRegister.phoneNumber()))
             throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
         authenticationService.checkBeforeRegister(MyPhoneNumberUtil.formatPhoneNumber(requestCheckBeforeRegister.region(), requestCheckBeforeRegister.phoneNumber()), requestCheckBeforeRegister.phoneNumber());
@@ -78,6 +80,7 @@ public class AuthenticationController {
             throw new AppException(AppErrorCode.PHONE_NUMBER_INVALID);
         userRegister.setPhoneNumber(MyPhoneNumberUtil.formatPhoneNumber(userRegister.getRegion(), userRegister.getPhoneNumber()));
         User user = authenticationService.register(userRegister.getIdToken(), userMapper.toUser(userRegister));
+        user.setCountryCode(PhoneNumberUtil.getInstance().getCountryCodeForRegion(userRegister.getRegion()));
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
