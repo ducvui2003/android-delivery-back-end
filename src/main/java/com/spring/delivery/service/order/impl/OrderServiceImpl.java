@@ -1,6 +1,6 @@
 package com.spring.delivery.service.order.impl;
 
-import com.spring.delivery.domain.request.RequestOrderCreated;
+import com.spring.delivery.domain.request.order.RequestOrderCreated;
 import com.spring.delivery.domain.response.order.OrderDTO;
 import com.spring.delivery.mapper.OrderMapper;
 import com.spring.delivery.model.Order;
@@ -14,13 +14,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
@@ -34,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO addOrder(RequestOrderCreated req) {
-        Long id = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
+        Long id = securityUtil.getCurrentUserDTOFromAccessToken().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND)).id();
         Order order = orderMapper.toOrder(req);
         order.setStatus(StatusOrder.ACTIVE);
         order.setUserId(id);
@@ -52,5 +48,13 @@ public class OrderServiceImpl implements OrderService {
     public Integer updateOrderStatus(Long id, String status) {
         var order = orderRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_FOUND));
         return orderRepository.updateOrderStatus(id, StatusOrder.valueOf(status));
+    }
+
+    @Override
+    public List<OrderDTO> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return orderMapper.toOrderDTOs(
+                orderRepository.getOrdersByStarReviewOrStatus(starReview, statusOrder, pageable)
+                        .stream().toList());
     }
 }

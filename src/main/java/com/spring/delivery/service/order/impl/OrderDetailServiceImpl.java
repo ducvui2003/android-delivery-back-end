@@ -1,9 +1,12 @@
 package com.spring.delivery.service.order.impl;
 
+import com.spring.delivery.domain.request.order.RequestOrderDetailCreated;
+import com.spring.delivery.domain.response.order.OrderDetailDTO;
 import com.spring.delivery.domain.response.order.OrderDetailResponse;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import com.spring.delivery.mapper.OrderDetailMapper;
+import com.spring.delivery.mapper.PromotionMapper;
 import com.spring.delivery.repository.mysql.OrderDetailRepository;
 import com.spring.delivery.service.business.product.IProductService;
 import com.spring.delivery.service.order.OrderDetailService;
@@ -16,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderDetailServiceImpl implements OrderDetailService {
     OrderDetailMapper orderDetailMapper;
+    PromotionMapper promotionMapper;
     OrderDetailRepository orderDetailRepository;
     PromotionService promotionService;
     IProductService productService;
@@ -34,10 +39,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
     @Override
     public OrderDetailResponse getOrderDetailById(Long id) {
-        var orderDetail = orderDetailRepository.findById(id).orElse(null);
-        if (orderDetail == null) {
-            throw new IllegalArgumentException("not found order detail");
-        }
+        var orderDetail = orderDetailRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.ORDER_DETAIL_NOT_FOUND));
 
         Optional<List<ProductDTO>> productDTOs = Optional.ofNullable(Optional.of(orderDetail.getProductIds()
                         .stream().map(productService::findById).toList())
@@ -47,10 +49,17 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                 orderDetail.getPromotionIds().stream().map(promotionService::getPromotion).collect(Collectors.toSet())
         );
 
-        OrderDetailResponse res = new OrderDetailResponse();
-        res.setPromotionDTOS(promotionDTOs.get());
+        OrderDetailResponse res = orderDetailMapper.toOrderDetailResponse(orderDetail);
+        res.setPromotions(promotionMapper.toPromotionOrderResponse(promotionDTOs.get()));
         res.setProductDTOList(productDTOs.get());
-        orderDetailMapper.toOrderDetailResponse(orderDetail);
         return res;
+    }
+
+    @Override
+    public RequestOrderDetailCreated addOrderDetail(RequestOrderDetailCreated req) {
+        log.info("order detail  " );
+        var orderDetail = orderDetailRepository.save(orderDetailMapper.toOrderDetail(req));
+        log.info("order detail: {} " ,orderDetail );
+        return orderDetailMapper.toOrderDetailCreated(orderDetail);
     }
 }

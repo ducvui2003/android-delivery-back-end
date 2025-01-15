@@ -1,6 +1,4 @@
-package com.spring.delivery.domain.request;
-
-import com.spring.delivery.util.enums.StatusOrder;
+package com.spring.delivery.domain.request.order;
 
 import java.util.List;
 

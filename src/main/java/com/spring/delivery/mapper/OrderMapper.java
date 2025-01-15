@@ -1,6 +1,6 @@
 package com.spring.delivery.mapper;
 
-import com.spring.delivery.domain.request.RequestOrderCreated;
+import com.spring.delivery.domain.request.order.RequestOrderCreated;
 import com.spring.delivery.domain.response.order.OrderDTO;
 import com.spring.delivery.model.Order;
 import org.mapstruct.Mapper;

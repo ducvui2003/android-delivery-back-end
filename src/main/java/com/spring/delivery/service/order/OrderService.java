@@ -1,10 +1,7 @@
 package com.spring.delivery.service.order;
 
-import com.google.api.Page;
-import com.spring.delivery.domain.request.RequestOrderCreated;
+import com.spring.delivery.domain.request.order.RequestOrderCreated;
 import com.spring.delivery.domain.response.order.OrderDTO;
-import com.spring.delivery.domain.response.order.OrderDetailDTO;
-import com.spring.delivery.model.Order;
 import com.spring.delivery.util.enums.StatusOrder;
 
 import java.util.List;
@@ -16,4 +13,5 @@ public interface OrderService {
 
     Integer updateOrderStatus(Long id, String status);
 
+    List<OrderDTO> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size);
 }

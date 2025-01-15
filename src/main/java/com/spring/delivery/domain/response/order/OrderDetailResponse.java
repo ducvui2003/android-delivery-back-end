@@ -3,6 +3,7 @@ package com.spring.delivery.domain.response.order;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
+import com.spring.delivery.domain.response.promotion.PromotionOrderResponse;
 import com.spring.delivery.util.enums.PaymentMethod;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ public class OrderDetailResponse {
     List<ProductDTO> productDTOList;
     String address;
     PaymentMethod paymentMethod;
-    Set<PromotionDTO> promotionDTOS;
+    Set<PromotionOrderResponse> promotions;
     Double subTotal;
     Double deliveryFee;
     Double discount;
