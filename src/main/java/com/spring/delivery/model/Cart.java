@@ -24,4 +24,8 @@ public class Cart extends BaseModel {
 
     @OneToMany(mappedBy = "cart")
     List<CartItem> cartItems;
+
+    public Cart(User user) {
+        this.user = user;
+    }
 }
