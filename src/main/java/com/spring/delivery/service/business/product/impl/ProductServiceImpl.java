@@ -31,6 +31,7 @@ import com.spring.delivery.util.service.ProductHelper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -45,20 +46,21 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements IProductService {
-    final IProductRepository productRepository;
-    final IProductMapper mapper;
-    final IDiscountInfoMapper discountInfoMapper;
-    final IProductOptionService productOptionService;
-    final ICategoryService categoryService;
-    final IReviewProductService reviewProductService;
-    final SecurityUtil securityUtil;
-    final IUserProductFavoriteService userProductFavoriteService;
-    final MongoTemplate mongoTemplate;
-    final ProductHelper productHelper;
+    IProductRepository productRepository;
+    IProductMapper productMapper;
+    IDiscountInfoMapper discountInfoMapper;
+    IProductOptionService productOptionService;
+    ICategoryService categoryService;
+    IReviewProductService reviewProductService;
+    SecurityUtil securityUtil;
+    IUserProductFavoriteService userProductFavoriteService;
+    MongoTemplate mongoTemplate;
+    ProductHelper productHelper;
 
     @Value("${app.paging.size}")
+    @NonFinal
     int pageSize;
 
     public ApiPaging<CardProductDTO> findAll(int page) {
@@ -77,7 +79,7 @@ public class ProductServiceImpl implements IProductService {
         var optionalProduct = productRepository.findByIdAndDeletedIsFalse(id);
         var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_FOUND));
         var favorite = securityUtil.getCurrentUserDTOFromAccessToken().map(userDTO -> userProductFavoriteService.existsProductFavorite(userDTO.id(), product.getId())).orElse(false);
-        var productDto = mapper.toProductDTO(product);
+        var productDto = productMapper.toProductDTO(product);
         productDto.setRating(reviewProductService.getRatingOverall(id));
         productDto.setFavorite(favorite);
         return productDto;
@@ -88,28 +90,28 @@ public class ProductServiceImpl implements IProductService {
         var optionalProduct = productRepository.findById(id);
         var product = optionalProduct.stream().findFirst().orElseThrow(() -> new AppException(AppErrorCode.EXIST));
         product.setDiscountInfo(null);
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO setDiscount(String id, RequestDiscountCreated request) {
         var product = getProductById(id);
         product.setDiscountInfo(discountInfoMapper.toDiscountInfo(request));
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO save(RequestProductCreated request) {
-        var product = mapper.toProduct(request);
+        var product = productMapper.toProduct(request);
         initCategoryAndProductOption(product, request.categoryId(), request.optionIds());
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO updateUrlImage(String id, RequestUpdateImage request) {
         var product = getProductById(id);
         product.setImage(request.url());
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
@@ -118,31 +120,31 @@ public class ProductServiceImpl implements IProductService {
 
         initCategoryAndProductOption(product, request.categoryId(), request.optionIds());
         if (request.name() != null) product.setName(request.name());
-        if (request.nutritional() != null) product.setNutritional(mapper.toNutritional(request.nutritional()));
+        if (request.nutritional() != null) product.setNutritional(productMapper.toNutritional(request.nutritional()));
         if (request.quantity() != null) product.setQuantity(request.quantity());
         if (request.description() != null) product.setDescription(request.description());
 
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO deleteProduct(String id) {
         var product = getProductById(id);
         product.setDeleted(true);
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO unDeleteProduct(String id) {
         var product = getProductById(id);
         product.setDeleted(false);
-        return mapper.toProductDTO(productRepository.save(product));
+        return productMapper.toProductDTO(productRepository.save(product));
     }
 
     @Override
     public List<ProductDTO> findProductForHomePage() {
         var ids = reviewProductService.findTopAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
-        return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(mapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
+        return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
     }
 
     @Override
@@ -195,7 +197,7 @@ public class ProductServiceImpl implements IProductService {
         var listProductFavorite = getProductFavorite(products);
         var listAvgRating = reviewProductService.findAverageRatingProduct(products.stream().map(Product::getId).toList());
         var productDTOs = products.stream().map(it -> {
-            var productDTO = mapper.toCardProductDTO(it);
+            var productDTO = productMapper.toCardProductDTO(it);
             productDTO.setFavorite(listProductFavorite.contains(it.getId()));
             productDTO.setAvgRating(listAvgRating.stream().filter(avgRating -> avgRating.productId().equals(it.getId())).findFirst().orElse(new AverageRatingProduct(it.getId(), 0.0)).averageRating());
             return productDTO;
@@ -208,7 +210,7 @@ public class ProductServiceImpl implements IProductService {
         var listProductFavorite = getProductFavorite(products);
         products = products.stream().filter(pro -> !pro.getCategory().isDeleted()).toList();
         var productDTOs = products.stream().map(it -> {
-            var productDTO = mapper.toCardProductDTO(it);
+            var productDTO = productMapper.toCardProductDTO(it);
             productDTO.setFavorite(listProductFavorite.contains(it.getId()));
             return productDTO;
         }).toList();

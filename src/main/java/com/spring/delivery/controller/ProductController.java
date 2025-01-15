@@ -44,7 +44,7 @@ public class ProductController {
     }
 
     @PostMapping(consumes = "application/json;charset=UTF-8")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody RequestProductCreated request) {
         return ResponseEntity.ok(productService.save(request));
@@ -108,7 +108,7 @@ public class ProductController {
     @PostMapping("/favorite/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Favorite product success")
-    public ResponseEntity<Void> favorite(@PathVariable("id")String id) {
+    public ResponseEntity<Void> favorite(@PathVariable("id") String id) {
         userProductFavoriteService.addProductFavorite(id);
         return ResponseEntity.ok(null);
     }
@@ -116,7 +116,7 @@ public class ProductController {
     @DeleteMapping("/favorite/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiMessage("Remove favorite product success")
-    public ResponseEntity<Void> unFavorite(@PathVariable("id")String id) {
+    public ResponseEntity<Void> unFavorite(@PathVariable("id") String id) {
         userProductFavoriteService.removeProductFavorite(id);
         return ResponseEntity.ok(null);
     }
