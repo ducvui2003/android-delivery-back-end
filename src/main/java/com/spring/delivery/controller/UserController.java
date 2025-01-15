@@ -2,7 +2,9 @@ package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.ApiResponse;
+import com.spring.delivery.domain.request.ChangePasswordRequest;
 import com.spring.delivery.domain.request.RequestUpdateProfile;
+import com.spring.delivery.domain.response.ProfileResponse;
 import com.spring.delivery.domain.response.ResponseAddress;
 import com.spring.delivery.service.address.IAddressService;
 import com.spring.delivery.service.profile.IProfileService;
@@ -27,9 +29,17 @@ public class UserController {
 
     @ApiMessage("Update Profile")
     @PutMapping("/update-profile")
-    public ResponseEntity<ApiResponse<Void>> updateProfile(@RequestBody Map<String, Object> updateRequest) {
+    public ResponseEntity<ApiResponse<ProfileResponse>> updateProfile(@RequestBody Map<String, Object> updateRequest) {
         log.info("Invoked function updateProfile in Controller");
         profileService.updateProfile(updateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiMessage("Change password")
+    @PutMapping("/change-password")
+    public ResponseEntity<ApiResponse<ProfileResponse>> changePassword(@RequestBody ChangePasswordRequest changePassword) {
+        log.info("Invoked function changePassword in Controller");
+        profileService.changePassword(changePassword);
         return ResponseEntity.ok().build();
     }
 }
