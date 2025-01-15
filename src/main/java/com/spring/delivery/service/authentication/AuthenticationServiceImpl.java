@@ -96,8 +96,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(String email, String accessToken, String refreshToken) {
-        tokenService.saveToken(accessToken, email);
-        tokenService.saveToken(refreshToken, email);
+        try {
+            tokenService.saveToken(accessToken, email);
+            tokenService.saveToken(refreshToken, email);
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

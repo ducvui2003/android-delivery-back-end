@@ -10,7 +10,7 @@ package com.spring.delivery.service.business.product.impl;
 
 import com.spring.delivery.domain.request.product.RequestCategoryCreatedAndUpdated;
 import com.spring.delivery.domain.response.product.CategoryDTO;
-import com.spring.delivery.mapper.CategoryMapper;
+import com.spring.delivery.mapper.ICategoryMapper;
 import com.spring.delivery.repository.mongo.ICategoryRepository;
 import com.spring.delivery.service.business.product.ICategoryService;
 import com.spring.delivery.util.exception.AppErrorCode;
@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 @Slf4j
 public class CategoryServiceImpl implements ICategoryService {
     ICategoryRepository categoryRepository;
-    CategoryMapper categoryMapper;
+    ICategoryMapper categoryMapper;
 
     @Override
     public CategoryDTO save(RequestCategoryCreatedAndUpdated category) {
