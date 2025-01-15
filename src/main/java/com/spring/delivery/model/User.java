@@ -45,6 +45,8 @@ public class User extends BaseModel {
 
     String birthday;
 
+    int countryCode;
+
     @Column(nullable = false)
     @Convert(converter = AuthTypeConverter.class)
     @Enumerated(EnumType.STRING)
