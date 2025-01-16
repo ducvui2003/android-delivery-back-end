@@ -175,10 +175,12 @@ public class OrderServiceImpl implements OrderService {
         return orders.getContent().stream().map(this::toResponseOrder).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
-    public Integer updateOrderStatus(Long id, String status) {
-        var order = orderRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_FOUND));
-        return orderRepository.updateOrderStatus(id, StatusOrder.valueOf(status));
+    public boolean updateOrderStatus(Long id, StatusOrder status) {
+        if (!orderRepository.existsById(id))
+            throw new AppException(AppErrorCode.ORDER_NOT_FOUND);
+        return orderRepository.updateOrderStatus(id, status) != 0;
     }
 
     @Override

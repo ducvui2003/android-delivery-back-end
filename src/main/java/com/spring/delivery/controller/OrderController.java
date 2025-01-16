@@ -1,6 +1,7 @@
 package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.order.RequestOrderCreated;
+import com.spring.delivery.domain.request.order.RequestUpdateOrder;
 import com.spring.delivery.domain.response.order.ResponseOrder;
 import com.spring.delivery.domain.response.order.ResponseOrderDetail;
 import com.spring.delivery.service.order.OrderService;
@@ -12,7 +13,9 @@ import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class OrderController {
     OrderService orderService;
     SecurityUtil securityUtil;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("add order")
     @PostMapping("/create")
     public ResponseEntity<ResponseOrder> addOrder(@RequestBody RequestOrderCreated req) {
@@ -32,25 +36,31 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(id, req));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ApiMessage("get order by id")
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseOrderDetail> getOrderById(@PathVariable("id") Long id) {
         ResponseOrderDetail response = orderService.getOrder(id);
-        if(response == null) {
+        if (response == null) {
             throw new AppException(AppErrorCode.ORDER_NOT_FOUND);
         }
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("update status")
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Integer> updateOrderStatus(
-            @RequestParam("id") Long id,
-            @RequestParam("status") String status
+            @PathVariable("id") Long id,
+            @RequestBody RequestUpdateOrder request
     ) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+        boolean isSuccess = orderService.updateOrderStatus(id, request.status());
+        if (isSuccess)
+            return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ApiMessage("get orders sorted")
     @GetMapping()
     public ResponseEntity<List<ResponseOrder>> getOrdersSorted(
@@ -61,6 +71,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrders(page, size, sortBy));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ApiMessage("get Orders By StarReview Or Status")
     @GetMapping("/filter")
     public ResponseEntity<List<ResponseOrder>> getOrdersByStarReviewOrStatus(

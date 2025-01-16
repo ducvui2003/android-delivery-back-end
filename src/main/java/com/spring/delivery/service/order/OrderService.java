@@ -14,7 +14,7 @@ public interface OrderService {
 
     List<ResponseOrder> getOrders(int page, int size, String sortBy);
 
-    Integer updateOrderStatus(Long id, String status);
+    boolean updateOrderStatus(Long id, StatusOrder status);
 
     List<ResponseOrder> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size);
 }

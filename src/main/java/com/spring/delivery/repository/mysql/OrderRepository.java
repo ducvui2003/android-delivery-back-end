@@ -3,6 +3,7 @@ package com.spring.delivery.repository.mysql;
 import com.spring.delivery.model.Order;
 import com.spring.delivery.util.enums.StatusOrder;
 import io.lettuce.core.dynamic.annotation.Param;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Modifying
     @Query("UPDATE Order  o SET o.status = :status WHERE o.id = :id")
-    @Transactional
     Integer updateOrderStatus(@Param("id") Long id, @Param("status") StatusOrder status);
 
 
@@ -34,4 +35,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("statusOrder") StatusOrder statusOrder,
             Pageable pageable
     );
+
+    boolean existsById(@NotNull Long id);
 }
