@@ -73,4 +73,6 @@ public class User extends BaseModel {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Cart cart;
 
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    List<Order> orders;
 }

@@ -35,7 +35,11 @@ public enum AppErrorCode {
     PROMOTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Promotion not found"),
     CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Category not found"),
     PRODUCT_OPTION_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Product option not found"),
-    ADDRESS_FULL(HttpServletResponse.SC_BAD_REQUEST, "You can only have 5 addresses");
+    ADDRESS_FULL(HttpServletResponse.SC_BAD_REQUEST, "You can only have 5 addresses"),
+    ORDER_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Order not found"),
+    ORDER_DETAIL_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Order detail not found"),
+    CART_ITEMS_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "Cart items not found"),
+    ;
 
     private int code;
     private String message;
