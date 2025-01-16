@@ -13,6 +13,8 @@ import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,33 @@ public class OrderController {
     OrderService orderService;
     SecurityUtil securityUtil;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @ApiMessage("Get Order")
+    @GetMapping()
+    public ResponseEntity<List<ResponseOrder>> getOrdersByStarReviewOrStatus(
+            @RequestParam(required = false, name = "star") Integer starReview,
+            @RequestParam(required = false, name = "status") StatusOrder status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_FOUND)).id();
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        List<ResponseOrder> response = orderService.getOrders(userId, starReview, status, pageRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole( 'ADMIN')")
+    @ApiMessage("get orders sorted")
+    @GetMapping("/admin")
+    public ResponseEntity<List<ResponseOrder>> getAllOrderByAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return ResponseEntity.ok(orderService.getOrders(pageRequest));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("add order")
     @PostMapping("/create")
@@ -40,7 +69,7 @@ public class OrderController {
     @ApiMessage("get order by id")
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseOrderDetail> getOrderById(@PathVariable("id") Long id) {
-        ResponseOrderDetail response = orderService.getOrder(id);
+        ResponseOrderDetail response = orderService.getOrderDetail(id);
         if (response == null) {
             throw new AppException(AppErrorCode.ORDER_NOT_FOUND);
         }
@@ -60,26 +89,5 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @ApiMessage("get orders sorted")
-    @GetMapping()
-    public ResponseEntity<List<ResponseOrder>> getOrdersSorted(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy
-    ) {
-        return ResponseEntity.ok(orderService.getOrders(page, size, sortBy));
-    }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @ApiMessage("get Orders By StarReview Or Status")
-    @GetMapping("/filter")
-    public ResponseEntity<List<ResponseOrder>> getOrdersByStarReviewOrStatus(
-            @RequestParam(required = false, name = "star") Integer starReview,
-            @RequestParam(required = false, name = "status") StatusOrder status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(orderService.getOrdersByStarReviewOrStatus(starReview, status, page, size));
-    }
 }

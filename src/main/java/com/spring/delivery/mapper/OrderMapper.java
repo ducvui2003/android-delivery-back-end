@@ -13,7 +13,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    ResponseOrder toResponseOrder(Order order);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "address", target = "address")
