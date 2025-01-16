@@ -89,6 +89,7 @@ app:
     - /api/v1/product/**
     - /api/v1/category/**
     - /api/v1/health/**
+    - /api/v1/product-option/**
   cookie:
     key:
       refreshToken: refresh_token

@@ -12,6 +12,7 @@ import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.request.product.*;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
+import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import jakarta.validation.Valid;
 
 import java.util.List;

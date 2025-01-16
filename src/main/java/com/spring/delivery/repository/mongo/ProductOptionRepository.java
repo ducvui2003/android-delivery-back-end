@@ -14,5 +14,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductOptionRepository extends MongoRepository<ProductOption, String> {
-
 }

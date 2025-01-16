@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -64,13 +65,13 @@ public class ProductServiceImpl implements IProductService {
     int pageSize;
 
     public ApiPaging<CardProductDTO> findAll(int page) {
-        var pageProducts = productRepository.findAllByDeletedIsFalse(PageRequest.of(Math.max(page, 1) - 1, pageSize));
+        var pageProducts = productRepository.findAllByDeletedIsFalse(PageRequest.of(Math.max(page, 1) - 1, pageSize, Sort.by("id").descending()));
         return findCardProductHelper(pageProducts, Math.max(page, 1));
     }
 
     @Override
     public ApiPaging<CardProductDTO> findAllByCategoryId(String id, int page) {
-        var pageProducts = productRepository.findAllByCategoryIdAndDeletedIsFalse(id, PageRequest.of(Math.max(page, 1) - 1, pageSize));
+        var pageProducts = productRepository.findAllByCategoryIdAndDeletedIsFalse(id, PageRequest.of(Math.max(page, 1) - 1, pageSize, Sort.by("id").descending()));
         return findCardProductHelper(pageProducts, Math.max(page, 1));
     }
 

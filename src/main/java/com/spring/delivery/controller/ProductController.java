@@ -4,6 +4,8 @@ import com.spring.delivery.domain.ApiPaging;
 import com.spring.delivery.domain.request.product.*;
 import com.spring.delivery.domain.response.product.CardProductDTO;
 import com.spring.delivery.domain.response.product.ProductDTO;
+import com.spring.delivery.domain.response.product.ProductOptionDTO;
+import com.spring.delivery.service.business.product.IProductOptionService;
 import com.spring.delivery.service.business.product.IProductService;
 import com.spring.delivery.service.business.user.IUserProductFavoriteService;
 import com.spring.delivery.util.anotation.ApiMessage;
@@ -44,7 +46,7 @@ public class ProductController {
     }
 
     @PostMapping(consumes = "application/json;charset=UTF-8")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiMessage("Create product")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody RequestProductCreated request) {
         return ResponseEntity.ok(productService.save(request));
