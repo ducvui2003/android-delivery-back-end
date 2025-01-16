@@ -1,19 +1,21 @@
 package com.spring.delivery.mapper;
 
-import com.spring.delivery.domain.response.order.OrderDetailDTO;
-import com.spring.delivery.domain.response.order.OrderDetailResponse;
-import com.spring.delivery.model.OrderDetail;
+import com.spring.delivery.domain.request.order.RequestOrderDetailCreated;
+import com.spring.delivery.domain.response.order.OrderItemDTO;
+import com.spring.delivery.domain.response.order.ResponseOrderDetail;
+import com.spring.delivery.model.OrderItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderDetailMapper {
 
-    OrderDetailDTO toOrderDetailDTO(OrderDetail orderDetail);
+    OrderItemDTO toOrderDetailDTO(OrderItem orderItem);
 
-    OrderDetail toOrderDetail(OrderDetailDTO orderDetailDTO);
+    ResponseOrderDetail toOrderDetailResponse(OrderItem orderItem);
 
-    OrderDetailResponse toOrderDetailResponse(OrderDetail orderDetail);
+    OrderItem toOrderDetail(RequestOrderDetailCreated req);
 
+    RequestOrderDetailCreated toOrderDetailCreated(OrderItem orderItem);
 
 }

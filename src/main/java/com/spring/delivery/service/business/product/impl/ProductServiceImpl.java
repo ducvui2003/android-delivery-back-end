@@ -43,6 +43,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -84,6 +85,12 @@ public class ProductServiceImpl implements IProductService {
         productDto.setRating(reviewProductService.getRatingOverall(id));
         productDto.setFavorite(favorite);
         return productDto;
+    }
+
+    @Override
+    public List<ProductDTO> findByIdIn(List<String> ids) {
+        List<Product> products = productRepository.findByIdIn(ids);
+        return products.stream().map(mapper::toProductDTO).collect(Collectors.toList());
     }
 
     @Override

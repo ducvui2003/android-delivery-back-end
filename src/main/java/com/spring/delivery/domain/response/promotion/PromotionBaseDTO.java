@@ -1,7 +1,7 @@
 package com.spring.delivery.domain.response.promotion;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.spring.delivery.util.enums.converter.PromotionType;
+import com.spring.delivery.util.enums.PromotionType;
 import lombok.Builder;
 
 import java.util.List;

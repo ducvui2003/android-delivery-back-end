@@ -63,13 +63,14 @@ spring:
 
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
-  access-token-validity-in-seconds: 30
-  refresh-token-validity-in-seconds: 50
+  access-token-validity-in-seconds: 86400
+  refresh-token-validity-in-seconds: 604800
 
 app:
   whitelist:
     - /api/v1/health/alive
     - /api/v1/auth/login
+    - /api/v1/health/alive
     - /api/v1/auth/logout
     - /api/v1/auth/check-before-register
     - /api/v1/auth/register-email

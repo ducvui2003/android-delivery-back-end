@@ -78,4 +78,7 @@ public class User extends BaseModel {
 
     @OneToMany(mappedBy = "user")
     List<Message> messages;
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    List<Order> orders;
 }
