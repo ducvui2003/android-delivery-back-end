@@ -1,6 +1,5 @@
 package com.spring.delivery.service.order.impl;
 
-import com.spring.delivery.document.DiscountInfo;
 import com.spring.delivery.domain.request.order.RequestOrderCreated;
 import com.spring.delivery.domain.response.order.ResponseOrder;
 import com.spring.delivery.domain.response.order.ResponseOrderDetail;
@@ -23,9 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,11 +44,28 @@ public class OrderServiceImpl implements OrderService {
     PromotionService promotionService;
     UserRepository userRepository;
 
+
     @Override
-    public ResponseOrderDetail getOrder(Long orderId) {
+    public List<ResponseOrder> getOrders(Long userId, Integer starReview, StatusOrder statusOrder, Pageable pageable) {
+        Page<Order> orders = orderRepository.findOrdersByOptionalFields(userId, starReview, statusOrder, pageable);
+        return orders.stream().map(this::toResponseOrder).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ResponseOrder> getOrders(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(pageable);
+        if (orders.getContent().isEmpty())
+            return null;
+        return orders.getContent().stream().map(this::toResponseOrder).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public ResponseOrderDetail getOrderDetail(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         return optionalOrder.map(orderMapper::toResponseOrderDetail).orElse(null);
     }
+
 
     @Transactional
     @Override
@@ -110,7 +124,6 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> result = new ArrayList<>();
         for (int i = 0; i < productDTOS.size(); i++) {
             ProductDTO item = productDTOS.get(i);
-            DiscountInfo discountInfo = item.getDiscountInfo();
             List<String> optionIds = cartItems.get(i).getOptionIds();
 
             List<OrderItemOption> orderItemOptions = new ArrayList<>();
@@ -139,6 +152,7 @@ public class OrderServiceImpl implements OrderService {
                     .category(item.getCategory().name())
                     .price(item.getPrice())
                     .discount(item.getDiscountInfo().getDiscount())
+                    .quantity(cartItems.get(i).getQuantity())
                     .image(item.getImage())
                     .options(orderItemOptions)
                     .build();
@@ -166,14 +180,6 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    @Override
-    public List<ResponseOrder> getOrders(int page, int size, String sortBy) {
-        var pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        Page<Order> orders = orderRepository.findAll(pageable);
-        if (orders.getContent().isEmpty())
-            return null;
-        return orders.getContent().stream().map(this::toResponseOrder).collect(Collectors.toList());
-    }
 
     @Transactional
     @Override
@@ -183,13 +189,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.updateOrderStatus(id, status) != 0;
     }
 
-    @Override
-    public List<ResponseOrder> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Order> orders = orderRepository.findOrdersByOptionalFields(starReview, statusOrder, pageable);
-
-        return orders.stream().map(this::toResponseOrder).collect(Collectors.toList());
-    }
 
     ResponseOrder toResponseOrder(Order order) {
         List<String> images = order.getOrderItems().stream().map(OrderItem::getImage).toList();

@@ -22,7 +22,7 @@ public class OrderItem extends BaseModel {
     String name;
     String category;
     double price;
-    String quantity;
+    int quantity;
     String image;
     Integer starReview;
     double discount;

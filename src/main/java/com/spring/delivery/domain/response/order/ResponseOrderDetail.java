@@ -1,9 +1,11 @@
 package com.spring.delivery.domain.response.order;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.delivery.domain.response.promotion.PromotionOrderResponse;
 import com.spring.delivery.model.OrderItemOption;
 import com.spring.delivery.util.enums.PaymentMethod;
+import com.spring.delivery.util.enums.StatusOrder;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -29,7 +31,8 @@ public class ResponseOrderDetail {
     Double discount;
     String description;
     String reasonForCancellation;
-    Integer starReview;
+    int starReview;
+    StatusOrder status;
 
     List<ResponseOrderItem> items;
 
