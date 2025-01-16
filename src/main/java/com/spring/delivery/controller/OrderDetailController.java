@@ -1,11 +1,9 @@
 package com.spring.delivery.controller;
 
 import com.spring.delivery.domain.request.order.RequestOrderDetailCreated;
-import com.spring.delivery.domain.response.order.OrderDetailDTO;
-import com.spring.delivery.domain.response.order.OrderDetailResponse;
+import com.spring.delivery.domain.response.order.ResponseOrderDetail;
 import com.spring.delivery.service.order.OrderDetailService;
 import com.spring.delivery.util.anotation.ApiMessage;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +27,7 @@ public class OrderDetailController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDetailResponse> getOrderDetailById(@PathVariable Long id) {
+    public ResponseEntity<ResponseOrderDetail> getOrderDetailById(@PathVariable Long id) {
         log.info("OrderDetailController.getOrderDetailById");
         return ResponseEntity.ok(orderDetailService.getOrderDetailById(id));
     }

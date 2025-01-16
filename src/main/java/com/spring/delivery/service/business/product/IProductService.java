@@ -24,6 +24,8 @@ public interface IProductService {
 
     ProductDTO findById(String id);
 
+    List<ProductDTO> findByIdIn(List<String> ids);
+
     ProductDTO removeDiscount(String id);
 
     ProductDTO setDiscount(String id, RequestDiscountCreated request);

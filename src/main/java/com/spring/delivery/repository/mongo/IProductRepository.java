@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,6 @@ public interface IProductRepository extends MongoRepository<Product, String> {
     boolean existsByIdAndDeletedIsFalse(@NotNull String id);
 
     List<Product> findByIdIsInAndDeletedIsFalse(List<String> ids);
+
+    List<Product> findByIdIn(Collection<String> ids);
 }

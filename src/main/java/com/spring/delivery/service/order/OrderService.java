@@ -1,17 +1,20 @@
 package com.spring.delivery.service.order;
 
 import com.spring.delivery.domain.request.order.RequestOrderCreated;
-import com.spring.delivery.domain.response.order.OrderDTO;
+import com.spring.delivery.domain.response.order.ResponseOrder;
+import com.spring.delivery.domain.response.order.ResponseOrderDetail;
 import com.spring.delivery.util.enums.StatusOrder;
 
 import java.util.List;
 
 public interface OrderService {
-    OrderDTO addOrder(RequestOrderCreated req);
+    ResponseOrder createOrder(Long userId, RequestOrderCreated req);
 
-    List<OrderDTO> getOrders(int page, int size, String sortBy);
+    ResponseOrderDetail getOrder(Long orderId);
+
+    List<ResponseOrder> getOrders(int page, int size, String sortBy);
 
     Integer updateOrderStatus(Long id, String status);
 
-    List<OrderDTO> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size);
+    List<ResponseOrder> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size);
 }

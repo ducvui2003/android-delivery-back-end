@@ -11,7 +11,7 @@ import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record OrderDetailDTO(
+public record OrderItemDTO(
         List<ProductDTO> productDTOList,
         String address,
         PaymentMethod paymentMethod,

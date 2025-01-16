@@ -1,17 +1,30 @@
 package com.spring.delivery.mapper;
 
 import com.spring.delivery.domain.request.order.RequestOrderCreated;
-import com.spring.delivery.domain.response.order.OrderDTO;
+import com.spring.delivery.domain.response.order.ResponseOrder;
+import com.spring.delivery.domain.response.order.ResponseOrderDetail;
 import com.spring.delivery.model.Order;
+import com.spring.delivery.model.OrderItem;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    OrderDTO toOrderDetailDTO(Order order);
 
-    List<OrderDTO> toOrderDTOs(List<Order> orders);
+    ResponseOrder toResponseOrder(Order order);
+
+    List<ResponseOrder> toOrderDTOs(List<Order> orders);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "paymentMethod", target = "paymentMethod")
+    @Mapping(source = "shippingFee", target = "deliveryFee")
+    @Mapping(source = "subTotal", target = "subTotal")
+    @Mapping(source = "orderItems", target = "items")
+    ResponseOrderDetail toResponseOrderDetail(Order order);
+
 
     Order toOrder(RequestOrderCreated orderDTO);
 }
