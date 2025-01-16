@@ -3,7 +3,6 @@ package com.spring.delivery.util;
 import com.spring.delivery.domain.response.UserInfoGoogle;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

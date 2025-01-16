@@ -73,4 +73,9 @@ public class User extends BaseModel {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Cart cart;
 
+    @OneToMany(mappedBy = "user")
+    List<UserInRomChat> room;
+
+    @OneToMany(mappedBy = "user")
+    List<Message> messages;
 }

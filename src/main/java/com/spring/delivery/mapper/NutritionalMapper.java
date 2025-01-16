@@ -11,10 +11,11 @@ package com.spring.delivery.mapper;
 import com.spring.delivery.document.Nutritional;
 import com.spring.delivery.domain.request.product.RequestNutritionalCreated;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface NutritionalMapper {
     List<Nutritional> toListNutritional(List<RequestNutritionalCreated> request);
 }

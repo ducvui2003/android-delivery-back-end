@@ -12,8 +12,9 @@ import com.spring.delivery.document.ProductOption;
 import com.spring.delivery.domain.request.product.RequestOptionCreated;
 import com.spring.delivery.domain.response.product.ProductOptionDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductOptionMapper {
     ProductOptionDTO toProductOptionDTO(ProductOption option);
 

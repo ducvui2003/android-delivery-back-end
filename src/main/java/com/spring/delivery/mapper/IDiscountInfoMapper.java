@@ -11,8 +11,9 @@ package com.spring.delivery.mapper;
 import com.spring.delivery.document.DiscountInfo;
 import com.spring.delivery.domain.request.product.RequestDiscountCreated;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IDiscountInfoMapper {
     DiscountInfo toDiscountInfo(RequestDiscountCreated request);
 }

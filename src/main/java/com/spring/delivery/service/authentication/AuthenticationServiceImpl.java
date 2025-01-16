@@ -28,7 +28,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -205,7 +204,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(user.getEmail())
                 .user(userMapper.toUserPayload(user))
                 .role(user.getRole().getName().name())
-                .permissions(user.getPermissions() !=  null ? user.getPermissions().stream().map(Permission::getName).toList() : List.of())
+                .permissions(user.getPermissions() != null ? user.getPermissions().stream().map(Permission::getName).toList() : List.of())
                 .timeExpiredPlus(1)
                 .build();
     }

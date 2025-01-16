@@ -5,8 +5,9 @@ import com.spring.delivery.domain.request.promotion.RequestPromotionCreated;
 import com.spring.delivery.domain.response.promotion.PromotionBaseDTO;
 import com.spring.delivery.domain.response.promotion.PromotionDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PromotionMapper {
 
     PromotionDTO toPromotionDTO(Promotion promotion);
