@@ -15,8 +15,6 @@ public interface OrderMapper {
 
     ResponseOrder toResponseOrder(Order order);
 
-    List<ResponseOrder> toOrderDTOs(List<Order> orders);
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "paymentMethod", target = "paymentMethod")

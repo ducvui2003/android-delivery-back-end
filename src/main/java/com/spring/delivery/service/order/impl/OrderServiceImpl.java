@@ -65,7 +65,10 @@ public class OrderServiceImpl implements OrderService {
         if (orderItems == null)
             throw new AppException(AppErrorCode.CART_ITEMS_NOT_FOUND);
 
-        double orderItemPrice = orderItems.stream().map(OrderItem::getPrice).reduce(0.0, Double::sum);
+        double orderItemPrice = orderItems.stream()
+                .map(item -> item.getPrice() * item.getDiscount() == 0 ? 1 : (item.getDiscount() / 100))
+                .reduce(0.0, Double::sum);
+
         OrderPromotion promotionShip = getOrderPromotion(req.promotionShipId());
         OrderPromotion promotionProduct = getOrderPromotion(req.promotionProductId());
 
@@ -130,16 +133,13 @@ public class OrderServiceImpl implements OrderService {
             }
 
 
-            double price = discountInfo != null ?
-                    discountInfo.getDiscount() * item.getPrice()
-                    : item.getPrice();
-
             OrderItem orderItem = OrderItem.builder()
                     .productId(item.getId())
                     .name(item.getName())
                     .category(item.getCategory().name())
-                    .price(price)
-                    .thumbnail(item.getImage())
+                    .price(item.getPrice())
+                    .discount(item.getDiscountInfo().getDiscount())
+                    .image(item.getImage())
                     .options(orderItemOptions)
                     .build();
 
@@ -184,13 +184,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<ResponseOrder> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder statusOrder, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return orderMapper.toOrderDTOs(
-                orderRepository.getOrdersByStarReviewOrStatus(starReview, statusOrder, pageable)
-                        .stream().toList());
+        Page<Order> orders = orderRepository.findOrdersByOptionalFields(starReview, statusOrder, pageable);
+
+        return orders.stream().map(this::toResponseOrder).collect(Collectors.toList());
     }
 
     ResponseOrder toResponseOrder(Order order) {
-        List<String> images = order.getOrderItems().stream().map(OrderItem::getThumbnail).toList();
+        List<String> images = order.getOrderItems().stream().map(OrderItem::getImage).toList();
         return new ResponseOrder(
                 order.getId(),
                 order.getSubTotal(),

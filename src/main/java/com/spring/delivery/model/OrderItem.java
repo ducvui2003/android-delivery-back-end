@@ -2,14 +2,11 @@ package com.spring.delivery.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.util.convert.JsonOrderItemOptionConverter;
-import com.spring.delivery.util.convert.JsonOrderPromotionConverter;
-import com.spring.delivery.util.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -26,8 +23,9 @@ public class OrderItem extends BaseModel {
     String category;
     double price;
     String quantity;
-    String thumbnail;
+    String image;
     Integer starReview;
+    double discount;
 
     @Column(columnDefinition = "JSON")
     @Convert(converter = JsonOrderItemOptionConverter.class)

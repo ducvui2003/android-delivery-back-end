@@ -23,6 +23,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Transactional
     Integer updateOrderStatus(@Param("id") Long id, @Param("status") StatusOrder status);
 
-//    @Query("SELECT o FROM Order o WHERE o.starReview = :starReview OR o.status = :status ORDER BY o.createdAt DESC")
-    Page<Order> getOrdersByStarReviewOrStatus(Integer starReview, StatusOrder status, Pageable pageable);
+
+    @Query("""
+                SELECT o FROM Order o 
+                WHERE (:starReview IS NULL OR o.starReview = :starReview)
+                  AND (:statusOrder IS NULL OR o.status = :statusOrder)
+            """)
+    Page<Order> findOrdersByOptionalFields(
+            @Param("starReview") Integer starReview,
+            @Param("statusOrder") StatusOrder statusOrder,
+            Pageable pageable
+    );
 }

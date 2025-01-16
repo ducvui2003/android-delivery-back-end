@@ -18,6 +18,9 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseOrderDetail {
     Long id;
+    String fullName;
+    String phone;
+    String email;
     String address;
     PaymentMethod paymentMethod;
     Set<PromotionOrderResponse> promotions;
@@ -27,9 +30,7 @@ public class ResponseOrderDetail {
     String description;
     String reasonForCancellation;
     Integer starReview;
-    String fullName;
-    String phone;
-    String email;
+
     List<ResponseOrderItem> items;
 
     @Data
@@ -41,7 +42,7 @@ public class ResponseOrderDetail {
         String category;
         double price;
         String quantity;
-        String thumbnail;
+        String image;
         Integer starReview;
 
         List<OrderItemOption> options;

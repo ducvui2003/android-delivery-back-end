@@ -64,11 +64,11 @@ public class OrderController {
     @ApiMessage("get Orders By StarReview Or Status")
     @GetMapping("/filter")
     public ResponseEntity<List<ResponseOrder>> getOrdersByStarReviewOrStatus(
-            @RequestParam(defaultValue = "-1") int starReview,
-            @RequestParam(defaultValue = "ACTIVE") String status,
+            @RequestParam(required = false, name = "star") Integer starReview,
+            @RequestParam(required = false, name = "status") StatusOrder status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(orderService.getOrdersByStarReviewOrStatus(starReview, StatusOrder.valueOf(status), page, size));
+        return ResponseEntity.ok(orderService.getOrdersByStarReviewOrStatus(starReview, status, page, size));
     }
 }
