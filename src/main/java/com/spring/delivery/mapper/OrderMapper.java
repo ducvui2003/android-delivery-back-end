@@ -1,19 +1,15 @@
 package com.spring.delivery.mapper;
 
-import com.spring.delivery.domain.response.order.OrderDTO;
+import com.spring.delivery.domain.request.order.RequestOrderCreated;
 import com.spring.delivery.domain.response.order.ResponseOrderDetail;
 import com.spring.delivery.model.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderMapper {
-    OrderDTO toOrderDetailDTO(Order order);
-
-    Order toOrder(OrderDTO orderDTO);
+    Order toOrder(RequestOrderCreated cartCreated);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "address", target = "address")

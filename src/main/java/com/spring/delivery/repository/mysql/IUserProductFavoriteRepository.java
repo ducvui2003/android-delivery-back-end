@@ -2,6 +2,8 @@ package com.spring.delivery.repository.mysql;
 
 import com.spring.delivery.model.UserProductFavorite;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +17,7 @@ public interface IUserProductFavoriteRepository extends JpaRepository<UserProduc
 
     @Transactional
     int deleteByProductId(String id);
+
+    Page<UserProductFavorite> findByUser_Id(Long useId, Pageable pageable);
+    List<UserProductFavorite> findByUser_Id(Long useId);
 }

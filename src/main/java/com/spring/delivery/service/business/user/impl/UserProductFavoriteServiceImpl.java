@@ -8,6 +8,8 @@
 
 package com.spring.delivery.service.business.user.impl;
 
+import com.spring.delivery.domain.ApiPaging;
+import com.spring.delivery.domain.response.product.ProductDTO;
 import com.spring.delivery.model.User;
 import com.spring.delivery.model.UserProductFavorite;
 import com.spring.delivery.repository.mongo.IProductRepository;
@@ -19,6 +21,9 @@ import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +62,15 @@ public class UserProductFavoriteServiceImpl implements IUserProductFavoriteServi
     public void removeProductFavorite(String id) {
         if (userProductFavoriteRepository.deleteByProductId(id) == 0)
             throw new AppException(AppErrorCode.NOT_EXIST);
+    }
+
+    @Override
+    public List<String> findProductIdByUserId(Long useId, Pageable pageable) {
+        return userProductFavoriteRepository.findByUser_Id(useId, pageable).getContent().stream().map(UserProductFavorite::getProductId).toList();
+    }
+    @Override
+    public List<String> findProductIdByUserId(Long useId) {
+        return userProductFavoriteRepository.findByUser_Id(useId).stream().map(UserProductFavorite::getProductId).toList();
     }
 
     private User productFavoriteHelper(String id) {

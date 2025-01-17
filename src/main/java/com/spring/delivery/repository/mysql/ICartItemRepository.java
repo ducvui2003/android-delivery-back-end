@@ -28,6 +28,11 @@ public interface ICartItemRepository extends JpaRepository<CartItem, Long> {
             @Param("optionIds") String optionIds
     );
 
+    Optional<CartItem> findByCart_IdAndProductId(
+            long cartId,
+            String productId
+    );
+
 
     List<CartItem> findCartItemByCartId(long cartId);
 

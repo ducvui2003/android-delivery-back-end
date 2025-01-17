@@ -15,4 +15,6 @@ public interface IAddressService {
     void deleteAddress(Long addressID);
 
     void updateAddress(RequestUpdateAddress requestUpdateAddress);
+
+    ResponseAddress setDefaultAddress(long id);
 }

@@ -83,8 +83,8 @@ public class OrderServiceImpl implements OrderService {
                 .map(item -> item.getPrice() * item.getDiscount() == 0 ? 1 : (item.getDiscount() / 100))
                 .reduce(0.0, Double::sum);
 
-        OrderPromotion promotionShip = getOrderPromotion(req.promotionShipId());
-        OrderPromotion promotionProduct = getOrderPromotion(req.promotionProductId());
+        OrderPromotion promotionShip = req.promotionShipId() != null ?  getOrderPromotion(req.promotionShipId()) : null;
+        OrderPromotion promotionProduct = req.promotionProductId() != null ? getOrderPromotion(req.promotionProductId())  : null;
 
         Order order = orderMapper.toOrder(req);
         order.setStatus(StatusOrder.ACTIVE);
@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
                     .name(item.getName())
                     .category(item.getCategory().name())
                     .price(item.getPrice())
-                    .discount(item.getDiscountInfo().getDiscount())
+                    .discount(item.getDiscountInfo() != null ? item.getDiscountInfo().getDiscount() : 0)
                     .quantity(cartItems.get(i).getQuantity())
                     .image(item.getImage())
                     .options(orderItemOptions)

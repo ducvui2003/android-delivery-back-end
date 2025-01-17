@@ -28,19 +28,19 @@ public class AddressServiceImpl implements IAddressService {
     AddressMapper addressMapper;
 
     @Override
-    public List<ResponseAddress> findByUser( ) {
+    public List<ResponseAddress> findByUser() {
         System.out.println(SecurityUtil.getCurrentUserLogin());
         User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().get()).get();
         System.out.println(user);
         List<Address> addresses = addressRepository.findByUserId(user.getId());
-        return addressMapper.convertToResponseAddresses(addresses);
+        return addressMapper.mapListToListResponseAddresses(addresses);
     }
 
     @Override
     public void addAddress(RequestAddress requestAddress) {
-        User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().get()).get();
+        User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.UNAUTHORIZED))).orElseThrow(() -> new AppException(AppErrorCode.UNAUTHORIZED));
         int numberOfAddress = addressRepository.countByUser(user);
-        if (numberOfAddress >= 5){
+        if (numberOfAddress >= 5) {
             throw new AppException(AppErrorCode.ADDRESS_FULL);
         }
         Address address = Address.builder()
@@ -62,5 +62,18 @@ public class AddressServiceImpl implements IAddressService {
         Address address = addressRepository.findById(requestUpdateAddress.id()).get();
         address.setAddress(requestUpdateAddress.address());
         addressRepository.save(address);
+    }
+
+    @Override
+    public ResponseAddress setDefaultAddress(long id) {
+        User user = userRepository.findByEmail(SecurityUtil.getCurrentUserLogin().orElseThrow(() -> new AppException(AppErrorCode.UNAUTHORIZED))).orElseThrow(() -> new AppException(AppErrorCode.UNAUTHORIZED));
+        addressRepository.findByUser_IdAndIsDefaultTrue(user.getId()).forEach(address -> {
+            address.setDefault(false);
+            addressRepository.save(address);
+        });
+        Address address = addressRepository.findByIdAndUser_Id(id, user.getId()).orElseThrow(() -> new AppException(AppErrorCode.NOT_EXIST));
+        address.setDefault(true);
+        addressRepository.save(address);
+        return addressMapper.mapToResponseAddresses(address);
     }
 }

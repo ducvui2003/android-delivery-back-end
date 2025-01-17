@@ -8,6 +8,11 @@
 
 package com.spring.delivery.service.business.user;
 
+import com.spring.delivery.domain.ApiPaging;
+import com.spring.delivery.domain.response.product.ProductDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface IUserProductFavoriteService {
@@ -18,4 +23,7 @@ public interface IUserProductFavoriteService {
     void addProductFavorite(String id);
 
     void removeProductFavorite(String id);
+
+    List<String> findProductIdByUserId(Long useId, Pageable pageable);
+    List<String> findProductIdByUserId(Long useId);
 }

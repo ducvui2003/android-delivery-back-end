@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -103,7 +105,6 @@ public class ProductController {
     @GetMapping("/search")
     @ApiMessage("Search product")
     public ResponseEntity<ApiPaging<CardProductDTO>> searchProduct(RequestSearchProduct request) {
-        System.out.println(request);
         return ResponseEntity.ok(productService.searchProduct(request));
     }
 
@@ -121,5 +122,13 @@ public class ProductController {
     public ResponseEntity<Void> unFavorite(@PathVariable("id") String id) {
         userProductFavoriteService.removeProductFavorite(id);
         return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/favorite")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @ApiMessage("Favorite product")
+    public ResponseEntity<ApiPaging<CardProductDTO>> getFavorite(RequestSearchProduct request, @PageableDefault(sort = "id") Pageable pageable) {
+        var result = productService.getFavorite(request, pageable);
+        return ResponseEntity.ok().body(result);
     }
 }

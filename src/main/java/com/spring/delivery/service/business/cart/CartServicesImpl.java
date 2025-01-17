@@ -47,8 +47,7 @@ public class CartServicesImpl implements ICartServices {
         boolean productExist = isProductExist(request.productId(), request.optionIds(), request.quantity());
         if (!productExist)
             return null;
-        ResponseCart cartItemSaved = createCartItem(cart, request);
-        return cartItemSaved;
+        return createCartItem(cart, request);
     }
 
     /**
@@ -72,7 +71,7 @@ public class CartServicesImpl implements ICartServices {
         if (productDTO.getQuantity() < quantity) {
             return false;
         }
-        return optionIds.stream()
+        return optionIds == null || optionIds.isEmpty() || optionIds.stream()
                 .anyMatch(optionId -> isOptionExist(optionId, productDTO.getOptions()));
     }
 
@@ -99,7 +98,7 @@ public class CartServicesImpl implements ICartServices {
     private ResponseCart createCartItem(Cart cart, RequestCartCreated request) {
         Optional<CartItem> cartItemOptional = null;
         try {
-            cartItemOptional = cartItemRepository.findByCartIdAndProductIdAndOptionIds(
+            cartItemOptional = request.optionIds() == null || request.optionIds().isEmpty() ? cartItemRepository.findByCart_IdAndProductId(cart.getId(), request.productId()) : cartItemRepository.findByCartIdAndProductIdAndOptionIds(
                     cart.getId(), request.productId(), objectMapper.writeValueAsString(request.optionIds()));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -133,18 +132,19 @@ public class CartServicesImpl implements ICartServices {
         responseCart.setQuantityValid(productDTO.getQuantity());
 
         List<ResponseCart.Option> options = new ArrayList<>();
-        for (String optionId : cartItem.getOptionIds()) {
-            for (ProductOptionDTO optionItem : productDTO.getOptions()) {
-                if (optionItem.id().equals(optionId))
-                    options.add(cartItemMapper.toOption(optionItem));
-                else if (optionItem.options() != null && !optionItem.options().isEmpty()) {
-                    for (ProductOptionDTO optionItemInner : optionItem.options()) {
-                        if (optionItemInner.id().equals(optionId))
-                            options.add(cartItemMapper.toOption(optionItemInner));
+        if (cartItem.getOptionIds() != null)
+            for (String optionId : cartItem.getOptionIds()) {
+                for (ProductOptionDTO optionItem : productDTO.getOptions()) {
+                    if (optionItem.id().equals(optionId))
+                        options.add(cartItemMapper.toOption(optionItem));
+                    else if (optionItem.options() != null && !optionItem.options().isEmpty()) {
+                        for (ProductOptionDTO optionItemInner : optionItem.options()) {
+                            if (optionItemInner.id().equals(optionId))
+                                options.add(cartItemMapper.toOption(optionItemInner));
+                        }
                     }
                 }
             }
-        }
 
         responseCart.setOptions(options);
 //        responseCart.setDiscount(productDTO.getDiscountInfo().getDiscount());

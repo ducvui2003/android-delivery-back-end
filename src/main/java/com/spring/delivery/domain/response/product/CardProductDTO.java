@@ -8,6 +8,7 @@
 
 package com.spring.delivery.domain.response.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.delivery.document.DiscountInfo;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,5 +25,6 @@ public class CardProductDTO {
     double price;
     DiscountInfo discountInfo;
     double avgRating;
+    @JsonProperty("favorite")
     boolean isFavorite;
 }

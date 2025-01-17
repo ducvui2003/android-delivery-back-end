@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -90,7 +91,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductDTO> findByIdIn(List<String> ids) {
         List<Product> products = productRepository.findByIdIn(ids);
-        return products.stream().map(mapper::toProductDTO).collect(Collectors.toList());
+        return products.stream().map(productMapper::toProductDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -152,7 +153,14 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductDTO> findProductForHomePage() {
         var ids = reviewProductService.findTopAverageRatingProduct().stream().map(AverageRatingProduct::productId).toList();
-        return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
+        var user = securityUtil.getCurrentUserDTOFromAccessToken();
+        if (user.isEmpty())
+            return productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
+        var result = productRepository.findByIdIsInAndDeletedIsFalse(ids).stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::getName)).limit(pageSize).toList();
+        result.forEach(product -> {
+            product.setFavorite(userProductFavoriteService.existsProductFavorite(user.get().id(), product.getId()));
+        });
+        return result;
     }
 
     @Override
@@ -164,12 +172,26 @@ public class ProductServiceImpl implements IProductService {
         var paging = searchCardProductHelper(products, request.page() == null ? 1 : Math.max(request.page(), 1));
         paging.setSize(products.size());
         paging.setTotalPage((int) (total % pageSize != 0 ? (total / pageSize) + 1 : total / pageSize));
+        var user = securityUtil.getCurrentUserDTOFromAccessToken();
+        if (user.isEmpty()) return paging;
+        paging.getContent().forEach(product -> {
+            product.setFavorite(userProductFavoriteService.existsProductFavorite(user.get().id(), product.getId()));
+        });
         return paging;
     }
 
     @Override
     public boolean existsProductById(String id) {
         return getProductByIdAndCategoryHasDeletedIsFalse(id) != null;
+    }
+
+    @Override
+    public ApiPaging<CardProductDTO> getFavorite(RequestSearchProduct request, Pageable pageable) {
+        var user = securityUtil.getCurrentUserDTOFromAccessToken();
+        if (user.isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
+        var ids = userProductFavoriteService.findProductIdByUserId(user.get().id());
+        var pageProducts = productRepository.findByIdIsInAndDeletedIsFalse(ids, pageable);
+        return findCardProductHelper(pageProducts, Math.max(pageable.getPageNumber(), 1));
     }
 
     private void initCategoryAndProductOption(Product product, String categoryId, List<String> productOptions) {
@@ -211,7 +233,13 @@ public class ProductServiceImpl implements IProductService {
             return productDTO;
         }).toList();
 
-        return ApiPaging.<CardProductDTO>builder().content(productDTOs).totalPage(pageProducts.getTotalPages()).current(page).size(products.size()).build();
+        var result = ApiPaging.<CardProductDTO>builder().content(productDTOs).totalPage(pageProducts.getTotalPages()).current(page).size(products.size()).build();
+        var user = securityUtil.getCurrentUserDTOFromAccessToken();
+        if (user.isEmpty()) return result;
+        result.getContent().forEach(product -> {
+            product.setFavorite(userProductFavoriteService.existsProductFavorite(user.get().id(), product.getId()));
+        });
+        return result;
     }
 
     private ApiPaging<CardProductDTO> searchCardProductHelper(List<Product> products, int page) {

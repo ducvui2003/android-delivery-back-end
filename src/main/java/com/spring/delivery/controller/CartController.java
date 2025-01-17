@@ -42,9 +42,9 @@ public class CartController {
     public ResponseEntity<List<ResponseCart>> getAllCartItem() {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
         List<ResponseCart> response = cartServices.getAllCartItem(userId);
-        if (response == null || response.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (response == null || response.isEmpty())
+            return ResponseEntity.ok(List.of());
+
         return ResponseEntity.ok(response);
     }
 

@@ -57,7 +57,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrders(pageRequest));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @ApiMessage("add order")
     @PostMapping("/create")
     public ResponseEntity<ResponseOrder> addOrder(@RequestBody RequestOrderCreated req) {

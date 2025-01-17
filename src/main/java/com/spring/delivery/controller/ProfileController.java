@@ -45,7 +45,7 @@ public class ProfileController {
 
     @ApiMessage("Add Address")
     @PostMapping("/address")
-    public ResponseEntity<ApiResponse<Void>> changeAddress(@RequestBody RequestAddress requestAddress) {
+    public ResponseEntity<Void> changeAddress(@RequestBody RequestAddress requestAddress) {
         log.info("Invoked function changeAddress in Controller with parameter requestChangeAddress: {}", requestAddress);
         addressService.addAddress(requestAddress);
         return ResponseEntity.ok().build();
@@ -53,7 +53,7 @@ public class ProfileController {
 
     @ApiMessage("Delete Address")
     @DeleteMapping("/address/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         log.warn("Invoked function deleteAddress in Controller with parameter addressID: {}", id);
         addressService.deleteAddress(id);
         return ResponseEntity.ok().build();
@@ -61,9 +61,15 @@ public class ProfileController {
 
     @ApiMessage("Update Address")
     @PatchMapping("/address")
-    public ResponseEntity<ApiResponse<Void>> updateAddress(@RequestBody RequestUpdateAddress requestUpdateAddress) {
+    public ResponseEntity<Void> updateAddress(@RequestBody RequestUpdateAddress requestUpdateAddress) {
         log.info("Invoked function updateAddress in Controller with parameter requestUpdateAddress: {}", requestUpdateAddress);
         addressService.updateAddress(requestUpdateAddress);
         return ResponseEntity.ok().build();
+    }
+
+    @ApiMessage("Set default address")
+    @PutMapping("/address/{id}")
+    public ResponseEntity<ResponseAddress> changeAddress(@PathVariable("id") long id) {
+        return ResponseEntity.ok().body(addressService.setDefaultAddress(id));
     }
 }

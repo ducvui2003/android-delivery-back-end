@@ -31,5 +31,7 @@ public interface IProductRepository extends MongoRepository<Product, String> {
 
     List<Product> findByIdIsInAndDeletedIsFalse(List<String> ids);
 
+    Page<Product>findByIdIsInAndDeletedIsFalse(List<String> ids, Pageable pageable);
+
     List<Product> findByIdIn(Collection<String> ids);
 }

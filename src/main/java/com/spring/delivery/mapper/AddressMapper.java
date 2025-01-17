@@ -9,5 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AddressMapper {
-    List<ResponseAddress> convertToResponseAddresses(List<Address> addresses);
+    List<ResponseAddress> mapListToListResponseAddresses(List<Address> addresses);
+
+    ResponseAddress mapToResponseAddresses(Address address);
 }
