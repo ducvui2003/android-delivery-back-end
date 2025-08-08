@@ -3,6 +3,7 @@ package com.spring.delivery.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.delivery.util.enums.AuthType;
+import com.spring.delivery.util.enums.Gender;
 import com.spring.delivery.util.enums.converter.AuthTypeConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,11 +36,16 @@ public class User extends BaseModel {
 
     boolean verified;
 
-    String sex;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    Gender sex = Gender.UNKNOWN;
 
     String avatar;
 
     String birthday;
+
+    int countryCode;
 
     @Column(nullable = false)
     @Convert(converter = AuthTypeConverter.class)
@@ -67,4 +73,6 @@ public class User extends BaseModel {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Cart cart;
 
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    List<Order> orders;
 }

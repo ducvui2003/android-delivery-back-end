@@ -1,8 +1,7 @@
 package com.spring.delivery.service.authentication;
 
-import com.spring.delivery.model.JwtPayload;
-import com.spring.delivery.model.Permission;
-import com.spring.delivery.model.Role;
+import com.spring.delivery.model.*;
+import com.spring.delivery.repository.mysql.ICartRepository;
 import com.spring.delivery.repository.mysql.RoleRepository;
 import com.spring.delivery.service.email.EmailService;
 import com.spring.delivery.util.enums.AuthType;
@@ -17,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.spring.delivery.domain.response.ResponseAuthentication;
 import com.spring.delivery.mapper.UserMapper;
-import com.spring.delivery.model.User;
 import com.spring.delivery.repository.mysql.UserRepository;
 import com.spring.delivery.service.token.TokenService;
 import com.spring.delivery.util.SecurityUtil;
@@ -27,6 +25,10 @@ import com.spring.delivery.util.exception.AppException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -41,6 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     RoleRepository roleRepository;
     EmailService emailService;
     VerifyService verifyService;
+    ICartRepository cartRepository;
 
     @Override
     public User register(String idToken, User user) {
@@ -56,19 +59,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setVerified(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        User userCreated = userRepository.save(user);
+        Cart cart = new Cart(userCreated);
+        cartRepository.save(cart);
+
+        return userCreated;
     }
 
+    @Transactional
     @Override
     public User register(User user) {
         checkBeforeRegister(user.getEmail(), user.getPhoneNumber());
         user.setVerified(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        User userCreated = userRepository.save(user);
+        Cart cart = new Cart(userCreated);
+        cartRepository.save(cart);
+
+        return userCreated;
     }
 
     @Override
-    public ResponseAuthentication getAccessToken(String email) {
+    public ResponseAuthentication createAccessToken(String email) {
         User user = this.getUserByEmail(email);
 
         if (user == null) throw new AppException(AppErrorCode.USER_NOT_FOUND);
@@ -79,14 +93,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
 
-        tokenService.saveToken(user.getEmail(), accessToken);
-
-        String refreshToken = securityUtil.createRefreshToken(jwtPayload);
+        tokenService.saveToken(accessToken, user.getEmail());
 
         return ResponseAuthentication.builder()
                 .user(userDTO)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -98,8 +109,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void logout(String email, String accessToken, String refreshToken) {
-        tokenService.saveToken(accessToken, email);
-        tokenService.saveToken(refreshToken, email);
+        try {
+            tokenService.saveToken(accessToken, email);
+            tokenService.saveToken(refreshToken, email);
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -131,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = this.getUserByPhoneNumber(phoneNumber);
 
         ResponseAuthentication.UserDTO userDTO = userMapper.toUserDTO(user);
+
         JwtPayload jwtPayload = getJwtPayload(user);
 
         String accessToken = securityUtil.createAccessToken(jwtPayload);
@@ -179,7 +194,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(roleUser)
                 .authType(AuthType.OAUTH2)
                 .build();
-        userRepository.save(user);
+
+        User userCreated = userRepository.save(user);
+        Cart cart = new Cart(userCreated);
+        cartRepository.save(cart);
     }
 
     private JwtPayload getJwtPayload(User user) {
@@ -187,7 +205,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(user.getEmail())
                 .user(userMapper.toUserPayload(user))
                 .role(user.getRole().getName().name())
-                .permissions(user.getPermissions().stream().map(Permission::getName).toList())
+                .permissions(user.getPermissions() !=  null ? user.getPermissions().stream().map(Permission::getName).toList() : List.of())
                 .timeExpiredPlus(1)
                 .build();
     }

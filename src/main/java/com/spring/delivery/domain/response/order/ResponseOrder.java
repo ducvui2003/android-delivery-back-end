@@ -4,8 +4,8 @@ import com.spring.delivery.util.enums.StatusOrder;
 
 import java.util.List;
 
-public record OrderDTO(
-        String id,
+public record ResponseOrder(
+        Long id,
         Double price,
         List<String> images,
         Integer starReview,

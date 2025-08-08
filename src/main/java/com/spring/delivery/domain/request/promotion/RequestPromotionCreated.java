@@ -1,7 +1,7 @@
 package com.spring.delivery.domain.request.promotion;
 
 import com.spring.delivery.document.DiscountPromotionInfo;
-import com.spring.delivery.util.enums.converter.PromotionType;
+import com.spring.delivery.util.enums.PromotionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

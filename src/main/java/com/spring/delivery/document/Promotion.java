@@ -1,7 +1,7 @@
 package com.spring.delivery.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.spring.delivery.util.enums.converter.PromotionType;
+import com.spring.delivery.util.enums.PromotionType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;

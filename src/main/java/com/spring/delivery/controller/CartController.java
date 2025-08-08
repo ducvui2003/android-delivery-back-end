@@ -36,6 +36,8 @@ public class CartController {
         return ResponseEntity.badRequest().build();
     }
 
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<List<ResponseCart>> getAllCartItem() {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
@@ -46,6 +48,7 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseCart> getCartItem(@PathVariable("id") Long id) {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
@@ -56,6 +59,7 @@ public class CartController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/increase/{id}")
     public ResponseEntity<Void> increaseCartItem(@PathVariable("id") Long id) {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
@@ -66,6 +70,7 @@ public class CartController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/decrease/{id}")
     public ResponseEntity<Void> decreaseCartItem(@PathVariable("id") Long id) {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();
@@ -76,6 +81,7 @@ public class CartController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("id") Long id) {
         Long userId = securityUtil.getCurrentUserDTOFromAccessToken().orElse(null).id();

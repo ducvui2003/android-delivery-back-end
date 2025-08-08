@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,18 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PromotionServiceImpl implements PromotionService {
-     PromotionRepository promotionRepository;
-     PromotionMapper mapper;
-     UserRepository userRepository;
+    PromotionRepository promotionRepository;
+    PromotionMapper promotionMapper;
+    UserRepository userRepository;
 
     @Override
     public List<PromotionBaseDTO> getPromotions() {
-        return promotionRepository.findAll().stream().map(mapper::toPromotionBaseDTO).toList();
+        return promotionRepository.findAll().stream().map(promotionMapper::toPromotionBaseDTO).toList();
     }
 
     @Override
     public PromotionDTO getPromotion(String id) {
-        return mapper.toPromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.PROMOTION_NOT_FOUND)));
+        return promotionMapper.toPromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new AppException(AppErrorCode.PROMOTION_NOT_FOUND)));
     }
 
     @Override
@@ -49,14 +50,14 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public PromotionDTO createPromotion(RequestPromotionCreated req) {
-        if(req.userIds() != null)
-            if(userRepository.findByIdIn(req.userIds()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
-        var promotion = promotionRepository.save(mapper.toPromotion(req));
-        return mapper.toPromotionDTO(promotion);
+        if (req.userIds() != null)
+            if (userRepository.findByIdIn(req.userIds()).isEmpty()) throw new AppException(AppErrorCode.USER_NOT_FOUND);
+        var promotion = promotionRepository.save(promotionMapper.toPromotion(req));
+        return promotionMapper.toPromotionDTO(promotion);
     }
 
     @Override
     public List<PromotionBaseDTO> getPromotionsByUserId(Long userId) {
-        return promotionRepository.findPromotionsByUserId(userId).stream().map(mapper::toPromotionBaseDTO).toList();
+        return promotionRepository.findPromotionsByUserId(userId).stream().map(promotionMapper::toPromotionBaseDTO).toList();
     }
 }

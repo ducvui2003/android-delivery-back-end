@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   jackson:
     time-zone: Asia/Ho_Chi_Minh
@@ -22,7 +22,7 @@ spring:
       uri: ${MONGODB_URI}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -64,11 +64,14 @@ spring:
 jwt:
   base64-secret: 1KYM6Qp2S8084HQLp+weSBZkZLhs73NkTMoJeql5Gxc7iSUHP/xEtT719zB6XQMilF2R89alaiX8PQl6VXfAhQ==
   access-token-validity-in-seconds: 86400
-  refresh-token-validity-in-seconds: 8640000
+  refresh-token-validity-in-seconds: 604800
 
 app:
   whitelist:
+    - /api/v1/health/alive
     - /api/v1/auth/login
+    - /api/v1/health/alive
+    - /api/v1/auth/logout
     - /api/v1/auth/check-before-register
     - /api/v1/auth/register-email
     - /api/v1/auth/register
@@ -90,8 +93,10 @@ app:
   cookie:
     key:
       refreshToken: refresh_token
+      accessToken: refresh_token
     defaultValue:
       refreshToken: empty
+      accessToken: empty
   host: ${HOST:localhost}
   otp:
     length: 6
